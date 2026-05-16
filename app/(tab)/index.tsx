@@ -1,12 +1,16 @@
 import {
   BG_COLOR,
+  CARD_HEIGHT,
+  CARD_WIDTH,
+  SCREEN_WIDTH,
   SPACING,
+  SWIPE_THRESHOLD,
   TAB_ITEM_SIZE,
   cardImages,
 } from "@/constants/constants";
 import { Image } from "expo-image";
 import { useLayoutEffect, useState } from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   interpolate,
@@ -18,10 +22,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const CARD_WIDTH = SCREEN_WIDTH - 4 * SPACING;
-const CARD_HEIGHT = CARD_WIDTH * 1.5;
-const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.3;
 
 function SwipeCards() {
   const [index, setIndex] = useState(0);
@@ -160,6 +160,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
+    top: SPACING * 6,
     borderRadius: 24,
     overflow: "hidden",
     backgroundColor: "#fff",

@@ -4,8 +4,12 @@ const { width } = Dimensions.get("window");
 
 export const TABBAR_WIDTH = width;
 export const SPACING = 20;
-
 export const TAB_ITEM_SIZE = 60;
+
+export const CARD_WIDTH = width - 4 * SPACING;
+export const CARD_HEIGHT = CARD_WIDTH * 1.5;
+export const SWIPE_THRESHOLD = width * 0.3;
+export const SCREEN_WIDTH = width;
 
 
 export const TEXT_COLOR = "#464343ff";

@@ -1,17 +1,17 @@
 import {
-    GREEN,
-    SPACING,
-    TAB_ITEM_SIZE,
-    TABBAR_WIDTH,
-    TEXT_COLOR,
+  GREEN,
+  SPACING,
+  TAB_ITEM_SIZE,
+  TABBAR_WIDTH,
+  TEXT_COLOR,
 } from "@/constants/constants";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, {
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import TabbarItem from "./TabbarItem";
@@ -39,7 +39,7 @@ const CustomTabBar = ({ props }: Props) => {
   }));
 
   return (
-    <View style={[styles.container, { bottom: 1.5 * SPACING }]}>
+    <View style={[styles.container, { bottom: 1.8 * SPACING }]}>
       <Animated.View style={[styles.activeBg, animatedStyles]} />
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];

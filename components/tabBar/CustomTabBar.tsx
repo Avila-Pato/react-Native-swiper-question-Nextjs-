@@ -39,7 +39,7 @@ const CustomTabBar = ({ props }: Props) => {
   }));
 
   return (
-    <View style={[styles.container, { bottom: 0.5 * SPACING + bottom }]}>
+    <View style={[styles.container, { bottom: 1.5 * SPACING }]}>
       <Animated.View style={[styles.activeBg, animatedStyles]} />
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
@@ -89,13 +89,12 @@ export default CustomTabBar;
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    bottom: 0, // sobreescrito dinámicamente
     width: TABBAR_WIDTH,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     alignSelf: "center",
-    marginBottom: 1.5 * SPACING,
+    marginBottom: 0.5 * SPACING,
     paddingHorizontal: SPACING,
     backgroundColor: "white",
     borderRadius: TABBAR_WIDTH / 2,

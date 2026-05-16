@@ -1,6 +1,11 @@
-import { BG_COLOR, SPACING, TAB_ITEM_SIZE, cardImages } from "@/constants/constants";
+import {
+  BG_COLOR,
+  SPACING,
+  TAB_ITEM_SIZE,
+  cardImages,
+} from "@/constants/constants";
 import { Image } from "expo-image";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -8,13 +13,14 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  withDecay,
   withSpring,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CARD_WIDTH = SCREEN_WIDTH - 4 * SPACING;
-const CARD_HEIGHT = CARD_WIDTH * 1.4;
+const CARD_HEIGHT = CARD_WIDTH * 1.5;
 const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.3;
 
 function SwipeCards() {
@@ -24,24 +30,33 @@ function SwipeCards() {
 
   const advanceCard = () => {
     setIndex((prev) => (prev + 1) % cardImages.length);
+  };
+
+  useLayoutEffect(() => {
     translateX.value = 0;
     translateY.value = 0;
-  };
+  }, [index, translateX, translateY]);
 
   const gesture = Gesture.Pan()
     .onUpdate((e) => {
       translateX.value = e.translationX;
       translateY.value = e.translationY;
     })
-    .onEnd(() => {
-      if (Math.abs(translateX.value) > SWIPE_THRESHOLD) {
-        const dir = translateX.value > 0 ? 1 : -1;
-        translateX.value = withSpring(dir * SCREEN_WIDTH * 1.5, {}, () => {
-          runOnJS(advanceCard)();
-        });
+    .onEnd((e) => {
+      const shouldSwipe =
+        Math.abs(translateX.value) > SWIPE_THRESHOLD ||
+        Math.abs(e.velocityX) > 800;
+      if (shouldSwipe) {
+        const dir = Math.sign(e.velocityX || translateX.value);
+        translateX.value = withDecay(
+          { velocity: dir * Math.max(Math.abs(e.velocityX), 1200) },
+          () => {
+            runOnJS(advanceCard)();
+          },
+        );
       } else {
-        translateX.value = withSpring(0);
-        translateY.value = withSpring(0);
+        translateX.value = withSpring(0, { damping: 20 });
+        translateY.value = withSpring(0, { damping: 20 });
       }
     });
 
@@ -53,7 +68,7 @@ function SwipeCards() {
         rotate: `${interpolate(
           translateX.value,
           [-SCREEN_WIDTH, 0, SCREEN_WIDTH],
-          [-15, 0, 15]
+          [-15, 0, 15],
         )}deg`,
       },
     ],
@@ -79,19 +94,28 @@ function SwipeCards() {
     };
   });
 
-  const getCard = (offset: number) => cardImages[(index + offset) % cardImages.length];
+  const getCard = (offset: number) =>
+    cardImages[(index + offset) % cardImages.length];
 
   return (
     <View style={styles.cardsContainer}>
       <Animated.View style={[styles.card, bottomCardStyle]}>
-        <Image source={{ uri: getCard(2).uri }} style={styles.cardImage} contentFit="cover" />
+        <Image
+          source={{ uri: getCard(2).uri }}
+          style={styles.cardImage}
+          contentFit="cover"
+        />
         <View style={styles.cardBid}>
           <Text style={styles.bidText}>Bid {getCard(2).bid} ETH</Text>
         </View>
       </Animated.View>
 
       <Animated.View style={[styles.card, middleCardStyle]}>
-        <Image source={{ uri: getCard(1).uri }} style={styles.cardImage} contentFit="cover" />
+        <Image
+          source={{ uri: getCard(1).uri }}
+          style={styles.cardImage}
+          contentFit="cover"
+        />
         <View style={styles.cardBid}>
           <Text style={styles.bidText}>Bid {getCard(1).bid} ETH</Text>
         </View>
@@ -99,7 +123,11 @@ function SwipeCards() {
 
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.card, topCardStyle]}>
-          <Image source={{ uri: getCard(0).uri }} style={styles.cardImage} contentFit="cover" />
+          <Image
+            source={{ uri: getCard(0).uri }}
+            style={styles.cardImage}
+            contentFit="cover"
+          />
           <View style={styles.cardBid}>
             <Text style={styles.bidText}>Bid {getCard(0).bid} ETH</Text>
           </View>
@@ -126,7 +154,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom: TAB_ITEM_SIZE + SPACING * 3,
+    paddingBottom: TAB_ITEM_SIZE + SPACING * 10,
   },
   card: {
     position: "absolute",

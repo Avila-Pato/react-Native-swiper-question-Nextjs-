@@ -6,6 +6,10 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="(onboarding)/career" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="(onboarding)/career-ramas" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="(onboarding)/personal" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="(onboarding)/signup" options={{ headerShown: false, animation: "slide_from_right" }} />
         <Stack.Screen name="(tab)" options={{ headerShown: false, animation: "fade" }} />
       </Stack>
     </GestureHandlerRootView>

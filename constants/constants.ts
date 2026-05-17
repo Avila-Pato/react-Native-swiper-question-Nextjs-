@@ -12,6 +12,7 @@ export const SWIPE_THRESHOLD = width * 0.3;
 export const SCREEN_WIDTH = width;
 
 
+export const TEXT_FONT_SIZE = 32;
 export const TEXT_COLOR = "#464343ff";
 export const BG_COLOR = "#edf2f5";
 export const GREEN = "#bdf14d";

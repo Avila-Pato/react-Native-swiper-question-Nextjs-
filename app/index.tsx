@@ -163,7 +163,7 @@ export default function IntroScreen() {
         <Animated.View style={[styles.buttonWrapper, buttonStyle]}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => router.replace("/(tab)")}
+            onPress={() => router.push("/career")}
             activeOpacity={0.82}
           >
             <Text style={styles.buttonText}>Comenzar →</Text>
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     paddingHorizontal: 28,
-    paddingBottom: 52,
+    paddingBottom: 62,
   },
   // badge: {
   //   alignSelf: "flex-start",

@@ -3,12 +3,15 @@ import { SwipeCards } from "@/components/game/SwipeCards";
 import { BG_COLOR } from "@/constants/constants";
 import gameData from "@/data/gameData";
 import { GameNode, PerfilPoints } from "@/types/types";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TabOneScreen() {
-  const [currentNodeKey, setCurrentNodeKey] = useState("inicio_perdido");
+  const { startNode } = useLocalSearchParams<{ startNode?: string; nombre?: string; formacion?: string; ramas?: string }>();
+  const initialNode = startNode && gameData[startNode] ? startNode : "inicio_perdido";
+  const [currentNodeKey, setCurrentNodeKey] = useState(initialNode);
   const [, setPerfilPoints] = useState<PerfilPoints>({});
 
   const currentNode = gameData[currentNodeKey] as GameNode;
@@ -30,7 +33,7 @@ export default function TabOneScreen() {
   };
 
   const handleReset = () => {
-    setCurrentNodeKey("inicio_perdido");
+    setCurrentNodeKey(initialNode);
     setPerfilPoints({});
   };
 

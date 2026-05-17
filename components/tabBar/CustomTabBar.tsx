@@ -39,7 +39,7 @@ const CustomTabBar = ({ props }: Props) => {
   }));
 
   return (
-    <View style={[styles.container, { bottom: 1.8 * SPACING }]}>
+    <View style={[styles.container, { bottom: 4.0 * SPACING }]}>
       <Animated.View style={[styles.activeBg, animatedStyles]} />
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
@@ -72,8 +72,8 @@ const CustomTabBar = ({ props }: Props) => {
               tabBarIcon &&
               tabBarIcon({
                 focused: isFocused,
-                size: 26,
-                color: isFocused ? "black" : "gray",
+                size: 16,
+                color: isFocused ? "white" : "gray",
               })
             }
             isFocused={isFocused}

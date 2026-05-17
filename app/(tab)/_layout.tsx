@@ -2,7 +2,7 @@ import CustomTabBar from "@/components/tabBar/CustomTabBar";
 import { Octicons } from "@expo/vector-icons";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Tabs } from "expo-router";
-import { MessageSquare, Star } from "lucide-react-native";
+import { Info, Star } from "lucide-react-native";
 import React from "react";
 
 export default function TabLayout() {
@@ -21,14 +21,14 @@ export default function TabLayout() {
             !focused ? (
               <Octicons name="home" size={24} color={color} />
             ) : (
-              <Octicons name="home-fill" size={24} color="black" />
+              <Octicons name="home-fill" size={24} color="white" />
             ),
         }}
       />
       <Tabs.Screen
         name="two"
         options={{
-          title: "Favorites",
+          title: "Favoritos",
           tabBarIcon: ({ color, size, focused }) => (
             <Star
               color={color}
@@ -41,9 +41,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="three"
         options={{
-          title: "Messages",
+          title: "Info",
           tabBarIcon: ({ color, size, focused }) => (
-            <MessageSquare
+            <Info
               size={26}
               color={color}
               fill={focused ? color : "transparent"}

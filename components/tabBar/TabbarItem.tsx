@@ -42,10 +42,8 @@ const TabbarItem = ({ title, tabBarIcon, onPress, isFocused }: Props) => {
         <Animated.Text
           entering={FadeInUp.springify()}
           exiting={FadeOutDown.springify()}
-          style={{
-            fontSize: 12,
-            color: TEXT_COLOR,
-          }}
+          style={styles.label}
+          numberOfLines={1}
         >
           {title}
         </Animated.Text>
@@ -57,10 +55,16 @@ const TabbarItem = ({ title, tabBarIcon, onPress, isFocused }: Props) => {
 export default TabbarItem;
 const styles = StyleSheet.create({
   container: {
-    height: TAB_ITEM_SIZE,
+    height: TAB_ITEM_SIZE + 18,
     width: TAB_ITEM_SIZE,
-    borderRadius: TAB_ITEM_SIZE / 2,
     justifyContent: "center",
     alignItems: "center",
+    gap: 2,
+  },
+  label: {
+    fontSize: 11,
+    color: TEXT_COLOR,
+    textAlign: "center",
+    width: 80,
   },
 });

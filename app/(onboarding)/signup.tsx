@@ -1,5 +1,6 @@
 import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
 import { GREEN, TEXT_FONT_SIZE } from "@/constants/constants";
+import { GoogleSignInButton } from "@/app/(onboarding)/auth/register";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -196,12 +197,32 @@ export default function SignupScreen() {
             <Text style={styles.btnText}>Crear cuenta →</Text>
           </TouchableOpacity>
 
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>o</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <GoogleSignInButton
+            onSuccess={(user) =>
+              router.replace({
+                pathname: "/(tab)",
+                params: {
+                  startNode: params.startNode ?? "inicio_perdido",
+                  formacion: params.formacion ?? "",
+                  ramas: params.ramas ?? "",
+                  nombre: user.name ?? params.nombre ?? "",
+                },
+              })
+            }
+          />
+
           <TouchableOpacity
             style={styles.skipBtn}
             onPress={handleSkip}
             activeOpacity={0.7}
           >
-            <Text style={styles.skipText}>Ahora no, ir al quiz</Text>
+            <Text style={styles.skipText}>Omitir por ahora</Text>
           </TouchableOpacity>
         </Animated.View>
       </ScrollView>
@@ -301,8 +322,23 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   skipText: {
+    color: "rgba(255,255,255,0.4)",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  dividerText: {
     color: "rgba(255,255,255,0.3)",
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: "500",
   },
 });

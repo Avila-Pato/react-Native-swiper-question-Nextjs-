@@ -5,6 +5,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
+  Modal,
   Platform,
   ScrollView,
   StyleSheet,
@@ -132,7 +133,7 @@ export default function CareerRamasScreen() {
 
   const [selectedRamas, setSelectedRamas] = useState<string[]>([]);
   const [customRamas, setCustomRamas] = useState<string[]>([]);
-  const [showOtraInput, setShowOtraInput] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [otraInput, setOtraInput] = useState("");
 
   const otraInputRef = useRef<TextInput>(null);
@@ -186,10 +187,8 @@ export default function CareerRamasScreen() {
   };
 
   const handleOtraPress = () => {
-    setShowOtraInput((prev) => !prev);
-    if (!showOtraInput) {
-      setTimeout(() => otraInputRef.current?.focus(), 300);
-    }
+    setShowModal(true);
+    setTimeout(() => otraInputRef.current?.focus(), 200);
   };
 
   const confirmOtraRama = () => {
@@ -197,7 +196,7 @@ export default function CareerRamasScreen() {
     if (!trimmed) return;
     setCustomRamas((prev) => [...prev, trimmed]);
     setOtraInput("");
-    setTimeout(() => otraInputRef.current?.focus(), 100);
+    setShowModal(false);
   };
 
   const removeCustomRama = (label: string) => {
@@ -264,42 +263,54 @@ export default function CareerRamasScreen() {
           <TouchableOpacity onPress={handleOtraPress} activeOpacity={0.65}>
             <View style={styles.rowOtra}>
               <View style={styles.rowBorderOtra} />
-              <Text style={styles.rowNumOtra}>{showOtraInput ? "—" : "+"}</Text>
+              <Text style={styles.rowNumOtra}>+</Text>
               <Text style={styles.rowLabelOtra}>Agregar otra</Text>
-              <Ionicons
-                name={showOtraInput ? "chevron-up" : "chevron-down"}
-                size={16}
-                color="rgba(255,255,255,0.25)"
-              />
             </View>
           </TouchableOpacity>
 
-          {/* Input personalizado */}
-          {showOtraInput && (
-            <View style={styles.otraRow}>
-              <TextInput
-                ref={otraInputRef}
-                style={styles.otraInput}
-                placeholder="Ej: UX/UI, Blockchain..."
-                placeholderTextColor="rgba(255,255,255,0.22)"
-                value={otraInput}
-                onChangeText={setOtraInput}
-                returnKeyType="done"
-                onSubmitEditing={confirmOtraRama}
-              />
-              <TouchableOpacity
-                style={[
-                  styles.otraConfirm,
-                  !otraInput.trim() && styles.otraConfirmDisabled,
-                ]}
-                onPress={confirmOtraRama}
-                disabled={!otraInput.trim()}
-                activeOpacity={0.8}
+          {/* Modal para rama personalizada */}
+          <Modal
+            visible={showModal}
+            transparent
+            animationType="fade"
+            onRequestClose={() => setShowModal(false)}
+          >
+            <TouchableOpacity
+              style={styles.modalOverlay}
+              activeOpacity={1}
+              onPress={() => setShowModal(false)}
+            >
+              <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
               >
-                <Ionicons name="add" size={22} color="#1a1a2e" />
-              </TouchableOpacity>
-            </View>
-          )}
+                <View style={styles.modalCard}>
+                  <Text style={styles.modalTitle}>Agregar rama</Text>
+                  <TextInput
+                    ref={otraInputRef}
+                    style={styles.modalInput}
+                    placeholder="Ej: UX/UI, Blockchain..."
+                    placeholderTextColor="rgba(255,255,255,0.22)"
+                    value={otraInput}
+                    onChangeText={setOtraInput}
+                    returnKeyType="done"
+                    onSubmitEditing={confirmOtraRama}
+                    autoCapitalize="words"
+                  />
+                  <TouchableOpacity
+                    style={[
+                      styles.modalBtn,
+                      !otraInput.trim() && styles.otraConfirmDisabled,
+                    ]}
+                    onPress={confirmOtraRama}
+                    disabled={!otraInput.trim()}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.modalBtnText}>Agregar</Text>
+                  </TouchableOpacity>
+                </View>
+              </KeyboardAvoidingView>
+            </TouchableOpacity>
+          </Modal>
 
           {/* Tags personalizados */}
           {customRamas.length > 0 && (
@@ -526,5 +537,45 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "800",
     letterSpacing: 0.3,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "flex-end",
+  },
+  modalCard: {
+    backgroundColor: "#1a1a2e",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 24,
+    gap: 16,
+  },
+  modalTitle: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "700",
+    letterSpacing: -0.4,
+  },
+  modalInput: {
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.1)",
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    color: "white",
+    fontSize: 16,
+  },
+  modalBtn: {
+    backgroundColor: GREEN,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  modalBtnText: {
+    color: "#1a1a2e",
+    fontSize: 16,
+    fontWeight: "800",
   },
 });

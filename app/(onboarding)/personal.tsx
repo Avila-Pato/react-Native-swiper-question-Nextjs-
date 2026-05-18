@@ -88,8 +88,7 @@ export default function PersonalScreen() {
       <View style={styles.container}>
         <Animated.View style={[styles.header, titleStyle]}>
           <Text style={styles.title}>
-            ¿Cómo te{"\n"}
-            <Text style={{ color: GREEN }}>llamamos?</Text>
+            ¿Cómo te <Text style={{ color: GREEN }}>llamamos?</Text>
           </Text>
         </Animated.View>
 
@@ -115,7 +114,7 @@ export default function PersonalScreen() {
             onPress={handleContinue}
             activeOpacity={0.82}
           >
-            <Text style={styles.btnText}>Comenzar quiz →</Text>
+            <Text style={styles.btnText}>Continuar</Text>
           </TouchableOpacity>
         </Animated.View>
       </View>
@@ -152,7 +151,7 @@ const styles = StyleSheet.create({
   inputBlock: {},
   input: {
     color: "white",
-    fontSize: 32,
+    fontSize: 16,
     fontWeight: "700",
     letterSpacing: -0.5,
     paddingVertical: 10,

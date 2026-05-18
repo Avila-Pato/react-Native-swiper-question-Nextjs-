@@ -218,7 +218,7 @@ export default function CareerRamasScreen() {
 
   const subtitleText =
     totalSelected === 0
-      ? "Elige al menos una"
+      ? "Puedes seleccionar mas de una rama"
       : totalSelected === 1
         ? "1 seleccionada"
         : `${totalSelected} seleccionadas`;
@@ -239,8 +239,7 @@ export default function CareerRamasScreen() {
         <Animated.View style={[styles.header, titleStyle]}>
           <View style={styles.headerTop}>
             <Text style={styles.title}>
-              ¿Qué rama{" "}
-              <Text style={{ color: "#34D59A" }}>te llama?</Text>
+              ¿Qué rama <Text style={{ color: "#34D59A" }}>te llama?</Text>
             </Text>
             {/* <Animated.Text style={[styles.counterBig, counterStyle]}>
               {totalSelected}
@@ -345,15 +344,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 64,
     flexGrow: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
   },
   header: {
     marginBottom: 32,
+    alignItems: "center",
   },
   headerTop: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
+    textAlign: "center",
   },
   title: {
     color: "white",
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
   rowLabel: {
     flex: 1,
     color: "rgba(255,255,255,0.55)",
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: "700",
     letterSpacing: -0.4,
   },

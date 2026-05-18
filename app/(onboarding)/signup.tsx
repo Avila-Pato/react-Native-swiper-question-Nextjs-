@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -112,17 +113,20 @@ export default function SignupScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === "ios" ? "padding" : "padding"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
       <OnboardingProgress step={4} />
-      <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         {/* Encabezado */}
         <Animated.View style={[styles.header, titleStyle]}>
           <Text style={styles.title}>
-            Crea tu{"\n"}
-            <Text style={{ color: GREEN }}>cuenta.</Text>
+            Crea tu <Text style={{ color: GREEN }}>cuenta.</Text>
           </Text>
-          <Text style={styles.subtitle}>Guarda tu progreso y resultados</Text>
         </Animated.View>
 
         {/* Campos */}
@@ -200,7 +204,7 @@ export default function SignupScreen() {
             <Text style={styles.skipText}>Ahora no, ir al quiz</Text>
           </TouchableOpacity>
         </Animated.View>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -211,10 +215,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#111120",
   },
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: 28,
     justifyContent: "center",
     gap: 44,
+    paddingVertical: 32,
   },
   header: {},
   label: {
@@ -244,7 +249,7 @@ const styles = StyleSheet.create({
   fieldBlock: {},
   fieldLabel: {
     color: "rgba(255,255,255,0.38)",
-    fontSize: 11,
+    fontSize: 16,
     fontWeight: "700",
     letterSpacing: 1.5,
     textTransform: "uppercase",
@@ -257,7 +262,7 @@ const styles = StyleSheet.create({
   },
   input: {
     color: "white",
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "600",
     letterSpacing: -0.3,
     flex: 1,

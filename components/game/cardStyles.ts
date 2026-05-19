@@ -13,7 +13,7 @@ export const cardStyles = StyleSheet.create({
     position: "absolute",
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
-    top: SPACING * 6,
+    top: SPACING * 4,
     borderRadius: 24,
     overflow: "hidden",
     backgroundColor: "#1a1a2e",

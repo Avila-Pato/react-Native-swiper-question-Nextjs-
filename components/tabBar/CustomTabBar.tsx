@@ -1,50 +1,29 @@
-import {
-  GREEN,
-  SPACING,
-  TAB_ITEM_SIZE,
-  TABBAR_WIDTH,
-  TEXT_COLOR,
-} from "@/constants/constants";
+import { SPACING, TAB_ITEM_SIZE } from "@/constants/constants";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import TabbarItem from "./TabbarItem";
 
 type Props = { props: BottomTabBarProps };
 
+const ACTIVE_COLOR = "#34D59A";
+const INACTIVE_COLOR = "#4B5563";
+const BAR_HEIGHT = TAB_ITEM_SIZE + SPACING * 1.5;
+
 const CustomTabBar = ({ props }: Props) => {
   const { state, descriptors, navigation } = props;
   const { bottom } = useSafeAreaInsets();
 
-  const activeIndex = state.index;
-  const numberofTabs = state.routes.length;
-
-  const availableWidth = TABBAR_WIDTH - 2 * SPACING;
-  const totalItemWidth = numberofTabs * TAB_ITEM_SIZE;
-  const totalGapWidth = availableWidth - totalItemWidth;
-  const spaceBetweenItems = totalGapWidth / (numberofTabs - 1);
-
-  const itemOffset = TAB_ITEM_SIZE + spaceBetweenItems;
-
-  const translateX = useSharedValue(0);
-
-  const animatedStyles = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
-
   return (
-    <View style={[styles.container, { bottom: 4.0 * SPACING }]}>
-      <Animated.View style={[styles.activeBg, animatedStyles]} />
+    <View
+      style={[
+        styles.container,
+        { paddingBottom: bottom, height: BAR_HEIGHT + bottom },
+      ]}
+    >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
-
-        const { tabBarIcon, title } = options;
         const isFocused = state.index === index;
 
         const onPress = () => {
@@ -53,13 +32,8 @@ const CustomTabBar = ({ props }: Props) => {
             target: route.key,
             canPreventDefault: true,
           });
-
           if (!isFocused && !event.defaultPrevented) {
             navigation.navigate(route.name, route.params);
-            translateX.value = withSpring(index * itemOffset, {
-              stiffness: 800,
-              damping: 80,
-            });
           }
         };
 
@@ -67,16 +41,12 @@ const CustomTabBar = ({ props }: Props) => {
           <TabbarItem
             key={route.key}
             onPress={onPress}
-            title={title}
-            tabBarIcon={
-              tabBarIcon &&
-              tabBarIcon({
-                focused: isFocused,
-                size: 16,
-                color: isFocused ? "white" : "gray",
-              })
-            }
             isFocused={isFocused}
+            tabBarIcon={options.tabBarIcon?.({
+              focused: isFocused,
+              size: 22,
+              color: isFocused ? ACTIVE_COLOR : INACTIVE_COLOR,
+            })}
           />
         );
       })}
@@ -89,32 +59,13 @@ export default CustomTabBar;
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    width: TABBAR_WIDTH,
+    bottom: 0,
+    left: 0,
+    right: 0,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    alignSelf: "center",
-    marginBottom: 0.5 * SPACING,
-    paddingHorizontal: SPACING,
-    backgroundColor: "white",
-    borderRadius: TABBAR_WIDTH / 2,
-    shadowColor: TEXT_COLOR,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 3.5,
-    elevation: 5,
-    height: TAB_ITEM_SIZE + SPACING,
-  },
-  activeBg: {
-    position: "absolute",
-    left: SPACING,
-    top: SPACING / 2,
-    width: TAB_ITEM_SIZE,
-    height: TAB_ITEM_SIZE,
-    borderRadius: TAB_ITEM_SIZE / 2,
-    backgroundColor: GREEN,
+    justifyContent: "space-around",
+    paddingHorizontal: SPACING * 2,
+    backgroundColor: "#111827",
   },
 });

@@ -1,16 +1,15 @@
-import { TAB_ITEM_SIZE, TEXT_COLOR } from "@/constants/constants";
+import { TAB_ITEM_SIZE } from "@/constants/constants";
 import { useEffect } from "react";
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import Animated, {
-    FadeInUp,
-    FadeOutDown,
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
+  FadeIn,
+  FadeOut,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
 } from "react-native-reanimated";
 
 type Props = {
-  title: string | undefined;
   tabBarIcon: React.ReactNode;
   onPress: () => void;
   isFocused: boolean;
@@ -18,53 +17,58 @@ type Props = {
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const TabbarItem = ({ title, tabBarIcon, onPress, isFocused }: Props) => {
-  const rotateY = useSharedValue(0);
-  const scale = useSharedValue(0);
+const TabbarItem = ({ tabBarIcon, onPress, isFocused }: Props) => {
+  const scale = useSharedValue(1);
+  const opacity = useSharedValue(isFocused ? 1 : 0.5);
 
   useEffect(() => {
-    rotateY.value = withSpring(isFocused ? 0 : 360);
-    scale.value = withSpring(isFocused ? 1.2 : 1);
+    scale.value = withSpring(isFocused ? 1.15 : 1, { stiffness: 500, damping: 50 });
+    opacity.value = withSpring(isFocused ? 1 : 0.5);
   }, [isFocused]);
 
-  const animatedStyles = useAnimatedStyle(() => {
-    return {
-      transform: [{ rotateY: `${rotateY.value}deg` }, { scale: scale.value }],
-    };
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  }));
 
   return (
-    <Animated.View style={[styles.container, animatedStyles]}>
-      <AnimatedPressable onPress={onPress} style={animatedStyles}>
-        {tabBarIcon}
-      </AnimatedPressable>
-      {!isFocused && (
-        <Animated.Text
-          entering={FadeInUp.springify()}
-          exiting={FadeOutDown.springify()}
-          style={styles.label}
-          numberOfLines={1}
-        >
-          {title}
-        </Animated.Text>
+    <AnimatedPressable onPress={onPress} style={[styles.container, animatedStyle]}>
+      <View style={styles.iconWrapper}>{tabBarIcon}</View>
+      {isFocused ? (
+        <Animated.View
+          entering={FadeIn.duration(200)}
+          exiting={FadeOut.duration(150)}
+          style={styles.dot}
+        />
+      ) : (
+        <View style={styles.dotPlaceholder} />
       )}
-    </Animated.View>
+    </AnimatedPressable>
   );
 };
 
 export default TabbarItem;
+
 const styles = StyleSheet.create({
   container: {
-    height: TAB_ITEM_SIZE + 18,
     width: TAB_ITEM_SIZE,
-    justifyContent: "center",
     alignItems: "center",
-    gap: 2,
+    justifyContent: "center",
+    gap: 5,
+    paddingVertical: 6,
   },
-  label: {
-    fontSize: 11,
-    color: TEXT_COLOR,
-    textAlign: "center",
-    width: 80,
+  iconWrapper: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "#34D59A",
+  },
+  dotPlaceholder: {
+    width: 4,
+    height: 4,
   },
 });

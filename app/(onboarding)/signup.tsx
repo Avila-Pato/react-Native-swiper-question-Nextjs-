@@ -1,6 +1,5 @@
 import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
 import { GREEN, TEXT_FONT_SIZE } from "@/constants/constants";
-import { GoogleSignInButton } from "@/app/(onboarding)/auth/register";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -21,6 +20,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { GoogleSignInButton } from "@/components/onboarding/GoogleSignInButton";
 
 export default function SignupScreen() {
   const params = useLocalSearchParams<{

@@ -1,8 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { makeRedirectUri } from "expo-auth-session";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
-import { useEffect } from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { useEffect, useMemo } from "react";
+import { Platform, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -10,12 +11,33 @@ type Props = {
   onSuccess: (user: any) => void;
 };
 
+const ANDROID_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_KEY_ANDROID ?? "";
+const REVERSED_ANDROID_ID = ANDROID_CLIENT_ID.replace(
+  ".apps.googleusercontent.com",
+  ""
+);
+
 export const GoogleSignInButton = ({ onSuccess }: Props) => {
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId: process.env.EXPO_PUBLIC_GOOGLE_KEY_WEB,
-    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_KEY_IOS,
-    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_KEY_ANDROID,
-  });
+  const redirectUri = useMemo(
+    () =>
+      makeRedirectUri(
+        Platform.OS === "android"
+          ? {
+              native: `com.googleusercontent.apps.${REVERSED_ANDROID_ID}:/oauth2redirect`,
+            }
+          : {}
+      ),
+    []
+  );
+
+  const [request, response, promptAsync] = Google.useAuthRequest(
+    {
+      webClientId: process.env.EXPO_PUBLIC_GOOGLE_KEY_WEB,
+      iosClientId: process.env.EXPO_PUBLIC_GOOGLE_KEY_IOS,
+      androidClientId: ANDROID_CLIENT_ID,
+      redirectUri,
+    }
+  );
 
   useEffect(() => {
     if (response?.type !== "success" || !response.authentication) return;
@@ -28,8 +50,7 @@ export const GoogleSignInButton = ({ onSuccess }: Props) => {
         await AsyncStorage.setItem("@user", JSON.stringify(user));
         onSuccess(user);
       })
-      .catch((e) => console.log("Error Google auth: ", e));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      .catch((e) => console.log("Error Google auth:", e));
   }, [response]);
 
   return (

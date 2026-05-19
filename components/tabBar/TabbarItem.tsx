@@ -1,6 +1,6 @@
 import { TAB_ITEM_SIZE } from "@/constants/constants";
 import { useEffect } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
   FadeIn,
   FadeOut,
@@ -11,18 +11,22 @@ import Animated, {
 
 type Props = {
   tabBarIcon: React.ReactNode;
+  label: string;
   onPress: () => void;
   isFocused: boolean;
 };
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const TabbarItem = ({ tabBarIcon, onPress, isFocused }: Props) => {
+const TabbarItem = ({ tabBarIcon, label, onPress, isFocused }: Props) => {
   const scale = useSharedValue(1);
   const opacity = useSharedValue(isFocused ? 1 : 0.5);
 
   useEffect(() => {
-    scale.value = withSpring(isFocused ? 1.15 : 1, { stiffness: 500, damping: 50 });
+    scale.value = withSpring(isFocused ? 1.15 : 1, {
+      stiffness: 500,
+      damping: 50,
+    });
     opacity.value = withSpring(isFocused ? 1 : 0.5);
   }, [isFocused]);
 
@@ -32,8 +36,14 @@ const TabbarItem = ({ tabBarIcon, onPress, isFocused }: Props) => {
   }));
 
   return (
-    <AnimatedPressable onPress={onPress} style={[styles.container, animatedStyle]}>
+    <AnimatedPressable
+      onPress={onPress}
+      style={[styles.container, animatedStyle]}
+    >
       <View style={styles.iconWrapper}>{tabBarIcon}</View>
+      <Text style={[styles.label, isFocused && styles.labelActive]}>
+        {label}
+      </Text>
       {isFocused ? (
         <Animated.View
           entering={FadeIn.duration(200)}
@@ -54,7 +64,7 @@ const styles = StyleSheet.create({
     width: TAB_ITEM_SIZE,
     alignItems: "center",
     justifyContent: "center",
-    gap: 5,
+    gap: 2,
     paddingVertical: 6,
   },
   iconWrapper: {
@@ -62,13 +72,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   dot: {
-    width: 4,
-    height: 4,
+    width: 2,
+    height: 2,
     borderRadius: 2,
     backgroundColor: "#34D59A",
   },
   dotPlaceholder: {
-    width: 4,
-    height: 4,
+    width: 2,
+    height: 2,
+  },
+  label: {
+    fontSize: 10,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.45)",
+    letterSpacing: 0.3,
+  },
+  labelActive: {
+    color: "#FFFFFF",
   },
 });

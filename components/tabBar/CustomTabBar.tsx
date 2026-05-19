@@ -7,8 +7,8 @@ import TabbarItem from "./TabbarItem";
 
 type Props = { props: BottomTabBarProps };
 
-const ACTIVE_COLOR = "#34D59A";
-const INACTIVE_COLOR = "#4B5563";
+const ACTIVE_COLOR = "#FFFFFF";
+const INACTIVE_COLOR = "rgba(255,255,255,0.45)";
 const BAR_HEIGHT = TAB_ITEM_SIZE + SPACING * 1.5;
 
 const CustomTabBar = ({ props }: Props) => {
@@ -37,11 +37,14 @@ const CustomTabBar = ({ props }: Props) => {
           }
         };
 
+        const label = options.title ?? route.name;
+
         return (
           <TabbarItem
             key={route.key}
             onPress={onPress}
             isFocused={isFocused}
+            label={label}
             tabBarIcon={options.tabBarIcon?.({
               focused: isFocused,
               size: 22,

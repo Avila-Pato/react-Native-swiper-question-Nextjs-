@@ -93,7 +93,7 @@ export function CategoryLayout({
         <Text style={s.empty}>No hay noticias disponibles</Text>
       ) : (
         <>
-          {articles.slice(0, 8).map((article) => (
+          {articles.slice(0, 4).map((article) => (
             <Pressable
               key={article.url}
               style={s.newsRow}

@@ -2,7 +2,7 @@ import CustomTabBar from "@/components/tabBar/CustomTabBar";
 import { Octicons } from "@expo/vector-icons";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Tabs } from "expo-router";
-import { Info, Layers } from "lucide-react-native";
+import { Layers, UserCircle } from "lucide-react-native";
 import React from "react";
 
 export default function TabLayout() {
@@ -21,7 +21,7 @@ export default function TabLayout() {
             !focused ? (
               <Octicons name="home" size={24} color={color} />
             ) : (
-              <Octicons name="home-fill" size={24} color="white" />
+              <Octicons name="home-fill" size={24} color={color} />
             ),
         }}
       />
@@ -29,25 +29,17 @@ export default function TabLayout() {
         name="two"
         options={{
           title: "Tarjetas",
-          tabBarIcon: ({ color, focused }) => (
-            <Layers
-              color={color}
-              size={24}
-              fill={focused ? color : "transparent"}
-            />
+          tabBarIcon: ({ color }) => (
+            <Layers color={color} size={24} fill="transparent" />
           ),
         }}
       />
       <Tabs.Screen
         name="three"
         options={{
-          title: "Info",
-          tabBarIcon: ({ color, focused }) => (
-            <Info
-              size={24}
-              color={color}
-              fill={focused ? color : "transparent"}
-            />
+          title: "Perfil",
+          tabBarIcon: ({ color }) => (
+            <UserCircle size={24} color={color} fill="transparent" />
           ),
         }}
       />

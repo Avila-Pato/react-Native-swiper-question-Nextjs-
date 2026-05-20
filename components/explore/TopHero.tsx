@@ -1,7 +1,8 @@
 import { SPACING } from "@/constants/constants";
 import { ACCENT, BG, MUTED, TEXT } from "@/constants/theme";
 import { useNews } from "@/hooks/useNews";
-import { ActivityIndicator, Image, Linking, Pressable, StyleSheet, Text, View } from "react-native";
+import { SkeletonBox, usePulse } from "@/components/ui/Skeleton";
+import { Image, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -14,17 +15,31 @@ function timeAgo(iso: string): string {
   return new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
 }
 
+function TopHeroSkeleton() {
+  const pulse = usePulse();
+  return (
+    <View style={s.wrap}>
+      <View style={[s.card, { overflow: "hidden" }]}>
+        <SkeletonBox height={220} borderRadius={0} pulse={pulse} />
+        <View style={{ padding: 16, gap: 10 }}>
+          <SkeletonBox height={20} borderRadius={6} pulse={pulse} />
+          <SkeletonBox height={14} width="75%" borderRadius={6} pulse={pulse} />
+          <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+            <SkeletonBox width={20} height={20} borderRadius={10} pulse={pulse} />
+            <SkeletonBox width={80} height={12} borderRadius={4} pulse={pulse} />
+            <SkeletonBox width={60} height={12} borderRadius={4} pulse={pulse} />
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
 export function TopHero() {
   const { articles, loading } = useNews("technology");
   const featured = articles[0] ?? null;
 
-  if (loading) {
-    return (
-      <View style={[s.wrap, s.skeleton]}>
-        <ActivityIndicator color={ACCENT} size="large" />
-      </View>
-    );
-  }
+  if (loading) return <TopHeroSkeleton />;
 
   if (!featured) return null;
 

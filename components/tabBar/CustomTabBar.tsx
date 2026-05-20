@@ -7,7 +7,7 @@ import TabbarItem from "./TabbarItem";
 
 type Props = { props: BottomTabBarProps };
 
-const ACTIVE_COLOR = "#FFFFFF";
+const ACTIVE_COLOR = "#111827";
 const INACTIVE_COLOR = "rgba(255,255,255,0.45)";
 const BAR_HEIGHT = TAB_ITEM_SIZE + SPACING * 1.5;
 

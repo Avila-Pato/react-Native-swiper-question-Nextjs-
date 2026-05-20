@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   pill: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(255,255,255,0.10)",
+    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     marginHorizontal: -8,
   },
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   labelActive: {
-    color: "#FFFFFF",
+    color: "#111827",
     fontWeight: "700",
   },
 });

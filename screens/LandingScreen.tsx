@@ -43,8 +43,6 @@ export default function IntroScreen() {
   const perfilesOpacity = useSharedValue(0);
   const perfilesY = useSharedValue(20);
 
-  const buttonScale = useSharedValue(0.78);
-  const buttonOpacity = useSharedValue(0);
 
   useEffect(() => {
     imageScale.value = withTiming(1, {
@@ -72,11 +70,6 @@ export default function IntroScreen() {
       withSpring(0, { damping: 18, stiffness: 110 }),
     );
 
-    buttonOpacity.value = withDelay(1050, withTiming(1, { duration: 300 }));
-    buttonScale.value = withDelay(
-      1050,
-      withSpring(1, { damping: 11, stiffness: 160 }),
-    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -103,10 +96,6 @@ export default function IntroScreen() {
     transform: [{ translateY: perfilesY.value }],
   }));
 
-  const buttonStyle = useAnimatedStyle(() => ({
-    opacity: buttonOpacity.value,
-    transform: [{ scale: buttonScale.value }],
-  }));
 
   return (
     <View style={styles.container}>
@@ -160,7 +149,7 @@ export default function IntroScreen() {
           ))}
         </Animated.View>
 
-        <Animated.View style={[styles.buttonWrapper, buttonStyle]}>
+        <View style={styles.buttonWrapper}>
           <TouchableOpacity
             style={styles.button}
             onPress={() => router.push("/career")}
@@ -168,7 +157,7 @@ export default function IntroScreen() {
           >
             <Text style={styles.buttonText}>Comenzar →</Text>
           </TouchableOpacity>
-        </Animated.View>
+        </View>
       </View>
     </View>
   );

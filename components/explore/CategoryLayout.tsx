@@ -1,10 +1,10 @@
 import { SPACING } from "@/constants/constants";
 import { ACCENT, BORDER, CARD_BG, MUTED, TEXT } from "@/constants/theme";
+import { SkeletonBox, usePulse } from "@/components/ui/Skeleton";
 import { useNews } from "@/hooks/useNews";
 import { NewsArticle, NewsCategory } from "@/types/news";
 import { useState } from "react";
 import {
-  ActivityIndicator,
   Image,
   Pressable,
   ScrollView,
@@ -26,6 +26,42 @@ const SECTION_TITLES: Record<string, string> = {
   Startups: "Startups tech que debes conocer",
 };
 
+function CategorySkeleton() {
+  const pulse = usePulse();
+  return (
+    <>
+      {/* Highlights skeleton: 5 cards portrait */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={s.hScroll}
+        scrollEnabled={false}
+      >
+        {[1, 2, 3, 4, 5].map((i) => (
+          <SkeletonBox key={i} width={160} height={200} borderRadius={16} pulse={pulse} />
+        ))}
+      </ScrollView>
+
+      {/* Section header skeleton */}
+      <View style={{ paddingHorizontal: SPACING * 2, marginBottom: SPACING * 1.2 }}>
+        <SkeletonBox width={180} height={17} borderRadius={6} pulse={pulse} />
+      </View>
+
+      {/* News rows skeleton: 4 filas */}
+      {[1, 2, 3, 4].map((i) => (
+        <View key={i} style={s.skeletonRow}>
+          <SkeletonBox width={72} height={72} borderRadius={10} pulse={pulse} />
+          <View style={{ flex: 1, gap: 8 }}>
+            <SkeletonBox height={11} borderRadius={4} pulse={pulse} width="40%" />
+            <SkeletonBox height={13} borderRadius={4} pulse={pulse} />
+            <SkeletonBox height={13} borderRadius={4} pulse={pulse} width="80%" />
+          </View>
+        </View>
+      ))}
+    </>
+  );
+}
+
 type Props = {
   newsCategory?: NewsCategory;
   keywords?: string;
@@ -46,12 +82,11 @@ export function CategoryLayout({
     ? (SECTION_TITLES[areaLabel] ?? `Noticias · ${areaLabel}`)
     : "Últimas noticias";
 
+  if (loading) return <CategorySkeleton />;
+
   return (
     <>
-      {/* Highlights: primeros 5 artículos como cards horizontales */}
-      {loading ? (
-        <ActivityIndicator color={ACCENT} style={{ marginVertical: 20 }} />
-      ) : articles.length > 0 ? (
+      {articles.length > 0 ? (
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -86,10 +121,9 @@ export function CategoryLayout({
         </ScrollView>
       ) : null}
 
-      {/* Lista principal de artículos */}
       <SectionHeader title={sectionTitle} />
 
-      {loading ? null : articles.length === 0 ? (
+      {articles.length === 0 ? (
         <Text style={s.empty}>No hay noticias disponibles</Text>
       ) : (
         <>
@@ -148,6 +182,16 @@ const s = StyleSheet.create({
   sourceDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: ACCENT },
   sourceText: { color: ACCENT, fontSize: 10, fontWeight: "700", flex: 1 },
   hTitle: { color: "#FFF", fontSize: 12, fontWeight: "700", lineHeight: 17 },
+  skeletonRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginHorizontal: SPACING * 2,
+    marginBottom: SPACING * 1.5,
+    backgroundColor: CARD_BG,
+    borderRadius: 14,
+    padding: 12,
+  },
   newsRow: {
     flexDirection: "row",
     alignItems: "center",

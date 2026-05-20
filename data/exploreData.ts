@@ -3,11 +3,9 @@ import { Category, CatData } from "@/types/explore";
 
 export const CATEGORIES: Category[] = [
   "Todo",
-  "Desarrollo",
-  "Ciberseguridad",
-  "DevOps",
-  "Datos",
-  "Cloud",
+  "Destacado",
+  "Último hora",
+  "Lo más leído",
 ];
 
 export const CAT_DATA: Record<Exclude<Category, "Todo">, CatData> = {

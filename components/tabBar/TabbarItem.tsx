@@ -1,12 +1,11 @@
 import { TAB_ITEM_SIZE } from "@/constants/constants";
 import { useEffect } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text } from "react-native";
 import Animated, {
-  FadeIn,
-  FadeOut,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
 
 type Props = {
@@ -20,39 +19,30 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const TabbarItem = ({ tabBarIcon, label, onPress, isFocused }: Props) => {
   const scale = useSharedValue(1);
-  const opacity = useSharedValue(isFocused ? 1 : 0.5);
+  const bgOpacity = useSharedValue(isFocused ? 1 : 0);
 
   useEffect(() => {
-    scale.value = withSpring(isFocused ? 1.15 : 1, {
-      stiffness: 500,
-      damping: 50,
-    });
-    opacity.value = withSpring(isFocused ? 1 : 0.5);
+    scale.value = withSpring(isFocused ? 1.1 : 1, { stiffness: 400, damping: 40 });
+    bgOpacity.value = withTiming(isFocused ? 1 : 0, { duration: 200 });
   }, [isFocused]);
 
-  const animatedStyle = useAnimatedStyle(() => ({
+  const iconStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
-    opacity: opacity.value,
+  }));
+
+  const bgStyle = useAnimatedStyle(() => ({
+    opacity: bgOpacity.value,
   }));
 
   return (
-    <AnimatedPressable
-      onPress={onPress}
-      style={[styles.container, animatedStyle]}
-    >
-      <View style={styles.iconWrapper}>{tabBarIcon}</View>
+    <AnimatedPressable onPress={onPress} style={styles.container}>
+      <Animated.View style={[styles.pill, bgStyle]} />
+      <Animated.View style={[styles.iconWrap, iconStyle]}>
+        {tabBarIcon}
+      </Animated.View>
       <Text style={[styles.label, isFocused && styles.labelActive]}>
         {label}
       </Text>
-      {isFocused ? (
-        <Animated.View
-          entering={FadeIn.duration(200)}
-          exiting={FadeOut.duration(150)}
-          style={styles.dot}
-        />
-      ) : (
-        <View style={styles.dotPlaceholder} />
-      )}
     </AnimatedPressable>
   );
 };
@@ -64,22 +54,18 @@ const styles = StyleSheet.create({
     width: TAB_ITEM_SIZE,
     alignItems: "center",
     justifyContent: "center",
-    gap: 2,
+    gap: 4,
     paddingVertical: 6,
   },
-  iconWrapper: {
+  pill: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255,255,255,0.10)",
+    borderRadius: 16,
+    marginHorizontal: -8,
+  },
+  iconWrap: {
     alignItems: "center",
     justifyContent: "center",
-  },
-  dot: {
-    width: 2,
-    height: 2,
-    borderRadius: 2,
-    backgroundColor: "#34D59A",
-  },
-  dotPlaceholder: {
-    width: 2,
-    height: 2,
   },
   label: {
     fontSize: 10,
@@ -89,5 +75,6 @@ const styles = StyleSheet.create({
   },
   labelActive: {
     color: "#FFFFFF",
+    fontWeight: "700",
   },
 });

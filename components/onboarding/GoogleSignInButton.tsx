@@ -1,3 +1,5 @@
+import { googleApi } from "@/lib/GoogleApi";
+import { AntDesign } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { makeRedirectUri } from "expo-auth-session";
 import * as Google from "expo-auth-session/providers/google";
@@ -14,7 +16,7 @@ type Props = {
 const ANDROID_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_KEY_ANDROID ?? "";
 const REVERSED_ANDROID_ID = ANDROID_CLIENT_ID.replace(
   ".apps.googleusercontent.com",
-  ""
+  "",
 );
 
 export const GoogleSignInButton = ({ onSuccess }: Props) => {
@@ -25,28 +27,26 @@ export const GoogleSignInButton = ({ onSuccess }: Props) => {
           ? {
               native: `com.googleusercontent.apps.${REVERSED_ANDROID_ID}:/oauth2redirect`,
             }
-          : {}
+          : {},
       ),
-    []
+    [],
   );
 
-  const [request, response, promptAsync] = Google.useAuthRequest(
-    {
-      webClientId: process.env.EXPO_PUBLIC_GOOGLE_KEY_WEB,
-      iosClientId: process.env.EXPO_PUBLIC_GOOGLE_KEY_IOS,
-      androidClientId: ANDROID_CLIENT_ID,
-      redirectUri,
-    }
-  );
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    webClientId: process.env.EXPO_PUBLIC_GOOGLE_KEY_WEB,
+    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_KEY_IOS,
+    androidClientId: ANDROID_CLIENT_ID,
+    redirectUri,
+  });
 
   useEffect(() => {
     if (response?.type !== "success" || !response.authentication) return;
     const token = response.authentication.accessToken;
-    fetch("https://www.googleapis.com/userinfo/v2/me", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((r) => r.json())
-      .then(async (user) => {
+    googleApi
+      .get("/userinfo/v2/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(async ({ data: user }) => {
         await AsyncStorage.setItem("@user", JSON.stringify(user));
         onSuccess(user);
       })
@@ -58,8 +58,9 @@ export const GoogleSignInButton = ({ onSuccess }: Props) => {
       style={[styles.googleButton, !request && styles.disabledButton]}
       disabled={!request}
       onPress={() => promptAsync()}
-      activeOpacity={0.82}
+      activeOpacity={0.85}
     >
+      <AntDesign name="google" size={16} color="#4285F4" />
       <Text style={styles.buttonText}>Continuar con Google</Text>
     </TouchableOpacity>
   );
@@ -67,28 +68,22 @@ export const GoogleSignInButton = ({ onSuccess }: Props) => {
 
 const styles = StyleSheet.create({
   googleButton: {
-    backgroundColor: "#1F2937",
+    backgroundColor: "#ffffff",
     width: "100%",
-    paddingVertical: 16,
-    borderRadius: 14,
+    paddingVertical: 13,
+    borderRadius: 10,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#34D59A",
-    shadowColor: "#34D59A",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 4,
+    gap: 10,
   },
   disabledButton: {
-    opacity: 0.5,
-    borderColor: "#374151",
+    opacity: 0.4,
   },
   buttonText: {
-    color: "#34D59A",
-    fontSize: 16,
-    fontWeight: "700",
-    letterSpacing: 1,
+    color: "#3c4043",
+    fontSize: 14,
+    fontWeight: "600",
+    letterSpacing: 0.1,
   },
 });

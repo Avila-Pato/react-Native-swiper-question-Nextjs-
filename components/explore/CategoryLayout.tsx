@@ -1,126 +1,173 @@
 import { SPACING } from "@/constants/constants";
 import { ACCENT, BORDER, CARD_BG, MUTED, TEXT } from "@/constants/theme";
-import { CareerItem, CatData } from "@/types/explore";
-import { Heart } from "lucide-react-native";
+import { useNews } from "@/hooks/useNews";
+import { NewsArticle, NewsCategory } from "@/types/news";
 import { useState } from "react";
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { CareerSheet } from "./CareerSheet";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { NewsDetailSheet } from "./NewsDetailSheet";
+import { SectionHeader } from "./SectionHeader";
 
-type Props = { data: CatData };
+const SECTION_TITLES: Record<string, string> = {
+  Destacado: "Lo más destacado ahora",
+  "Último hora": "Noticias de último hora",
+  "Lo más leído": "Lo que todos están leyendo",
+  Desarrollo: "Lo más leído en Dev",
+  Ciberseguridad: "Amenazas del mundo real",
+  IA: "IA que está cambiando todo",
+  Cloud: "El ecosistema Cloud hoy",
+  Startups: "Startups tech que debes conocer",
+};
 
-export function CategoryLayout({ data }: Props) {
-  const [saved, setSaved] = useState<Set<string>>(new Set());
-  const [selected, setSelected] = useState<CareerItem | null>(null);
+type Props = {
+  newsCategory?: NewsCategory;
+  keywords?: string;
+  sort?: "published_desc" | "popularity";
+  areaLabel?: string;
+};
 
-  const toggleSave = (id: string) =>
-    setSaved((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
+export function CategoryLayout({
+  newsCategory = "technology",
+  keywords,
+  sort = "published_desc",
+  areaLabel,
+}: Props) {
+  const { articles, loading } = useNews(newsCategory, keywords, sort);
+  const [selected, setSelected] = useState<NewsArticle | null>(null);
+
+  const sectionTitle = areaLabel
+    ? (SECTION_TITLES[areaLabel] ?? `Noticias · ${areaLabel}`)
+    : "Últimas noticias";
 
   return (
     <>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={s.hScroll}
-      >
-        {data.highlights.map((h) => (
-          <Pressable key={h.id} style={s.hCard}>
-            <Image source={{ uri: h.image }} style={StyleSheet.absoluteFillObject} />
-            <View style={s.hOverlay} />
-            <View style={s.hBottom}>
-              <View style={[s.hDot, { backgroundColor: h.color }]} />
-              <Text style={s.hTitle}>{h.title}</Text>
-            </View>
-          </Pressable>
-        ))}
-      </ScrollView>
-
-      <View style={s.sectionRow}>
-        <Text style={s.sectionTitle}>{data.sectionTitle}</Text>
-        <Text style={s.sortBtn}>↕ Ordenar</Text>
-      </View>
-
-      <View style={s.list}>
-        {data.items.map((item) => (
-          <Pressable
-            key={item.id}
-            style={s.listCard}
-            onPress={() => setSelected(item)}
-          >
-            <Image source={{ uri: item.image }} style={s.listImg} />
-            <View style={s.listBody}>
-              <View style={[s.tag, { backgroundColor: item.tagColor + "22" }]}>
-                <Text style={[s.tagText, { color: item.tagColor }]}>{item.tag}</Text>
-              </View>
-              <Text style={s.listTitle}>{item.title}</Text>
-              <Text style={s.listDesc}>{item.desc}</Text>
-              <Text style={s.listMeta}>{item.meta}</Text>
-            </View>
+      {/* Highlights: primeros 5 artículos como cards horizontales */}
+      {loading ? (
+        <ActivityIndicator color={ACCENT} style={{ marginVertical: 20 }} />
+      ) : articles.length > 0 ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={s.hScroll}
+        >
+          {articles.slice(0, 5).map((article) => (
             <Pressable
-              onPress={(e) => {
-                e.stopPropagation?.();
-                toggleSave(item.id);
-              }}
-              hitSlop={10}
+              key={article.url}
+              style={s.hCard}
+              onPress={() => setSelected(article)}
             >
-              <Heart
-                size={20}
-                color={saved.has(item.id) ? "#EF4444" : "#D1D5DB"}
-                fill={saved.has(item.id) ? "#EF4444" : "transparent"}
-              />
+              {article.urlToImage ? (
+                <Image
+                  source={{ uri: article.urlToImage }}
+                  style={StyleSheet.absoluteFillObject}
+                />
+              ) : null}
+              <View style={s.hOverlay} />
+              <View style={s.hBottom}>
+                <View style={s.sourceRow}>
+                  <View style={s.sourceDot} />
+                  <Text style={s.sourceText} numberOfLines={1}>
+                    {article.source.name}
+                  </Text>
+                </View>
+                <Text style={s.hTitle} numberOfLines={2}>
+                  {article.title}
+                </Text>
+              </View>
             </Pressable>
-          </Pressable>
-        ))}
-      </View>
+          ))}
+        </ScrollView>
+      ) : null}
 
-      {selected && (
-        <CareerSheet item={selected} onClose={() => setSelected(null)} />
+      {/* Lista principal de artículos */}
+      <SectionHeader title={sectionTitle} />
+
+      {loading ? null : articles.length === 0 ? (
+        <Text style={s.empty}>No hay noticias disponibles</Text>
+      ) : (
+        <>
+          {articles.slice(0, 8).map((article) => (
+            <Pressable
+              key={article.url}
+              style={s.newsRow}
+              onPress={() => setSelected(article)}
+            >
+              {article.urlToImage ? (
+                <Image source={{ uri: article.urlToImage }} style={s.newsImg} />
+              ) : null}
+              <View style={{ flex: 1, gap: 4 }}>
+                <Text style={s.newsSource}>{article.source.name}</Text>
+                <Text style={s.newsTitle} numberOfLines={2}>
+                  {article.title}
+                </Text>
+                {article.description ? (
+                  <Text style={s.newsDesc} numberOfLines={1}>
+                    {article.description}
+                  </Text>
+                ) : null}
+              </View>
+            </Pressable>
+          ))}
+          <View style={{ height: 20 }} />
+        </>
       )}
+
+      {selected ? (
+        <NewsDetailSheet article={selected} onClose={() => setSelected(null)} />
+      ) : null}
     </>
   );
 }
 
 const s = StyleSheet.create({
-  hScroll: { paddingHorizontal: SPACING * 2, gap: 10, marginBottom: SPACING * 2.5 },
+  hScroll: {
+    paddingHorizontal: SPACING * 2,
+    gap: 10,
+    marginBottom: SPACING * 2.5,
+  },
   hCard: {
-    width: 115,
-    height: 140,
+    width: 160,
+    height: 200,
     borderRadius: 16,
     overflow: "hidden",
     backgroundColor: CARD_BG,
   },
-  hOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.40)" },
-  hBottom: { flex: 1, justifyContent: "flex-end", padding: 10, gap: 5 },
-  hDot: { width: 6, height: 6, borderRadius: 3 },
-  hTitle: { color: "#FFF", fontSize: 12, fontWeight: "700" },
-  sectionRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: SPACING * 2,
-    marginBottom: SPACING * 1.5,
+  hOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.48)",
   },
-  sectionTitle: { fontSize: 17, fontWeight: "700", color: TEXT },
-  sortBtn: { fontSize: 13, color: MUTED, fontWeight: "600" },
-  list: { paddingHorizontal: SPACING * 2, gap: 12 },
-  listCard: {
+  hBottom: { flex: 1, justifyContent: "flex-end", padding: 12, gap: 5 },
+  sourceRow: { flexDirection: "row", alignItems: "center", gap: 5 },
+  sourceDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: ACCENT },
+  sourceText: { color: ACCENT, fontSize: 10, fontWeight: "700", flex: 1 },
+  hTitle: { color: "#FFF", fontSize: 12, fontWeight: "700", lineHeight: 17 },
+  newsRow: {
     flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginHorizontal: SPACING * 2,
+    marginBottom: SPACING * 1.5,
     backgroundColor: CARD_BG,
-    borderRadius: 16,
+    borderRadius: 14,
+    padding: 12,
     borderWidth: 1,
     borderColor: BORDER,
-    padding: 12,
-    gap: 12,
-    alignItems: "center",
   },
-  listImg: { width: 88, height: 88, borderRadius: 12 },
-  listBody: { flex: 1, gap: 4 },
-  tag: { alignSelf: "flex-start", borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 },
-  tagText: { fontSize: 10, fontWeight: "700" },
-  listTitle: { color: TEXT, fontSize: 14, fontWeight: "700", lineHeight: 20 },
-  listDesc: { color: MUTED, fontSize: 12, lineHeight: 17 },
-  listMeta: { color: ACCENT, fontSize: 11, fontWeight: "600" },
+  newsImg: { width: 72, height: 72, borderRadius: 10 },
+  newsSource: { color: ACCENT, fontSize: 11, fontWeight: "600" },
+  newsTitle: { color: TEXT, fontSize: 13, fontWeight: "600", lineHeight: 18 },
+  newsDesc: { color: MUTED, fontSize: 11, lineHeight: 16 },
+  empty: {
+    color: MUTED,
+    textAlign: "center",
+    marginVertical: 20,
+    fontSize: 13,
+  },
 });

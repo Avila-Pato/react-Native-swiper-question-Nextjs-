@@ -1,10 +1,8 @@
 export type Category =
   | "Todo"
-  | "Desarrollo"
-  | "Ciberseguridad"
-  | "DevOps"
-  | "Datos"
-  | "Cloud";
+  | "Destacado"
+  | "Último hora"
+  | "Lo más leído";
 
 export type CareerItem = {
   title: string;

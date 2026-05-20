@@ -1,39 +1,67 @@
 import { SPACING } from "@/constants/constants";
 import { ACCENT, BG, MUTED, TEXT } from "@/constants/theme";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { useNews } from "@/hooks/useNews";
+import { ActivityIndicator, Image, Linking, Pressable, StyleSheet, Text, View } from "react-native";
+
+function timeAgo(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const h = Math.floor(diff / 3_600_000);
+  if (h < 1) return "hace unos minutos";
+  if (h < 24) return `hace ${h}h`;
+  const d = Math.floor(h / 24);
+  if (d === 1) return "ayer";
+  if (d < 7) return `hace ${d} días`;
+  return new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+}
 
 export function TopHero() {
-  return (
-    <Pressable style={s.wrap}>
-      <View style={s.imageArea}>
-        <Image
-          source={{ uri: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&auto=format&fit=crop" }}
-          style={s.mainImage}
-        />
-        <Image
-          source={{ uri: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop" }}
-          style={s.circleImage}
-        />
-        <View style={s.exclusiveBadge}>
-          <View style={s.exclusiveDot} />
-          <Text style={s.exclusiveText}>Exclusivo</Text>
-        </View>
+  const { articles, loading } = useNews("technology");
+  const featured = articles[0] ?? null;
+
+  if (loading) {
+    return (
+      <View style={[s.wrap, s.skeleton]}>
+        <ActivityIndicator color={ACCENT} size="large" />
       </View>
-      <View style={s.body}>
-        <Text style={s.title}>
-          El auge de la IA en la próxima generación de carreras tech
-        </Text>
-        <Text style={s.subtitle}>
-          La IA ya no es solo una herramienta — es el motor detrás del futuro del trabajo digital.
-        </Text>
-        <View style={s.meta}>
-          <View style={s.authorDot} />
-          <Text style={s.metaText}>Por TechCareer</Text>
-          <View style={s.verified} />
-          <Text style={s.metaDivider}>·</Text>
-          <Text style={s.metaText}>hace 2 días</Text>
-          <Text style={s.metaDivider}>·</Text>
-          <Text style={s.metaText}>5 min lectura</Text>
+    );
+  }
+
+  if (!featured) return null;
+
+  return (
+    <Pressable style={s.wrap} onPress={() => Linking.openURL(featured.url)}>
+      <View style={s.card}>
+        <View style={s.imageWrap}>
+          <Image source={{ uri: featured.urlToImage! }} style={s.image} />
+          <View style={s.gradient} />
+
+          <View style={s.topRow}>
+            <View style={s.exclusiveBadge}>
+              <View style={s.exclusivePulse} />
+              <Text style={s.exclusiveText}>EXCLUSIVO</Text>
+            </View>
+            <View style={s.sourceChip}>
+              <Text style={s.sourceText}>{featured.source.name.toUpperCase()}</Text>
+            </View>
+          </View>
+
+          <View style={s.bottomOverlay}>
+            <Text style={s.overlayTitle} numberOfLines={2}>{featured.title}</Text>
+          </View>
+        </View>
+
+        <View style={s.body}>
+          {featured.description ? (
+            <Text style={s.desc} numberOfLines={2}>{featured.description}</Text>
+          ) : null}
+          <View style={s.meta}>
+            <View style={s.authorDot} />
+            <Text style={s.metaText}>{featured.author ?? featured.source.name}</Text>
+            <Text style={s.metaDivider}>·</Text>
+            <Text style={s.metaText}>{timeAgo(featured.publishedAt)}</Text>
+            <Text style={s.metaDivider}>·</Text>
+            <Text style={s.readLink}>Leer artículo →</Text>
+          </View>
         </View>
       </View>
     </Pressable>
@@ -42,44 +70,82 @@ export function TopHero() {
 
 const s = StyleSheet.create({
   wrap: { marginHorizontal: SPACING * 2, marginBottom: SPACING * 2.5 },
-  imageArea: {
-    borderRadius: 18,
-    overflow: "hidden",
-    height: 220,
-    marginBottom: 16,
+  skeleton: {
+    height: 260,
+    borderRadius: 20,
     backgroundColor: "#E5E7EB",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  mainImage: { ...StyleSheet.absoluteFillObject },
-  circleImage: {
+  card: {
+    borderRadius: 20,
+    overflow: "hidden",
+    backgroundColor: BG,
+    borderWidth: 1.5,
+    borderColor: "#DDD6CD",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  imageWrap: { height: 220, position: "relative" },
+  image: { ...StyleSheet.absoluteFillObject },
+  gradient: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.45)",
+  },
+  topRow: {
     position: "absolute",
-    right: 12,
-    top: 12,
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    borderWidth: 3,
-    borderColor: BG,
+    top: 14,
+    left: 14,
+    right: 14,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   exclusiveBadge: {
-    position: "absolute",
-    bottom: 14,
-    left: 14,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "rgba(15,23,42,0.75)",
+    backgroundColor: "#0F172A",
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: ACCENT + "88",
   },
-  exclusiveDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: "#3B82F6" },
-  exclusiveText: { color: "#FFF", fontSize: 12, fontWeight: "700" },
-  body: { gap: 8 },
-  title: { color: TEXT, fontSize: 22, fontWeight: "800", lineHeight: 30 },
-  subtitle: { color: MUTED, fontSize: 14, lineHeight: 21 },
+  exclusivePulse: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: ACCENT,
+  },
+  exclusiveText: { color: ACCENT, fontSize: 11, fontWeight: "800", letterSpacing: 0.8 },
+  sourceChip: {
+    backgroundColor: "rgba(255,255,255,0.15)",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.25)",
+  },
+  sourceText: { color: "#FFF", fontSize: 10, fontWeight: "700", letterSpacing: 0.5 },
+  bottomOverlay: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    paddingTop: 40,
+    backgroundColor: "rgba(0,0,0,0.55)",
+  },
+  overlayTitle: { color: "#FFF", fontSize: 18, fontWeight: "800", lineHeight: 24 },
+  body: { padding: 16, gap: 10 },
+  desc: { color: MUTED, fontSize: 13, lineHeight: 20 },
   meta: { flexDirection: "row", alignItems: "center", gap: 6, flexWrap: "wrap" },
-  authorDot: { width: 22, height: 22, borderRadius: 11, backgroundColor: ACCENT },
-  verified: { width: 14, height: 14, borderRadius: 7, backgroundColor: "#3B82F6" },
+  authorDot: { width: 20, height: 20, borderRadius: 10, backgroundColor: ACCENT },
   metaText: { color: MUTED, fontSize: 12 },
   metaDivider: { color: MUTED, fontSize: 12 },
+  readLink: { color: ACCENT, fontSize: 12, fontWeight: "700" },
 });

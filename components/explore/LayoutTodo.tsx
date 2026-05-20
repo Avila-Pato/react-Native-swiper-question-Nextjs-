@@ -1,141 +1,181 @@
 import { SPACING } from "@/constants/constants";
 import { ACCENT, BORDER, CARD_BG, MUTED, TEXT } from "@/constants/theme";
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useNews } from "@/hooks/useNews";
+import {
+  ActivityIndicator,
+  Image,
+  Linking,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SectionHeader } from "./SectionHeader";
 
-const hCards = [
+type SkillCard = {
+  id: string;
+  title: string;
+  label: string;
+  image: string;
+  color: string;
+};
+
+const SKILL_CARDS: SkillCard[] = [
   {
-    id: "1",
-    title: "Ciberseguridad",
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&auto=format&fit=crop",
-    tag: "Cibersec",
-    color: "#EF4444",
-  },
-  {
-    id: "2",
-    title: "Data Science",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&auto=format&fit=crop",
-    tag: "Datos",
+    id: "s1",
+    title: "Python",
+    label: "Lenguaje más demandado en 2025",
+    image:
+      "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=400&auto=format&fit=crop",
     color: "#3B82F6",
   },
   {
-    id: "3",
-    title: "DevOps",
-    image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&auto=format&fit=crop",
-    tag: "DevOps",
-    color: "#F59E0B",
-  },
-  {
-    id: "4",
-    title: "Desarrollo Web",
-    image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&auto=format&fit=crop",
-    tag: "Dev",
+    id: "s2",
+    title: "React / RN",
+    label: "Framework líder en apps web y móvil",
+    image:
+      "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&auto=format&fit=crop",
     color: ACCENT,
   },
-];
-
-const trending = [
   {
-    id: "t1",
-    title: "Machine Learning en producción",
-    author: "TechInsights",
-    image: "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=200&auto=format&fit=crop",
+    id: "s3",
+    title: "Kubernetes",
+    label: "Orquestación de contenedores a escala",
+    image:
+      "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=400&auto=format&fit=crop",
+    color: "#6366F1",
   },
   {
-    id: "t2",
-    title: "Cómo entrar a Big Tech desde Latam",
-    author: "Carrera Tech",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=200&auto=format&fit=crop",
+    id: "s4",
+    title: "LangChain / IA",
+    label: "Construcción de agentes con IA generativa",
+    image:
+      "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=400&auto=format&fit=crop",
+    color: "#8B5CF6",
   },
   {
-    id: "t3",
-    title: "Kubernetes para principiantes",
-    author: "DevOps Now",
-    image: "https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?w=200&auto=format&fit=crop",
+    id: "s5",
+    title: "Terraform",
+    label: "Infraestructura como código en la nube",
+    image:
+      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&auto=format&fit=crop",
+    color: "#F59E0B",
   },
 ];
 
 export function LayoutTodo() {
+  const { articles, loading } = useNews("technology");
+
   return (
     <>
-      <View style={s.hero}>
-        <Image
-          source={{ uri: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop" }}
-          style={StyleSheet.absoluteFillObject}
-        />
-        <View style={s.overlay} />
-        <View style={s.heroContent}>
-          <View style={s.badge}>
-            <Text style={s.badgeText}>Destacado</Text>
-          </View>
-          <Text style={s.heroTitle}>¿Listo para descubrir tu camino en tech?</Text>
-          <Text style={s.heroCta}>Empieza ahora →</Text>
-        </View>
+      {/* ── Sección 1: Skills en demanda ─────────────────────── */}
+      <View style={s.sectionMeta}>
+        <Text style={s.sectionTitle}>Explora el Mundo Tech</Text>
+        <Text style={s.sectionSub}>
+          Tecnologías que el mercado está buscando ahora
+        </Text>
       </View>
 
-      <SectionHeader title="Carreras para ti" />
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={s.hScroll}
       >
-        {hCards.map((c) => (
-          <Pressable key={c.id} style={s.hCard}>
-            <Image source={{ uri: c.image }} style={StyleSheet.absoluteFillObject} />
-            <View style={s.overlay} />
-            <View style={s.hCardContent}>
-              <View style={[s.tag, { backgroundColor: c.color + "33" }]}>
-                <Text style={[s.tagText, { color: c.color }]}>{c.tag}</Text>
-              </View>
-              <Text style={s.hCardTitle}>{c.title}</Text>
+        {SKILL_CARDS.map((sk) => (
+          <Pressable key={sk.id} style={s.skillCard}>
+            <Image
+              source={{ uri: sk.image }}
+              style={StyleSheet.absoluteFillObject}
+            />
+            <View
+              style={[s.cardOverlay, { backgroundColor: "rgba(0,0,0,0.58)" }]}
+            />
+            <View style={s.skillCardContent}>
+              <Text style={s.skillTitle}>{sk.title}</Text>
+              <Text style={s.skillLabel}>{sk.label}</Text>
             </View>
           </Pressable>
         ))}
       </ScrollView>
 
-      <SectionHeader title="Tendencias" />
-      {trending.map((t) => (
-        <Pressable key={t.id} style={s.tRow}>
-          <Image source={{ uri: t.image }} style={s.tImg} />
-          <View style={{ flex: 1 }}>
-            <Text style={s.tTitle}>{t.title}</Text>
-            <Text style={s.tAuthor}>{t.author}</Text>
-          </View>
-        </Pressable>
-      ))}
+      {/* ── Sección 3: Noticias reales de la API ─────────────── */}
+      <SectionHeader title="Tendencias tech" />
+
+      {loading ? (
+        <ActivityIndicator color={ACCENT} style={{ marginVertical: 16 }} />
+      ) : articles.length === 0 ? (
+        <Text style={s.empty}>No hay noticias disponibles</Text>
+      ) : (
+        <>
+          {articles.slice(0, 4).map((article) => (
+            <Pressable
+              key={article.url}
+              style={s.tRow}
+              onPress={() => Linking.openURL(article.url)}
+            >
+              {article.urlToImage ? (
+                <Image source={{ uri: article.urlToImage }} style={s.tImg} />
+              ) : null}
+              <View style={{ flex: 1, gap: 4 }}>
+                <Text style={s.tSource}>{article.source.name}</Text>
+                <Text style={s.tTitle} numberOfLines={2}>
+                  {article.title}
+                </Text>
+                {article.description ? (
+                  <Text style={s.tDesc} numberOfLines={1}>
+                    {article.description}
+                  </Text>
+                ) : null}
+              </View>
+            </Pressable>
+          ))}
+          <View style={{ height: 20 }} />
+        </>
+      )}
     </>
   );
 }
 
 const s = StyleSheet.create({
-  hero: {
-    marginHorizontal: SPACING * 2,
-    borderRadius: 20,
-    overflow: "hidden",
-    height: 220,
+  sectionMeta: {
+    paddingHorizontal: SPACING * 2,
+    marginBottom: SPACING * 1.5,
+    gap: 4,
+  },
+  sectionTitle: { fontSize: 18, fontWeight: "800", color: TEXT },
+  sectionSub: { fontSize: 13, color: MUTED, lineHeight: 18 },
+
+  hScroll: {
+    paddingHorizontal: SPACING * 2,
+    gap: 12,
     marginBottom: SPACING * 2.5,
   },
-  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.52)" },
-  heroContent: { flex: 1, padding: SPACING * 1.8, justifyContent: "flex-end" },
-  badge: {
-    alignSelf: "flex-start",
-    backgroundColor: ACCENT + "33",
-    borderRadius: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: ACCENT + "66",
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.50)",
   },
-  badgeText: { color: ACCENT, fontSize: 11, fontWeight: "700" },
-  heroTitle: { color: "#FFF", fontSize: 20, fontWeight: "700", lineHeight: 26, marginBottom: 8 },
-  heroCta: { color: ACCENT, fontSize: 13, fontWeight: "600" },
-  hScroll: { paddingHorizontal: SPACING * 2, gap: 12, marginBottom: SPACING * 2.5 },
-  hCard: { width: 160, height: 210, borderRadius: 16, overflow: "hidden" },
-  hCardContent: { flex: 1, padding: 12, justifyContent: "flex-end" },
-  tag: { alignSelf: "flex-start", borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3, marginBottom: 6 },
+  tag: {
+    alignSelf: "flex-start",
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    marginBottom: 2,
+  },
   tagText: { fontSize: 10, fontWeight: "700" },
-  hCardTitle: { color: "#FFF", fontSize: 14, fontWeight: "700" },
+
+  // Skill cards (landscape 200×130)
+  skillCard: { width: 200, height: 130, borderRadius: 16, overflow: "hidden" },
+  skillCardContent: {
+    flex: 1,
+    padding: 14,
+    justifyContent: "flex-end",
+    gap: 3,
+  },
+  skillTitle: { color: "#FFF", fontSize: 14, fontWeight: "800" },
+  skillLabel: { color: "rgba(255,255,255,0.68)", fontSize: 11, lineHeight: 15 },
+
+  // News rows
   tRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -148,7 +188,15 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: BORDER,
   },
-  tImg: { width: 64, height: 64, borderRadius: 10 },
-  tTitle: { color: TEXT, fontSize: 14, fontWeight: "600", marginBottom: 4 },
-  tAuthor: { color: MUTED, fontSize: 12, fontWeight: "600" },
+
+  tImg: { width: 68, height: 68, borderRadius: 10 },
+  tSource: { color: ACCENT, fontSize: 11, fontWeight: "600" },
+  tTitle: { color: TEXT, fontSize: 13, fontWeight: "600", lineHeight: 18 },
+  tDesc: { color: MUTED, fontSize: 11, lineHeight: 16 },
+  empty: {
+    color: MUTED,
+    textAlign: "center",
+    marginVertical: 20,
+    fontSize: 13,
+  },
 });

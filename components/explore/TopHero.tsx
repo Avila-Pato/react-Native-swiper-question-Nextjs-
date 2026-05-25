@@ -1,8 +1,15 @@
-import { SPACING } from "@/constants/constants";
-import { ACCENT, BG, MUTED, TEXT } from "@/constants/theme";
-import { useNews } from "@/hooks/useNews";
 import { SkeletonBox, usePulse } from "@/components/ui/Skeleton";
-import { Image, Linking, Pressable, StyleSheet, Text, View } from "react-native";
+import { SPACING } from "@/constants/constants";
+import { ACCENT, BG, MUTED } from "@/constants/theme";
+import { useNews } from "@/hooks/useNews";
+import {
+  Image,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -12,7 +19,10 @@ function timeAgo(iso: string): string {
   const d = Math.floor(h / 24);
   if (d === 1) return "ayer";
   if (d < 7) return `hace ${d} días`;
-  return new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+  return new Date(iso).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "short",
+  });
 }
 
 function TopHeroSkeleton() {
@@ -25,9 +35,24 @@ function TopHeroSkeleton() {
           <SkeletonBox height={20} borderRadius={6} pulse={pulse} />
           <SkeletonBox height={14} width="75%" borderRadius={6} pulse={pulse} />
           <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
-            <SkeletonBox width={20} height={20} borderRadius={10} pulse={pulse} />
-            <SkeletonBox width={80} height={12} borderRadius={4} pulse={pulse} />
-            <SkeletonBox width={60} height={12} borderRadius={4} pulse={pulse} />
+            <SkeletonBox
+              width={20}
+              height={20}
+              borderRadius={10}
+              pulse={pulse}
+            />
+            <SkeletonBox
+              width={80}
+              height={12}
+              borderRadius={4}
+              pulse={pulse}
+            />
+            <SkeletonBox
+              width={60}
+              height={12}
+              borderRadius={4}
+              pulse={pulse}
+            />
           </View>
         </View>
       </View>
@@ -56,22 +81,30 @@ export function TopHero() {
               <Text style={s.exclusiveText}>EXCLUSIVO</Text>
             </View>
             <View style={s.sourceChip}>
-              <Text style={s.sourceText}>{featured.source.name.toUpperCase()}</Text>
+              <Text style={s.sourceText}>
+                {featured.source.name.toUpperCase()}
+              </Text>
             </View>
           </View>
 
           <View style={s.bottomOverlay}>
-            <Text style={s.overlayTitle} numberOfLines={2}>{featured.title}</Text>
+            <Text style={s.overlayTitle} numberOfLines={2}>
+              {featured.title}
+            </Text>
           </View>
         </View>
 
         <View style={s.body}>
           {featured.description ? (
-            <Text style={s.desc} numberOfLines={2}>{featured.description}</Text>
+            <Text style={s.desc} numberOfLines={2}>
+              {featured.description}
+            </Text>
           ) : null}
           <View style={s.meta}>
             <View style={s.authorDot} />
-            <Text style={s.metaText}>{featured.author ?? featured.source.name}</Text>
+            <Text style={s.metaText}>
+              {featured.author ?? featured.source.name}
+            </Text>
             <Text style={s.metaDivider}>·</Text>
             <Text style={s.metaText}>{timeAgo(featured.publishedAt)}</Text>
             <Text style={s.metaDivider}>·</Text>
@@ -136,7 +169,12 @@ const s = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: ACCENT,
   },
-  exclusiveText: { color: ACCENT, fontSize: 11, fontWeight: "800", letterSpacing: 0.8 },
+  exclusiveText: {
+    color: ACCENT,
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 0.8,
+  },
   sourceChip: {
     backgroundColor: "rgba(255,255,255,0.15)",
     borderRadius: 8,
@@ -145,7 +183,12 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.25)",
   },
-  sourceText: { color: "#FFF", fontSize: 10, fontWeight: "700", letterSpacing: 0.5 },
+  sourceText: {
+    color: "#FFF",
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 0.5,
+  },
   bottomOverlay: {
     position: "absolute",
     bottom: 0,
@@ -155,11 +198,26 @@ const s = StyleSheet.create({
     paddingTop: 40,
     backgroundColor: "rgba(0,0,0,0.55)",
   },
-  overlayTitle: { color: "#FFF", fontSize: 18, fontWeight: "800", lineHeight: 24 },
+  overlayTitle: {
+    color: "#FFF",
+    fontSize: 18,
+    fontWeight: "800",
+    lineHeight: 24,
+  },
   body: { padding: 16, gap: 10 },
   desc: { color: MUTED, fontSize: 13, lineHeight: 20 },
-  meta: { flexDirection: "row", alignItems: "center", gap: 6, flexWrap: "wrap" },
-  authorDot: { width: 20, height: 20, borderRadius: 10, backgroundColor: ACCENT },
+  meta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    flexWrap: "wrap",
+  },
+  authorDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: ACCENT,
+  },
   metaText: { color: MUTED, fontSize: 12 },
   metaDivider: { color: MUTED, fontSize: 12 },
   readLink: { color: ACCENT, fontSize: 12, fontWeight: "700" },

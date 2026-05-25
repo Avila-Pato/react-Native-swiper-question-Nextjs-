@@ -3,6 +3,7 @@ import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
 import { GREEN, TEXT_FONT_SIZE } from "@/constants/constants";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
+import { UserCircle } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -221,11 +222,12 @@ export default function SignupScreen() {
           />
 
           <TouchableOpacity
-            style={styles.skipBtn}
+            style={styles.guestBtn}
             onPress={handleSkip}
             activeOpacity={0.7}
           >
-            <Text style={styles.skipText}>Omitir por ahora</Text>
+            <UserCircle size={18} color="rgba(255,255,255,0.5)" />
+            <Text style={styles.guestText}>Entrar como invitado</Text>
           </TouchableOpacity>
         </Animated.View>
       </ScrollView>
@@ -325,14 +327,20 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 0.2,
   },
-  skipBtn: {
+  guestBtn: {
+    flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 8,
+    justifyContent: "center",
+    gap: 8,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
+    borderRadius: 10,
+    paddingVertical: 13,
   },
-  skipText: {
-    color: "rgba(255,255,255,0.3)",
-    fontSize: 13,
-    fontWeight: "400",
+  guestText: {
+    color: "rgba(255,255,255,0.5)",
+    fontSize: 14,
+    fontWeight: "600",
   },
   divider: {
     flexDirection: "row",

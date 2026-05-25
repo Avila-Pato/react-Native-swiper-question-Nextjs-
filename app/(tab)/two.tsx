@@ -1,1 +1,1 @@
-export { default } from "@/screens/(tab)/CardsScreen";
+export { default } from "@/screens/(tab)/ChallengesScreen";

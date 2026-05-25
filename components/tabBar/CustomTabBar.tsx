@@ -7,8 +7,8 @@ import TabbarItem from "./TabbarItem";
 
 type Props = { props: BottomTabBarProps };
 
-const ACTIVE_COLOR = "#111827";
-const INACTIVE_COLOR = "rgba(255,255,255,0.45)";
+export const ACTIVE_COLOR = "#111827";
+export const INACTIVE_COLOR = "#9CA3AF";
 const BAR_HEIGHT = TAB_ITEM_SIZE + SPACING * 1.5;
 
 const CustomTabBar = ({ props }: Props) => {
@@ -16,12 +16,7 @@ const CustomTabBar = ({ props }: Props) => {
   const { bottom } = useSafeAreaInsets();
 
   return (
-    <View
-      style={[
-        styles.container,
-        { paddingBottom: bottom, height: BAR_HEIGHT + bottom },
-      ]}
-    >
+    <View style={[styles.container, { paddingBottom: bottom, height: BAR_HEIGHT + bottom }]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
@@ -68,7 +63,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    paddingHorizontal: SPACING * 2,
-    backgroundColor: "#111827",
+    paddingHorizontal: SPACING,
+    backgroundColor: "#FFFFFF",
+    borderTopWidth: 1,
+    borderTopColor: "#F3F4F6",
   },
 });

@@ -8,6 +8,10 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+const ACCENT = "#34D59A";
+const ACTIVE_COLOR = "#111827";
+const INACTIVE_COLOR = "#9CA3AF";
+
 type Props = {
   tabBarIcon: React.ReactNode;
   label: string;
@@ -19,28 +23,37 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const TabbarItem = ({ tabBarIcon, label, onPress, isFocused }: Props) => {
   const scale = useSharedValue(1);
-  const bgOpacity = useSharedValue(isFocused ? 1 : 0);
+  const dotWidth = useSharedValue(isFocused ? 16 : 0);
 
   useEffect(() => {
-    scale.value = withSpring(isFocused ? 1.1 : 1, { stiffness: 400, damping: 40 });
-    bgOpacity.value = withTiming(isFocused ? 1 : 0, { duration: 200 });
+    scale.value = withSpring(isFocused ? 1.08 : 1, { stiffness: 300, damping: 25 });
+    dotWidth.value = withTiming(isFocused ? 16 : 0, { duration: 200 });
   }, [isFocused]);
 
   const iconStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
 
-  const bgStyle = useAnimatedStyle(() => ({
-    opacity: bgOpacity.value,
+  const dotStyle = useAnimatedStyle(() => ({
+    width: dotWidth.value,
+    opacity: dotWidth.value > 0 ? 1 : 0,
   }));
 
   return (
-    <AnimatedPressable onPress={onPress} style={styles.container}>
-      <Animated.View style={[styles.pill, bgStyle]} />
+    <AnimatedPressable onPress={onPress} style={styles.container} hitSlop={6}>
+      {/* Active indicator dot at top */}
+      <Animated.View style={[styles.dot, dotStyle]} />
+
       <Animated.View style={[styles.iconWrap, iconStyle]}>
         {tabBarIcon}
       </Animated.View>
-      <Text style={[styles.label, isFocused && styles.labelActive]}>
+
+      <Text
+        style={[
+          styles.label,
+          { color: isFocused ? ACTIVE_COLOR : INACTIVE_COLOR, fontWeight: isFocused ? "700" : "500" },
+        ]}
+      >
         {label}
       </Text>
     </AnimatedPressable>
@@ -57,24 +70,20 @@ const styles = StyleSheet.create({
     gap: 4,
     paddingVertical: 6,
   },
-  pill: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
-    marginHorizontal: -8,
+  dot: {
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: ACCENT,
+    position: "absolute",
+    top: 0,
   },
   iconWrap: {
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 6,
   },
   label: {
     fontSize: 10,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.45)",
-    letterSpacing: 0.3,
-  },
-  labelActive: {
-    color: "#111827",
-    fontWeight: "700",
+    letterSpacing: 0.2,
   },
 });

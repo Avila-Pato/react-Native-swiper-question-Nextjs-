@@ -1,1 +1,1 @@
-export { default } from "@/screens/(tab)/MessagesScreen";
+export { default } from "@/screens/(tab)/ProfileScreen";

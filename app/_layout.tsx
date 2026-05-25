@@ -13,6 +13,9 @@ export default function RootLayout() {
         <Stack.Screen name="oauth2redirect" options={{ headerShown: false }} />
         <Stack.Screen name="(tab)" options={{ headerShown: false, animation: "fade" }} />
         <Stack.Screen name="career-detail" options={{ headerShown: false, animation: "slide_from_bottom", presentation: "modal" }} />
+        <Stack.Screen name="challenge-detail" options={{ headerShown: false, animation: "slide_from_right" }} />
+        <Stack.Screen name="role-test" options={{ headerShown: false, animation: "fade" }} />
+        <Stack.Screen name="role-result" options={{ headerShown: false, animation: "slide_from_right" }} />
       </Stack>
     </GestureHandlerRootView>
   );

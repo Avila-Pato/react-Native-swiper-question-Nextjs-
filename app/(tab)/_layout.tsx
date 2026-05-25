@@ -2,7 +2,7 @@ import CustomTabBar from "@/components/tabBar/CustomTabBar";
 import { Octicons } from "@expo/vector-icons";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Tabs } from "expo-router";
-import { Layers, UserCircle } from "lucide-react-native";
+import { Target, Trophy, UserCircle, Users } from "lucide-react-native";
 import React from "react";
 
 export default function TabLayout() {
@@ -28,19 +28,32 @@ export default function TabLayout() {
       <Tabs.Screen
         name="two"
         options={{
-          title: "Tarjetas",
+          title: "Retos",
           tabBarIcon: ({ color }) => (
-            <Layers color={color} size={24} fill="transparent" />
+            <Trophy color={color} size={24} fill="transparent" />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="four"
+        options={{
+          title: "Mi Rol",
+          tabBarIcon: ({ color }) => <Target size={24} color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
+        name="comunidad"
+        options={{
+          title: "Comunidad",
+          tabBarIcon: ({ color }) => <Users size={24} color={color} />,
         }}
       />
       <Tabs.Screen
         name="three"
         options={{
           title: "Perfil",
-          tabBarIcon: ({ color }) => (
-            <UserCircle size={24} color={color} fill="transparent" />
-          ),
+          tabBarIcon: ({ color }) => <UserCircle size={24} color={color} />,
         }}
       />
     </Tabs>

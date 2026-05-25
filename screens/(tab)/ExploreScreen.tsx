@@ -7,14 +7,8 @@ import { ACCENT, BG, CARD_BG, MUTED, TEXT } from "@/constants/theme";
 import { CATEGORIES } from "@/data/exploreData";
 import { Category } from "@/types/explore";
 import { Bell, Search } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const LAYOUTS: Record<Category, () => React.JSX.Element> = {
@@ -46,47 +40,26 @@ export default function HomeScreen() {
   const [active, setActive] = useState<Category>("Todo");
   const ActiveLayout = LAYOUTS[active];
 
-  const opacity = useSharedValue(0);
-  const translateY = useSharedValue(18);
-
-  useEffect(() => {
-    opacity.value = withTiming(1, {
-      duration: 420,
-      easing: Easing.out(Easing.ease),
-    });
-    translateY.value = withTiming(0, {
-      duration: 380,
-      easing: Easing.out(Easing.quad),
-    });
-  }, [opacity, translateY]);
-
-  const enterStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ translateY: translateY.value }],
-  }));
-
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={styles.root}>
-      <Animated.ScrollView
-        style={enterStyle}
+      <ScreenHeader
+        title="Explorar"
+        right={
+          <View style={styles.headerIcons}>
+            <Pressable style={styles.iconBtn}>
+              <Bell size={20} color={MUTED} />
+            </Pressable>
+            <Pressable style={styles.iconBtn}>
+              <Search size={20} color={MUTED} />
+            </Pressable>
+          </View>
+        }
+      />
+      <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll}
         key={active}
       >
-        <ScreenHeader
-          title="Explorar"
-          right={
-            <View style={styles.headerIcons}>
-              <Pressable style={styles.iconBtn}>
-                <Bell size={20} color={MUTED} />
-              </Pressable>
-              <Pressable style={styles.iconBtn}>
-                <Search size={20} color={MUTED} />
-              </Pressable>
-            </View>
-          }
-        />
-
         <TopHero />
 
         <ScrollView
@@ -114,7 +87,7 @@ export default function HomeScreen() {
 
         <ActiveLayout />
         <View style={{ height: 100 }} />
-      </Animated.ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 }

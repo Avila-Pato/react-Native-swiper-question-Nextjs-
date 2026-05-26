@@ -25,4 +25,5 @@ export type Challenge = {
   color: string;
   difficulty: Difficulty;
   questions: ChallengeQuestion[];
+  borderColor: string; // Color del borde para la tarjeta del desafío
 };

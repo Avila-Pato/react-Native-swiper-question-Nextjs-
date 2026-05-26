@@ -8,6 +8,7 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
     emoji: require("@/assets/svg/tech1.svg"),
     color: P_TEAL.fg,
     difficulty: "Fácil",
+    borderColor: P_TEAL.fg,
     questions: [
       {
         id: "al1",
@@ -58,6 +59,7 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
     emoji: require("@/assets/svg/tech2.svg"),
     color: P_AMBER.fg,
     difficulty: "Medio",
+    borderColor: P_AMBER.fg,
     questions: [
       {
         id: "eb1",
@@ -119,6 +121,7 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
     title: "¿Verdad o mito?",
     emoji: require("@/assets/svg/tech3.svg"),
     color: P_GOLD.fg,
+    borderColor: P_GOLD.fg,
     difficulty: "Fácil",
     questions: [
       {
@@ -162,9 +165,10 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
   {
     id: "completa_codigo",
     title: "Completa el código",
-    emoji: require("@/assets/svg/tech4.svg"),
+    emoji: require("@/assets/svg/tech8.svg"),
     color: P_SLATE.fg,
     difficulty: "Difícil",
+    borderColor: P_SLATE.fg,
     questions: [
       {
         id: "cc1",

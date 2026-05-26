@@ -11,6 +11,11 @@ import {
   Text,
   View,
 } from "react-native";
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
 import Animated, {
   Easing,
   runOnJS,
@@ -19,7 +24,6 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
 
 const { height: SCREEN_H } = Dimensions.get("window");
 const SHEET_H = SCREEN_H * 0.9;
@@ -47,7 +51,11 @@ export function ChallengeSheet({ challenge, initialStep, onClose }: Props) {
   const currentQ: ChallengeQuestion | undefined = challenge.questions[step];
 
   useEffect(() => {
-    translateY.value = withSpring(0, { damping: 20, stiffness: 160, mass: 0.85 });
+    translateY.value = withSpring(0, {
+      damping: 20,
+      stiffness: 160,
+      mass: 0.85,
+    });
     backdropOpacity.value = withTiming(1, { duration: 220 });
   }, []);
 
@@ -56,11 +64,11 @@ export function ChallengeSheet({ challenge, initialStep, onClose }: Props) {
       translateY.value = withTiming(
         SHEET_H,
         { duration: 420, easing: Easing.in(Easing.cubic) },
-        () => runOnJS(onClose)(answered)
+        () => runOnJS(onClose)(answered),
       );
       backdropOpacity.value = withTiming(0, { duration: 400 });
     },
-    [onClose]
+    [onClose],
   );
 
   const panGesture = Gesture.Pan()
@@ -128,7 +136,10 @@ export function ChallengeSheet({ challenge, initialStep, onClose }: Props) {
     <Modal transparent animationType="none" statusBarTranslucent>
       <GestureHandlerRootView style={{ flex: 1 }}>
         {/* Backdrop */}
-        <Pressable style={StyleSheet.absoluteFill} onPress={() => dismiss(step)}>
+        <Pressable
+          style={StyleSheet.absoluteFill}
+          onPress={() => dismiss(step)}
+        >
           <Animated.View style={[styles.backdrop, backdropStyle]} />
         </Pressable>
 
@@ -141,21 +152,34 @@ export function ChallengeSheet({ challenge, initialStep, onClose }: Props) {
               /* ── Results ── */
               <View style={styles.results}>
                 <Text style={styles.resultEmoji}>
-                  {correctCount === totalSteps ? "🏆" : correctCount >= totalSteps / 2 ? "🎯" : "💪"}
+                  {correctCount === totalSteps
+                    ? "🏆"
+                    : correctCount >= totalSteps / 2
+                      ? "🎯"
+                      : "💪"}
                 </Text>
                 <Text style={styles.resultTitle}>
                   {correctCount === totalSteps
                     ? "¡Perfecto!"
                     : correctCount >= totalSteps / 2
-                    ? "¡Bien hecho!"
-                    : "¡Sigue practicando!"}
+                      ? "¡Bien hecho!"
+                      : "¡Sigue practicando!"}
                 </Text>
                 <Text style={styles.resultScore}>
                   {correctCount} de {totalSteps} correctas
                 </Text>
                 <View style={styles.starsRow}>
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <Text key={i} style={{ fontSize: 28, opacity: i < Math.ceil((correctCount / totalSteps) * 3) ? 1 : 0.25 }}>
+                    <Text
+                      key={i}
+                      style={{
+                        fontSize: 28,
+                        opacity:
+                          i < Math.ceil((correctCount / totalSteps) * 3)
+                            ? 1
+                            : 0.25,
+                      }}
+                    >
                       ⭐
                     </Text>
                   ))}
@@ -180,22 +204,32 @@ export function ChallengeSheet({ challenge, initialStep, onClose }: Props) {
                     <View
                       style={[
                         styles.progressFill,
-                        { width: `${(step / totalSteps) * 100}%`, backgroundColor: challenge.color },
+                        {
+                          width: `${(step / totalSteps) * 100}%`,
+                          backgroundColor: challenge.color,
+                        },
                       ]}
                     />
                   </View>
-                  <Text style={styles.progressLabel}>{step + 1}/{totalSteps}</Text>
+                  <Text style={styles.progressLabel}>
+                    {step + 1}/{totalSteps}
+                  </Text>
                 </View>
 
                 {/* Challenge title */}
-                <View style={[styles.typeBadge, { backgroundColor: challenge.color + "20" }]}>
-                  <Text style={styles.typeBadgeText}>{challenge.emoji} {challenge.title}</Text>
+                <View
+                  style={[
+                    styles.typeBadge,
+                    { backgroundColor: challenge.color + "20" },
+                  ]}
+                >
+                  {/* <Text style={styles.typeBadgeText}>{challenge.emoji} {challenge.title}</Text> */}
                 </View>
 
                 {/* Difficulty badge for completa_codigo */}
-                {currentQ.difficulty && (
+                {/* {currentQ.difficulty && (
                   <Text style={styles.diffLabel}>{currentQ.difficulty}</Text>
-                )}
+                )} */}
 
                 {/* Statement */}
                 <Text style={styles.statement}>{currentQ.statement}</Text>
@@ -203,14 +237,19 @@ export function ChallengeSheet({ challenge, initialStep, onClose }: Props) {
                 {/* Code block */}
                 {currentQ.code && (
                   <View style={styles.codeBlock}>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                    >
                       <Text style={styles.codeText}>{currentQ.code}</Text>
                     </ScrollView>
                   </View>
                 )}
 
                 {/* Options */}
-                <View style={isVerdadMito ? styles.optionsRow : styles.optionsCol}>
+                <View
+                  style={isVerdadMito ? styles.optionsRow : styles.optionsCol}
+                >
                   {currentQ.options.map((opt, i) => (
                     <Pressable
                       key={i}
@@ -224,48 +263,82 @@ export function ChallengeSheet({ challenge, initialStep, onClose }: Props) {
                       onPress={() => handleSelect(i)}
                     >
                       {!isVerdadMito && (
-                        <View style={[styles.optionLetter, { borderColor: optionBorder(i) }]}>
-                          <Text style={[styles.optionLetterText, { color: optionTextColor(i) }]}>
+                        <View
+                          style={[
+                            styles.optionLetter,
+                            { borderColor: optionBorder(i) },
+                          ]}
+                        >
+                          <Text
+                            style={[
+                              styles.optionLetterText,
+                              { color: optionTextColor(i) },
+                            ]}
+                          >
                             {String.fromCharCode(65 + i)}
                           </Text>
                         </View>
                       )}
-                      <Text style={[
-                        isVerdadMito ? styles.optionBigText : styles.optionText,
-                        { color: optionTextColor(i), flex: isVerdadMito ? undefined : 1 },
-                      ]}>
+                      <Text
+                        style={[
+                          isVerdadMito
+                            ? styles.optionBigText
+                            : styles.optionText,
+                          {
+                            color: optionTextColor(i),
+                            flex: isVerdadMito ? undefined : 1,
+                          },
+                        ]}
+                      >
                         {opt}
                       </Text>
-                      {answerState !== "idle" && i === currentQ.correctIndex && (
-                        <Text style={styles.optionCheck}>✓</Text>
-                      )}
-                      {answerState !== "idle" && i === selected && i !== currentQ.correctIndex && (
-                        <Text style={styles.optionX}>✗</Text>
-                      )}
+                      {answerState !== "idle" &&
+                        i === currentQ.correctIndex && (
+                          <Text style={styles.optionCheck}>✓</Text>
+                        )}
+                      {answerState !== "idle" &&
+                        i === selected &&
+                        i !== currentQ.correctIndex && (
+                          <Text style={styles.optionX}>✗</Text>
+                        )}
                     </Pressable>
                   ))}
                 </View>
 
                 {/* Explanation + Next */}
                 {answerState !== "idle" && (
-                  <View style={[
-                    styles.explanationBox,
-                    { borderLeftColor: answerState === "correct" ? "#059669" : "#DC2626" },
-                  ]}>
+                  <View
+                    style={[
+                      styles.explanationBox,
+                      {
+                        borderLeftColor:
+                          answerState === "correct" ? "#059669" : "#DC2626",
+                      },
+                    ]}
+                  >
                     <Text style={styles.explanationTitle}>
-                      {answerState === "correct" ? "✅ ¡Correcto!" : "❌ Incorrecto"}
+                      {answerState === "correct"
+                        ? "✅ ¡Correcto!"
+                        : "❌ Incorrecto"}
                     </Text>
-                    <Text style={styles.explanationText}>{currentQ.explanation}</Text>
+                    <Text style={styles.explanationText}>
+                      {currentQ.explanation}
+                    </Text>
                   </View>
                 )}
 
                 {answerState !== "idle" && (
                   <Pressable
-                    style={[styles.nextBtn, { backgroundColor: challenge.color }]}
+                    style={[
+                      styles.nextBtn,
+                      { backgroundColor: challenge.color },
+                    ]}
                     onPress={handleNext}
                   >
                     <Text style={styles.nextBtnText}>
-                      {step + 1 >= totalSteps ? "Ver resultado →" : "Siguiente →"}
+                      {step + 1 >= totalSteps
+                        ? "Ver resultado →"
+                        : "Siguiente →"}
                     </Text>
                   </Pressable>
                 )}

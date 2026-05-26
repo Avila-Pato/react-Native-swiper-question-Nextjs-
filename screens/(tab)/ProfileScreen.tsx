@@ -1,12 +1,29 @@
 import { SPACING, TAB_ITEM_SIZE } from "@/constants/constants";
-import { ACCENT, BG, BORDER, CARD_BG, MUTED, P_SLATE, P_TEAL, TEXT } from "@/constants/theme";
+import {
+  ACCENT,
+  BG,
+  BORDER,
+  CARD_BG,
+  MUTED,
+  P_SLATE,
+  P_TEAL,
+  TEXT,
+} from "@/constants/theme";
 import { WEEKLY_CHALLENGES } from "@/data/weeklyData";
 import { getAllProgress } from "@/store/challengeProgress";
 import { router, useFocusEffect } from "expo-router";
-import { ChevronRight, MapPin, SlidersHorizontal, UserPlus } from "lucide-react-native";
+import {
+  ChevronRight,
+  MapPin,
+  SlidersHorizontal,
+  UserPlus,
+} from "lucide-react-native";
 import { useCallback, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import Svg, { Circle } from "react-native-svg";
 
 const BAR_HEIGHT = TAB_ITEM_SIZE + SPACING * 1.5;
@@ -21,7 +38,7 @@ const TABS: { id: Tab; label: string }[] = [
 
 const SKILL_AREAS = [
   { id: "adivina_lenguaje", label: "Lenguajes", emoji: "💻", color: P_TEAL.fg },
-  { id: "completa_codigo",  label: "Código",    emoji: "🧩", color: P_SLATE.fg },
+  { id: "completa_codigo", label: "Código", emoji: "🧩", color: P_SLATE.fg },
 ];
 
 const SETTINGS = [
@@ -48,12 +65,20 @@ function CircleProgress({
   return (
     <Svg width={size} height={size}>
       <Circle
-        cx={c} cy={c} r={r}
-        stroke="#EAECF0" strokeWidth={strokeWidth} fill="none"
+        cx={c}
+        cy={c}
+        r={r}
+        stroke="#EAECF0"
+        strokeWidth={strokeWidth}
+        fill="none"
       />
       <Circle
-        cx={c} cy={c} r={r}
-        stroke={color} strokeWidth={strokeWidth} fill="none"
+        cx={c}
+        cy={c}
+        r={r}
+        stroke={color}
+        strokeWidth={strokeWidth}
+        fill="none"
         strokeDasharray={circ}
         strokeDashoffset={offset}
         strokeLinecap="round"
@@ -71,7 +96,7 @@ export default function ProfileScreen() {
   useFocusEffect(
     useCallback(() => {
       setProgress(getAllProgress());
-    }, [])
+    }, []),
   );
 
   return (
@@ -97,7 +122,9 @@ export default function ProfileScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: BAR_HEIGHT + bottom + SPACING * 2 }}
+        contentContainerStyle={{
+          paddingBottom: BAR_HEIGHT + bottom + SPACING * 2,
+        }}
       >
         {/* ── Avatar + nombre ── */}
         <View style={s.profileSection}>
@@ -124,7 +151,11 @@ export default function ProfileScreen() {
         {/* ── Tab bar ── */}
         <View style={s.tabBar}>
           {TABS.map((t) => (
-            <Pressable key={t.id} style={s.tabItem} onPress={() => setTab(t.id)}>
+            <Pressable
+              key={t.id}
+              style={s.tabItem}
+              onPress={() => setTab(t.id)}
+            >
               <Text style={[s.tabLabel, tab === t.id && s.tabLabelActive]}>
                 {t.label}
               </Text>
@@ -162,7 +193,9 @@ export default function ProfileScreen() {
                       <Text style={s.circlePct}>{pct} %</Text>
                     </View>
                   </View>
-                  <Text style={s.circleSub}>Dominio de {area.label.toLowerCase()}</Text>
+                  <Text style={s.circleSub}>
+                    Dominio de {area.label.toLowerCase()}
+                  </Text>
 
                   {/* Stats */}
                   <View style={s.statsRow}>
@@ -195,20 +228,38 @@ export default function ProfileScreen() {
               return (
                 <Pressable
                   key={c.id}
-                  style={({ pressed }) => [s.exerciseRow, pressed && { opacity: 0.75 }]}
-                  onPress={() => router.push({ pathname: "/challenge-detail", params: { id: c.id } })}
+                  style={({ pressed }) => [
+                    s.exerciseRow,
+                    pressed && { opacity: 0.75 },
+                  ]}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/challenge-detail",
+                      params: { id: c.id },
+                    })
+                  }
                 >
                   <View style={s.exerciseLeft}>
-                    <Text style={s.exerciseEmoji}>{c.emoji}</Text>
+                    {/* <Text style={s.exerciseEmoji}>{c.emoji}</Text> */}
                     <View style={s.exerciseInfo}>
                       <Text style={s.exerciseTitle}>{c.title}</Text>
-                      <Text style={[s.exerciseDiff, { color: isComplete ? ACCENT : MUTED }]}>
+                      <Text
+                        style={[
+                          s.exerciseDiff,
+                          { color: isComplete ? ACCENT : MUTED },
+                        ]}
+                      >
                         {isComplete ? "Completado ✓" : c.difficulty}
                       </Text>
                     </View>
                   </View>
                   <View style={s.exerciseCircle}>
-                    <CircleProgress pct={pct} color={isComplete ? ACCENT : c.color} size={46} strokeWidth={5} />
+                    <CircleProgress
+                      pct={pct}
+                      color={isComplete ? ACCENT : c.color}
+                      size={46}
+                      strokeWidth={5}
+                    />
                     <View style={s.exerciseCircleInner}>
                       <Text style={s.exerciseCirclePct}>{pct}%</Text>
                     </View>
@@ -224,7 +275,12 @@ export default function ProfileScreen() {
           <View style={[s.tabContent, s.settingsCard]}>
             {SETTINGS.map((item, i) => (
               <View key={item.id}>
-                <Pressable style={({ pressed }) => [s.settingRow, pressed && { opacity: 0.7 }]}>
+                <Pressable
+                  style={({ pressed }) => [
+                    s.settingRow,
+                    pressed && { opacity: 0.7 },
+                  ]}
+                >
                   <Text style={s.settingEmoji}>{item.icon}</Text>
                   <Text style={s.settingLabel}>{item.label}</Text>
                   <ChevronRight size={16} color={MUTED} />
@@ -253,9 +309,19 @@ const s = StyleSheet.create({
     paddingVertical: SPACING * 1.2,
   },
   headerBorderRow: { flexDirection: "row", height: 3 },
-  headerAccentLine: { flex: 1.4, backgroundColor: ACCENT, borderTopRightRadius: 3, borderBottomRightRadius: 3 },
+  headerAccentLine: {
+    flex: 1.4,
+    backgroundColor: ACCENT,
+    borderTopRightRadius: 3,
+    borderBottomRightRadius: 3,
+  },
   headerMutedLine: { flex: 1, backgroundColor: BORDER },
-  headerTitle: { fontSize: 22, fontWeight: "800", color: TEXT, letterSpacing: -0.4 },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: TEXT,
+    letterSpacing: -0.4,
+  },
   headerActions: { flexDirection: "row", gap: SPACING * 0.8 },
   iconBtn: {
     width: 38,
@@ -297,7 +363,11 @@ const s = StyleSheet.create({
   locationText: { fontSize: 13, color: MUTED, fontWeight: "500" },
 
   /* Friends */
-  friendsSection: { alignItems: "center", gap: SPACING, paddingBottom: SPACING * 2 },
+  friendsSection: {
+    alignItems: "center",
+    gap: SPACING,
+    paddingBottom: SPACING * 2,
+  },
   friendsCount: { fontSize: 14, fontWeight: "600", color: TEXT },
   friendBtn: {
     backgroundColor: CARD_BG,
@@ -318,7 +388,12 @@ const s = StyleSheet.create({
     backgroundColor: "#fff",
   },
   tabItem: { flex: 1, alignItems: "center", paddingVertical: SPACING * 1.2 },
-  tabLabel: { fontSize: 11, fontWeight: "700", color: MUTED, letterSpacing: 0.5 },
+  tabLabel: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: MUTED,
+    letterSpacing: 0.5,
+  },
   tabLabelActive: { color: ACCENT },
   tabUnderline: {
     position: "absolute",
@@ -334,7 +409,12 @@ const s = StyleSheet.create({
   tabContent: { paddingTop: SPACING * 2 },
 
   /* Dominio / progress section */
-  domainSeparator: { marginTop: SPACING * 3, borderTopWidth: 1, borderColor: BORDER, paddingTop: SPACING * 2 },
+  domainSeparator: {
+    marginTop: SPACING * 3,
+    borderTopWidth: 1,
+    borderColor: BORDER,
+    paddingTop: SPACING * 2,
+  },
   domainRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -347,15 +427,33 @@ const s = StyleSheet.create({
   domainEmoji: { fontSize: 16 },
   domainName: { fontSize: 14, fontWeight: "700" },
 
-  circleWrap: { alignItems: "center", position: "relative", marginBottom: SPACING * 0.5 },
+  circleWrap: {
+    alignItems: "center",
+    position: "relative",
+    marginBottom: SPACING * 0.5,
+  },
   circleInner: {
     position: "absolute",
-    top: 0, left: 0, right: 0, bottom: 0,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     alignItems: "center",
     justifyContent: "center",
   },
-  circlePct: { fontSize: 26, fontWeight: "900", color: TEXT, letterSpacing: -1 },
-  circleSub: { textAlign: "center", fontSize: 14, fontWeight: "600", color: TEXT, marginBottom: SPACING * 2 },
+  circlePct: {
+    fontSize: 26,
+    fontWeight: "900",
+    color: TEXT,
+    letterSpacing: -1,
+  },
+  circleSub: {
+    textAlign: "center",
+    fontSize: 14,
+    fontWeight: "600",
+    color: TEXT,
+    marginBottom: SPACING * 2,
+  },
 
   /* Stats */
   statsRow: {
@@ -370,7 +468,12 @@ const s = StyleSheet.create({
   statItem: { flex: 1, alignItems: "center", gap: 3 },
   statEmoji: { fontSize: 18 },
   statValue: { fontSize: 18, fontWeight: "800", color: TEXT },
-  statLabel: { fontSize: 11, color: MUTED, fontWeight: "500", textAlign: "center" },
+  statLabel: {
+    fontSize: 11,
+    color: MUTED,
+    fontWeight: "500",
+    textAlign: "center",
+  },
   statDivider: { width: 1, height: 44, backgroundColor: BORDER },
 
   /* Exercises tab */
@@ -383,13 +486,26 @@ const s = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: BORDER,
   },
-  exerciseLeft: { flexDirection: "row", alignItems: "center", gap: SPACING * 1.2, flex: 1 },
+  exerciseLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: SPACING * 1.2,
+    flex: 1,
+  },
   exerciseEmoji: { fontSize: 24, width: 34, textAlign: "center" },
   exerciseInfo: { gap: 3 },
   exerciseTitle: { fontSize: 14, fontWeight: "700", color: TEXT },
   exerciseDiff: { fontSize: 12, fontWeight: "500" },
-  exerciseCircle: { position: "relative", alignItems: "center", justifyContent: "center" },
-  exerciseCircleInner: { position: "absolute", alignItems: "center", justifyContent: "center" },
+  exerciseCircle: {
+    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  exerciseCircleInner: {
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   exerciseCirclePct: { fontSize: 9, fontWeight: "800", color: TEXT },
 
   /* Settings */
@@ -409,5 +525,11 @@ const s = StyleSheet.create({
   settingEmoji: { fontSize: 18, width: 28, textAlign: "center" },
   settingLabel: { flex: 1, fontSize: 14, fontWeight: "600", color: TEXT },
   separator: { height: 1, backgroundColor: "#F9FAFB", marginLeft: 40 },
-  version: { fontSize: 11, color: MUTED, textAlign: "center", marginTop: SPACING * 1.5, paddingBottom: SPACING },
+  version: {
+    fontSize: 11,
+    color: MUTED,
+    textAlign: "center",
+    marginTop: SPACING * 1.5,
+    paddingBottom: SPACING,
+  },
 });

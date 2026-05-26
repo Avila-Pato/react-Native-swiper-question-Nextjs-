@@ -5,26 +5,41 @@ import { WEEKLY_CHALLENGES } from "@/data/weeklyData";
 import { getProgress, setProgress } from "@/store/challengeProgress";
 import { Challenge, ChallengeType, Difficulty } from "@/types/challenges";
 import { router, useLocalSearchParams } from "expo-router";
-import { Braces, Bug, ChevronLeft, Globe, Lightbulb, Lock, LucideIcon } from "lucide-react-native";
+import {
+  Braces,
+  Bug,
+  ChevronLeft,
+  Globe,
+  Lightbulb,
+  Lock,
+  LucideIcon,
+} from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 const FOOTER_H = 72;
 
 const DESCRIPTIONS: Record<ChallengeType, string> = {
-  adivina_lenguaje: "Identifica el lenguaje de programación a partir de fragmentos de código reales. Cada snippet tiene pistas clave si sabes dónde mirar.",
-  encuentra_bug: "Analiza fragmentos de código con errores reales y elige cuál es el problema. Ideal para afinar tu ojo crítico.",
-  verdad_mito: "Pon a prueba tus conocimientos del mundo tech. ¿Sabes distinguir los hechos reales de los mitos populares?",
-  completa_codigo: "Elige la opción correcta para completar el código. Cada pregunta tiene un nivel de dificultad diferente.",
+  adivina_lenguaje:
+    "Identifica el lenguaje de programación a partir de fragmentos de código reales. Cada snippet tiene pistas clave si sabes dónde mirar.",
+  encuentra_bug:
+    "Analiza fragmentos de código con errores reales y elige cuál es el problema. Ideal para afinar tu ojo crítico.",
+  verdad_mito:
+    "Pon a prueba tus conocimientos del mundo tech. ¿Sabes distinguir los hechos reales de los mitos populares?",
+  completa_codigo:
+    "Elige la opción correcta para completar el código. Cada pregunta tiene un nivel de dificultad diferente.",
 };
 
 type IconCfg = { Icon: LucideIcon; bg: string; color: string };
 const CHALLENGE_ICON: Record<string, IconCfg> = {
-  adivina_lenguaje: { Icon: Globe,     bg: "#E0F2FE", color: "#0284C7" },
-  encuentra_bug:    { Icon: Bug,       bg: "#FEE2E2", color: "#DC2626" },
-  verdad_mito:      { Icon: Lightbulb, bg: "#FEF9C3", color: "#CA8A04" },
-  completa_codigo:  { Icon: Braces,    bg: "#EDE9FE", color: "#7C3AED" },
+  adivina_lenguaje: { Icon: Globe, bg: "#E0F2FE", color: "#0284C7" },
+  encuentra_bug: { Icon: Bug, bg: "#FEE2E2", color: "#DC2626" },
+  verdad_mito: { Icon: Lightbulb, bg: "#FEF9C3", color: "#CA8A04" },
+  completa_codigo: { Icon: Braces, bg: "#EDE9FE", color: "#7C3AED" },
 };
 
 const DIFF_COLOR: Record<Difficulty, string> = {
@@ -36,9 +51,13 @@ const DIFF_COLOR: Record<Difficulty, string> = {
 export default function ChallengeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { bottom } = useSafeAreaInsets();
-  const challenge: Challenge | undefined = WEEKLY_CHALLENGES.find((c) => c.id === id);
+  const challenge: Challenge | undefined = WEEKLY_CHALLENGES.find(
+    (c) => c.id === id,
+  );
 
-  const [currentProgress, setCurrentProgress] = useState(() => getProgress(id ?? ""));
+  const [currentProgress, setCurrentProgress] = useState(() =>
+    getProgress(id ?? ""),
+  );
   const [sheetOpen, setSheetOpen] = useState(false);
   const [sheetStartStep, setSheetStartStep] = useState(0);
 
@@ -66,19 +85,39 @@ export default function ChallengeDetailScreen() {
     return "locked";
   };
 
+  const handleBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/(tab)/two");
+    }
+  };
+
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={styles.root}>
       {/* Back button */}
-      <Pressable style={styles.backBtn} onPress={() => router.back()}>
+      <Pressable style={styles.backBtn} onPress={handleBack}>
         <ChevronLeft size={22} color={TEXT} />
         <Text style={styles.backText}>Retos</Text>
       </Pressable>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scroll}
+      >
         {/* Hero section */}
-        <View style={[styles.heroSection, { backgroundColor: challenge.color + "10" }]}>
+        <View
+          style={[
+            styles.heroSection,
+            { backgroundColor: challenge.color + "10" },
+          ]}
+        >
           {(() => {
-            const cfg = CHALLENGE_ICON[challenge.id] ?? { Icon: Globe, bg: "#F3F4F6", color: challenge.color };
+            const cfg = CHALLENGE_ICON[challenge.id] ?? {
+              Icon: Globe,
+              bg: "#F3F4F6",
+              color: challenge.color,
+            };
             return (
               <View style={[styles.emojiCircle, { backgroundColor: cfg.bg }]}>
                 <cfg.Icon size={38} color={cfg.color} strokeWidth={1.6} />
@@ -92,14 +131,26 @@ export default function ChallengeDetailScreen() {
             <View style={styles.badge}>
               <Text style={styles.badgeText}>{total} Preguntas</Text>
             </View>
-            <View style={[styles.badge, { backgroundColor: DIFF_COLOR[challenge.difficulty] + "18" }]}>
-              <Text style={[styles.badgeText, { color: DIFF_COLOR[challenge.difficulty] }]}>
+            {/* <View
+              style={[
+                styles.badge,
+                { backgroundColor: DIFF_COLOR[challenge.difficulty] + "18" },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.badgeText,
+                  { color: DIFF_COLOR[challenge.difficulty] },
+                ]}
+              >
                 {challenge.difficulty}
               </Text>
-            </View>
+            </View> */}
             {isComplete && (
               <View style={[styles.badge, { backgroundColor: "#DCFCE7" }]}>
-                <Text style={[styles.badgeText, { color: "#059669" }]}>✓ Completado</Text>
+                <Text style={[styles.badgeText, { color: "#059669" }]}>
+                  ✓ Completado
+                </Text>
               </View>
             )}
           </View>
@@ -112,13 +163,18 @@ export default function ChallengeDetailScreen() {
         <View style={styles.progressSection}>
           <View style={styles.progressHeader}>
             <Text style={styles.progressLabel}>Progreso</Text>
-            <Text style={styles.progressCount}>{currentProgress}/{total}</Text>
+            <Text style={styles.progressCount}>
+              {currentProgress}/{total}
+            </Text>
           </View>
           <View style={styles.progressTrack}>
             <View
               style={[
                 styles.progressFill,
-                { width: `${(currentProgress / total) * 100}%`, backgroundColor: challenge.color },
+                {
+                  width: `${(currentProgress / total) * 100}%`,
+                  backgroundColor: challenge.color,
+                },
               ]}
             />
           </View>
@@ -138,7 +194,10 @@ export default function ChallengeDetailScreen() {
                 key={q.id}
                 style={[
                   styles.questionRow,
-                  isActive && { borderColor: challenge.color, borderWidth: 1.5 },
+                  isActive && {
+                    borderColor: challenge.color,
+                    borderWidth: 1.5,
+                  },
                   isLocked && { opacity: 0.5 },
                 ]}
                 onPress={() => !isLocked && handleOpenSheet(i)}
@@ -153,21 +212,34 @@ export default function ChallengeDetailScreen() {
                   ]}
                 >
                   {isDone ? (
-                    <Text style={[styles.numText, { color: "#059669" }]}>✓</Text>
+                    <Text style={[styles.numText, { color: "#059669" }]}>
+                      ✓
+                    </Text>
                   ) : (
-                    <Text style={[styles.numText, isActive && { color: "#fff" }]}>{i + 1}</Text>
+                    <Text
+                      style={[styles.numText, isActive && { color: "#fff" }]}
+                    >
+                      {i + 1}
+                    </Text>
                   )}
                 </View>
 
                 {/* Question text */}
                 <View style={styles.questionBody}>
                   {q.difficulty && (
-                    <Text style={[styles.questionDiff, { color: DIFF_COLOR[q.difficulty] }]}>
+                    <Text
+                      style={[
+                        styles.questionDiff,
+                        { color: DIFF_COLOR[q.difficulty] },
+                      ]}
+                    >
                       {q.difficulty}
                     </Text>
                   )}
                   <Text style={styles.questionStatement} numberOfLines={2}>
-                    {q.code ? `Código: ${q.code.split("\n")[0]}...` : q.statement}
+                    {q.code
+                      ? `Código: ${q.code.split("\n")[0]}...`
+                      : q.statement}
                   </Text>
                 </View>
 
@@ -184,11 +256,18 @@ export default function ChallengeDetailScreen() {
       {/* Fixed bottom button */}
       <View style={[styles.bottomBar, { paddingBottom: bottom + SPACING }]}>
         <Pressable
-          style={[styles.startBtn, { backgroundColor: isComplete ? "#6B7280" : challenge.color }]}
+          style={[
+            styles.startBtn,
+            { backgroundColor: isComplete ? "#6B7280" : challenge.color },
+          ]}
           onPress={() => handleOpenSheet(isComplete ? 0 : currentProgress)}
         >
           <Text style={styles.startBtnText}>
-            {isComplete ? "Repetir reto" : currentProgress > 0 ? "Continuar →" : "Comenzar reto →"}
+            {isComplete
+              ? "Repetir reto"
+              : currentProgress > 0
+                ? "Continuar →"
+                : "Comenzar reto →"}
           </Text>
         </Pressable>
       </View>
@@ -234,8 +313,18 @@ const styles = StyleSheet.create({
     marginBottom: SPACING * 0.5,
   },
 
-  challengeTitle: { fontSize: 24, fontWeight: "900", color: TEXT, textAlign: "center" },
-  badgesRow: { flexDirection: "row", gap: 8, flexWrap: "wrap", justifyContent: "center" },
+  challengeTitle: {
+    fontSize: 24,
+    fontWeight: "900",
+    color: TEXT,
+    textAlign: "center",
+  },
+  badgesRow: {
+    flexDirection: "row",
+    gap: 8,
+    flexWrap: "wrap",
+    justifyContent: "center",
+  },
   badge: {
     backgroundColor: "#F3F4F6",
     borderRadius: 8,
@@ -296,8 +385,18 @@ const styles = StyleSheet.create({
   },
   numText: { fontSize: 13, fontWeight: "800", color: MUTED },
   questionBody: { flex: 1 },
-  questionDiff: { fontSize: 10, fontWeight: "700", letterSpacing: 0.3, marginBottom: 2 },
-  questionStatement: { fontSize: 13, fontWeight: "600", color: TEXT, lineHeight: 19 },
+  questionDiff: {
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 0.3,
+    marginBottom: 2,
+  },
+  questionStatement: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: TEXT,
+    lineHeight: 19,
+  },
 
   bottomBar: {
     position: "absolute",
@@ -317,3 +416,6 @@ const styles = StyleSheet.create({
   },
   startBtnText: { color: "#fff", fontSize: 15, fontWeight: "800" },
 });
+function expoRouter() {
+  throw new Error("Function not implemented.");
+}

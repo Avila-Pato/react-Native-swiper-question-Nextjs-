@@ -42,6 +42,7 @@ type IconConfig = {
   image: ImageSourcePropType;
   bg: string;
   color: string;
+  borderColor: string;
 };
 
 const ICON_MAP: Record<string, IconConfig> = {
@@ -49,21 +50,25 @@ const ICON_MAP: Record<string, IconConfig> = {
     image: require("@/assets/svg/tech1.svg"),
     bg: P_TEAL.bg,
     color: P_TEAL.fg,
+    borderColor: P_TEAL.fg,
   },
   encuentra_bug: {
     image: require("@/assets/svg/tech2.svg"),
     bg: P_AMBER.bg,
     color: P_AMBER.fg,
+    borderColor: P_AMBER.fg,
   },
   verdad_mito: {
     image: require("@/assets/svg/tech3.svg"),
     bg: P_GOLD.bg,
     color: P_GOLD.fg,
+    borderColor: P_GOLD.fg,
   },
   completa_codigo: {
     image: require("@/assets/svg/tech4.svg"),
     bg: P_SLATE.bg,
     color: P_SLATE.fg,
+    borderColor: P_SLATE.fg,
   },
 };
 function openDetail(id: ChallengeType) {
@@ -183,9 +188,9 @@ export default function ChallengesScreen() {
               const done = progress[c.id] ?? 0;
               const total = c.questions.length;
               const isComplete = done >= total;
-              const { color } = ICON_MAP[c.id] ?? {
-                bg: "#F3F4F6",
+              const { color, borderColor } = ICON_MAP[c.id] ?? {
                 color: MUTED,
+                borderColor: MUTED,
               };
 
               return (
@@ -193,7 +198,8 @@ export default function ChallengesScreen() {
                   key={c.id}
                   style={({ pressed }) => [
                     styles.gridCard,
-                    { backgroundColor: "#fff" + "bg" },
+                    { backgroundColor: "#fff" },
+                    { borderColor },
                     pressed && { opacity: 0.82 },
                   ]}
                   onPress={() => openDetail(c.id)}
@@ -206,7 +212,6 @@ export default function ChallengesScreen() {
                       {c.difficulty}
                     </Text> */}
                   </View>
-                  {/* Reemplázala por esto: */}
                   <Image
                     source={c.emoji}
                     style={[styles.cardEmoji, { tintColor: color }]} // <-- Se pasa como propiedad directa en expo-image
@@ -333,7 +338,7 @@ const styles = StyleSheet.create({
     color: MUTED,
     textTransform: "uppercase",
     letterSpacing: 0.9,
-    marginBottom: SPACING * 1.2,
+    marginBottom: SPACING * 1.5,
   },
   grid: {
     flexDirection: "row",
@@ -342,15 +347,14 @@ const styles = StyleSheet.create({
   },
   gridCard: {
     width: CARD_SIZE,
-    height: CARD_SIZE,
+    height: CARD_SIZE * 1.2,
     borderRadius: 24,
-    padding: SPACING * 1.4,
+    padding: SPACING * 1.8,
     justifyContent: "space-between",
     overflow: "hidden",
 
     //ajustes para el borde
     borderWidth: 1, // Grosor del borde de color
-    shadowColor: "#000", // Opcional: una sutil sombra para dar volumen
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
@@ -360,7 +364,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "800",
     lineHeight: 20,
-    maxWidth: "80%",
+    maxWidth: "100%",
+    bottom: SPACING * 1.2,
   },
   cardDiff: {
     alignSelf: "flex-start",

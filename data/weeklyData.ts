@@ -1,3 +1,4 @@
+import { P_AMBER, P_GOLD, P_SLATE, P_TEAL } from "@/constants/theme";
 import { Challenge } from "@/types/challenges";
 
 export const WEEKLY_CHALLENGES: Challenge[] = [
@@ -5,7 +6,7 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
     id: "adivina_lenguaje",
     title: "Adivina el lenguaje",
     emoji: "🎯",
-    color: "#0D9966",
+    color: P_TEAL.fg,
     difficulty: "Fácil",
     questions: [
       {
@@ -55,7 +56,7 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
     id: "encuentra_bug",
     title: "Encuentra el bug",
     emoji: "🐛",
-    color: "#DC2626",
+    color: P_AMBER.fg,
     difficulty: "Medio",
     questions: [
       {
@@ -117,7 +118,7 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
     id: "verdad_mito",
     title: "¿Verdad o mito?",
     emoji: "⚡",
-    color: "#059669",
+    color: P_GOLD.fg,
     difficulty: "Fácil",
     questions: [
       {
@@ -162,7 +163,7 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
     id: "completa_codigo",
     title: "Completa el código",
     emoji: "🧩",
-    color: "#2563EB",
+    color: P_SLATE.fg,
     difficulty: "Difícil",
     questions: [
       {

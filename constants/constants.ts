@@ -15,7 +15,7 @@ export const SCREEN_WIDTH = width;
 export const TEXT_FONT_SIZE = 32;
 export const TEXT_COLOR = "#464343ff";
 export const BG_COLOR = "#edf2f5";
-export const GREEN = "#bdf14d";
+export const GREEN = "#34D59A";
 
 
 export const BACKGROUND_TRANSLATE_Y = -2;

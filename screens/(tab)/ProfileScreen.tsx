@@ -1,5 +1,5 @@
 import { SPACING, TAB_ITEM_SIZE } from "@/constants/constants";
-import { ACCENT, BG, BORDER, CARD_BG, MUTED, TEXT } from "@/constants/theme";
+import { ACCENT, BG, BORDER, CARD_BG, MUTED, P_SLATE, P_TEAL, TEXT } from "@/constants/theme";
 import { WEEKLY_CHALLENGES } from "@/data/weeklyData";
 import { getAllProgress } from "@/store/challengeProgress";
 import { router, useFocusEffect } from "expo-router";
@@ -20,8 +20,8 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 
 const SKILL_AREAS = [
-  { id: "adivina_lenguaje", label: "Lenguajes", emoji: "💻", color: "#0284C7" },
-  { id: "completa_codigo", label: "Código", emoji: "🧩", color: "#7C3AED" },
+  { id: "adivina_lenguaje", label: "Lenguajes", emoji: "💻", color: P_TEAL.fg },
+  { id: "completa_codigo",  label: "Código",    emoji: "🧩", color: P_SLATE.fg },
 ];
 
 const SETTINGS = [

@@ -1,3 +1,5 @@
+import { ImageSourcePropType } from "react-native";
+
 export type ChallengeType =
   | "adivina_lenguaje"
   | "encuentra_bug"
@@ -19,7 +21,7 @@ export type ChallengeQuestion = {
 export type Challenge = {
   id: ChallengeType;
   title: string;
-  emoji: string;
+  emoji: ImageSourcePropType;
   color: string;
   difficulty: Difficulty;
   questions: ChallengeQuestion[];

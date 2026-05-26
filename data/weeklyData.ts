@@ -5,7 +5,7 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
   {
     id: "adivina_lenguaje",
     title: "Adivina el lenguaje",
-    emoji: "🎯",
+    emoji: require("@/assets/svg/tech1.svg"),
     color: P_TEAL.fg,
     difficulty: "Fácil",
     questions: [
@@ -55,7 +55,7 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
   {
     id: "encuentra_bug",
     title: "Encuentra el bug",
-    emoji: "🐛",
+    emoji: require("@/assets/svg/tech2.svg"),
     color: P_AMBER.fg,
     difficulty: "Medio",
     questions: [
@@ -117,7 +117,7 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
   {
     id: "verdad_mito",
     title: "¿Verdad o mito?",
-    emoji: "⚡",
+    emoji: require("@/assets/svg/tech3.svg"),
     color: P_GOLD.fg,
     difficulty: "Fácil",
     questions: [
@@ -162,7 +162,7 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
   {
     id: "completa_codigo",
     title: "Completa el código",
-    emoji: "🧩",
+    emoji: require("@/assets/svg/tech4.svg"),
     color: P_SLATE.fg,
     difficulty: "Difícil",
     questions: [

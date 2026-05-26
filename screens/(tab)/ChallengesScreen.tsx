@@ -11,7 +11,7 @@ import {
 } from "@/constants/theme";
 import { WEEKLY_CHALLENGES } from "@/data/weeklyData";
 import { getAllProgress } from "@/store/challengeProgress";
-import { Challenge, ChallengeType } from "@/types/challenges";
+import { ChallengeType } from "@/types/challenges";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import {
@@ -89,11 +89,11 @@ export default function ChallengesScreen() {
     (c) => (progress[c.id] ?? 0) >= c.questions.length,
   ).length;
 
-  const featured: Challenge =
-    WEEKLY_CHALLENGES.find((c) => (progress[c.id] ?? 0) < c.questions.length) ??
-    WEEKLY_CHALLENGES[0];
+  // const featured: Challenge =
+  //   WEEKLY_CHALLENGES.find((c) => (progress[c.id] ?? 0) < c.questions.length) ??
+  //   WEEKLY_CHALLENGES[0];
 
-  const featuredStarted = (progress[featured.id] ?? 0) > 0;
+  // const featuredStarted = (progress[featured.id] ?? 0) > 0;
 
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={styles.root}>
@@ -168,7 +168,7 @@ export default function ChallengesScreen() {
               <Text style={styles.statLabel}>progreso</Text>
             </View>
           </View>
-
+          {/* 
           <Pressable
             style={({ pressed }) => [styles.cta, pressed && { opacity: 0.85 }]}
             onPress={() => openDetail(featured.id)}
@@ -177,7 +177,7 @@ export default function ChallengesScreen() {
               {featuredStarted ? "Continuar reto" : "Comenzar reto"}
             </Text>
             <ArrowUpRight size={18} color={MUTED} strokeWidth={2} />
-          </Pressable>
+          </Pressable> */}
         </View>
 
         {/* ── Grid retos ── */}

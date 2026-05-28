@@ -1,0 +1,18 @@
+<svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dusty rose bg: identifica el patrón -->
+  <ellipse cx="30" cy="31" rx="26" ry="25" fill="#F2E8EF"/>
+  <!-- Lens -->
+  <circle cx="26" cy="24" r="13" fill="#FBCFE8"/>
+  <circle cx="26" cy="24" r="9.5" fill="#FDE4EE"/>
+  <!-- Pattern grid inside lens -->
+  <circle cx="22" cy="20" r="2" fill="#9E5C72" opacity="0.45"/>
+  <circle cx="28" cy="20" r="2" fill="#9E5C72"/>
+  <circle cx="22" cy="26" r="2" fill="#9E5C72"/>
+  <circle cx="28" cy="26" r="2" fill="#9E5C72" opacity="0.45"/>
+  <!-- Lens ring -->
+  <circle cx="26" cy="24" r="9.5" fill="none" stroke="#D4A0B5" stroke-width="1.5"/>
+  <!-- Handle -->
+  <path d="M34 33 L44 45" stroke="#C08098" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Sparkle -->
+  <circle cx="46" cy="18" r="2" fill="#FBCFE8" opacity="0.8"/>
+</svg>

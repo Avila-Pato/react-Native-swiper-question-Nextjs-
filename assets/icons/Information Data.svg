@@ -1,0 +1,12 @@
+<svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Warm sand bg: Relaciones -->
+  <ellipse cx="30" cy="31" rx="26" ry="25" fill="#F2ECDD"/>
+  <!-- Person 1 -->
+  <circle cx="20" cy="22" r="8" fill="#E8D5B7"/>
+  <path d="M8 46 Q8 37 20 37 Q32 37 32 46" fill="#D4B896"/>
+  <!-- Person 2 -->
+  <circle cx="40" cy="22" r="8" fill="#D4B896"/>
+  <path d="M28 46 Q28 37 40 37 Q52 37 52 46" fill="#C9A87A"/>
+  <!-- Connecting heart -->
+  <path d="M30 31 C30 31 25 27 25 23.5 C25 21 27.5 20 30 22.5 C32.5 20 35 21 35 23.5 C35 27 30 31 30 31Z" fill="#8A7040"/>
+</svg>

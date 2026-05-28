@@ -1,5 +1,7 @@
 ﻿import BreathingScreen from "@/components/home/BreathingScreen";
 import DearManAssistant from "@/components/home/DearManAssistant";
+import HappinessGameAssistant from "@/components/home/HappinessGameAssistant";
+import SelfEsteemMirrorAssistant from "@/components/home/SelfEsteemMirrorAssistant";
 import ReflectionModal from "@/components/home/ReflectionModal";
 import { SPACING } from "@/constants/constants";
 import { ACCENT, BG, BORDER, CARD_BG, MUTED, TEXT } from "@/constants/theme";
@@ -150,6 +152,8 @@ export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [breathingVisible, setBreathingVisible] = useState(false);
   const [dearManVisible, setDearManVisible] = useState(false);
+  const [happinessVisible, setHappinessVisible] = useState(false);
+  const [selfEsteemVisible, setSelfEsteemVisible] = useState(false);
 
   useEffect(() => {
     if (nombre) {
@@ -165,8 +169,8 @@ export default function HomeScreen() {
   const categoryHandlers: Record<CategoryAction, () => void> = {
     breathing: () => setBreathingVisible(true),
     dear_man: () => setDearManVisible(true),
-    felicidad: () => {},
-    autoestima: () => {},
+    felicidad: () => setHappinessVisible(true),
+    autoestima: () => setSelfEsteemVisible(true),
     vinculos: () => {},
     proposito: () => {},
   };
@@ -378,6 +382,14 @@ export default function HomeScreen() {
       <DearManAssistant
         visible={dearManVisible}
         onClose={() => setDearManVisible(false)}
+      />
+      <HappinessGameAssistant
+        visible={happinessVisible}
+        onClose={() => setHappinessVisible(false)}
+      />
+      <SelfEsteemMirrorAssistant
+        visible={selfEsteemVisible}
+        onClose={() => setSelfEsteemVisible(false)}
       />
     </SafeAreaView>
   );

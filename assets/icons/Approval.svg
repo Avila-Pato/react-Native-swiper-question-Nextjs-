@@ -1,0 +1,14 @@
+<svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sage bg: verdad o mito -->
+  <ellipse cx="30" cy="31" rx="26" ry="25" fill="#E8F0EE"/>
+  <!-- Verdad card -->
+  <rect x="7" y="18" width="20" height="24" rx="6" fill="#A7F3D0"/>
+  <path d="M12 30 L16 35 L23 24" stroke="#4D8B7A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Mito card -->
+  <rect x="33" y="18" width="20" height="24" rx="6" fill="#FBCFE8"/>
+  <path d="M38 24 L47 33" stroke="#9E5C72" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M47 24 L38 33" stroke="#9E5C72" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Center divider -->
+  <circle cx="30" cy="30" r="4" fill="white"/>
+  <circle cx="30" cy="30" r="2" fill="#6EE7B7"/>
+</svg>

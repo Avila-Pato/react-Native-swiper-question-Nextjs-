@@ -1,0 +1,16 @@
+<svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Lavender bg: adivina el concepto -->
+  <ellipse cx="30" cy="31" rx="26" ry="25" fill="#EDE9F8"/>
+  <!-- Main bubble -->
+  <rect x="8" y="11" width="30" height="20" rx="8" fill="#C4B5FD"/>
+  <path d="M13 31 L9 43 L23 33" fill="#C4B5FD"/>
+  <circle cx="18" cy="21" r="2.5" fill="#7B6BB5"/>
+  <circle cx="25" cy="21" r="2.5" fill="#7B6BB5"/>
+  <circle cx="32" cy="21" r="2.5" fill="#7B6BB5"/>
+  <!-- Reply bubble -->
+  <rect x="22" y="32" width="27" height="16" rx="7" fill="#EDE9FE"/>
+  <path d="M44 48 L50 54 L40 50" fill="#EDE9FE"/>
+  <circle cx="30" cy="40" r="2" fill="#A78BFA"/>
+  <circle cx="36" cy="40" r="2" fill="#A78BFA"/>
+  <circle cx="42" cy="40" r="2" fill="#A78BFA"/>
+</svg>

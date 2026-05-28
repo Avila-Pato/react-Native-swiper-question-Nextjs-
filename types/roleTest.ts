@@ -1,4 +1,4 @@
-export type RoleKey = "frontend" | "backend" | "datos" | "devops" | "seguridad";
+export type RoleKey = "limites" | "autoconocimiento" | "vinculos" | "felicidad" | "proposito";
 
 export type QuestionOption = {
   text: string;

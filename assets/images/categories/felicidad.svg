@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <!-- sol -->
+  <circle cx="128" cy="30" r="11" fill="#FFE168"/>
+  <line x1="128" y1="12" x2="128" y2="6"  stroke="#FFE168" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="128" y1="48" x2="128" y2="54" stroke="#FFE168" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="110" y1="30" x2="104" y2="30" stroke="#FFE168" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="146" y1="30" x2="152" y2="30" stroke="#FFE168" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="116" y1="18" x2="112" y2="14" stroke="#FFE168" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="140" y1="42" x2="144" y2="46" stroke="#FFE168" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- blob -->
+  <path d="M35 125 Q25 98 48 76 Q64 56 88 60 Q115 58 128 84 Q142 112 120 134 Q102 150 68 148 Q38 148 35 125Z" fill="#FFE168"/>
+  <!-- piernas saltando abiertas -->
+  <line x1="80" y1="112" x2="62" y2="136" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <line x1="80" y1="112" x2="98" y2="136" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <!-- torso -->
+  <line x1="80" y1="112" x2="80" y2="80" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <!-- brazos arriba celebrando -->
+  <line x1="80" y1="88" x2="56" y2="66" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <line x1="80" y1="88" x2="104" y2="66" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <!-- cabeza -->
+  <circle cx="80" cy="67" r="13" fill="none" stroke="#2D1F60" stroke-width="2.5"/>
+  <!-- ojos arco feliz -->
+  <path d="M74 64 Q77 61 80 64" stroke="#2D1F60" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <path d="M80 64 Q83 61 86 64" stroke="#2D1F60" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- sonrisa grande -->
+  <path d="M73 69 Q80 77 87 69" stroke="#2D1F60" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- corazon -->
+  <path d="M76 92 Q80 87 84 92 Q88 97 80 102 Q72 97 76 92Z" fill="#E8706A"/>
+</svg>

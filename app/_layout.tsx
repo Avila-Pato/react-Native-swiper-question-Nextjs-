@@ -1,7 +1,28 @@
+import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+SplashScreen.preventAutoHideAsync();
+
 export default function RootLayout() {
+  const [loaded] = useFonts({
+    "Poppins-Regular": require("@/assets/fonts/Poppins_400Regular.ttf"),
+    "Poppins-Medium": require("@/assets/fonts/Poppins_500Medium.ttf"),
+    "Poppins-SemiBold": require("@/assets/fonts/Poppins_600SemiBold.ttf"),
+    "Poppins-Bold": require("@/assets/fonts/Poppins_700Bold.ttf"),
+    "Poppins-ExtraBold": require("@/assets/fonts/Poppins_800ExtraBold.ttf"),
+    "Playfair-Bold": require("@/assets/fonts/PlayfairDisplay_700Bold.ttf"),
+    "Playfair-ExtraBold": require("@/assets/fonts/PlayfairDisplay_800ExtraBold.ttf"),
+  });
+
+  useEffect(() => {
+    if (loaded) SplashScreen.hideAsync();
+  }, [loaded]);
+
+  if (!loaded) return null;
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack>

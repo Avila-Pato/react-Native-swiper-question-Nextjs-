@@ -6,12 +6,12 @@ import { ROLES } from "@/data/roleTestData";
 import { RoleKey, RoleScores } from "@/types/roleTest";
 import { router, useLocalSearchParams } from "expo-router";
 import {
-  Cloud,
-  Database,
+  Compass,
+  Eye,
   LucideIcon,
-  Monitor,
-  Server,
   Shield,
+  Sun,
+  Users,
 } from "lucide-react-native";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import {
@@ -22,11 +22,11 @@ import {
 type IconConfig = { Icon: LucideIcon; bg: string; color: string; size: number };
 
 const ROLE_ICON: Record<RoleKey, IconConfig> = {
-  frontend: { Icon: Monitor, bg: "#FEF3C7", color: "#D97706", size: 28 },
-  backend: { Icon: Server, bg: "#DBEAFE", color: "#2563EB", size: 28 },
-  datos: { Icon: Database, bg: "#EDE9FE", color: "#7C3AED", size: 28 },
-  devops: { Icon: Cloud, bg: "#DCFCE7", color: "#16A34A", size: 28 },
-  seguridad: { Icon: Shield, bg: "#FEE2E2", color: "#DC2626", size: 28 },
+  limites:          { Icon: Shield,  bg: "#EDE9FE", color: "#7C3AED", size: 28 },
+  autoconocimiento: { Icon: Eye,     bg: "#E0F2FE", color: "#0284C7", size: 28 },
+  vinculos:         { Icon: Users,   bg: "#E8F0EE", color: "#4D8B7A", size: 28 },
+  felicidad:        { Icon: Sun,     bg: "#FEF3C7", color: "#F59E0B", size: 28 },
+  proposito:        { Icon: Compass, bg: "#EDE9F8", color: "#7B6BB5", size: 28 },
 };
 
 export default function RoleTestResultScreen() {
@@ -34,7 +34,7 @@ export default function RoleTestResultScreen() {
   const { scores: raw } = useLocalSearchParams<{ scores: string }>();
   const scores: RoleScores = raw
     ? JSON.parse(raw)
-    : { frontend: 0, backend: 0, datos: 0, devops: 0, seguridad: 0 };
+    : { limites: 0, autoconocimiento: 0, vinculos: 0, felicidad: 0, proposito: 0 };
 
   const ranked = [...ROLES].sort(
     (a, b) => (scores[b.key] ?? 0) - (scores[a.key] ?? 0),
@@ -64,7 +64,7 @@ export default function RoleTestResultScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerSub}>Tu resultado</Text>
-          <Text style={styles.headerTitle}>Tu perfil tech</Text>
+          <Text style={styles.headerTitle}>Tu camino de bienestar</Text>
         </View>
 
         {/* Top role highlight */}
@@ -73,7 +73,7 @@ export default function RoleTestResultScreen() {
             <TopIcon size={topSize} color={topColor} strokeWidth={1.6} />
           </View>
           <View style={styles.topBody}>
-            <Text style={styles.topLabel}>Tu rol dominante</Text>
+            <Text style={styles.topLabel}>Tu área principal</Text>
             <Text style={styles.topName}>{topRole.label}</Text>
             <Text style={styles.topPct}>{pct(topRole.key)}% afinidad</Text>
           </View>
@@ -84,7 +84,7 @@ export default function RoleTestResultScreen() {
 
         {/* Radar chart — dark premium card */}
         <View style={styles.radarCard}>
-          <Text style={styles.radarLabel}>Distribución de roles</Text>
+          <Text style={styles.radarLabel}>Distribución de áreas</Text>
           <View style={styles.radarWrap}>
             <RadarChart scores={scores} size={440} />
           </View>
@@ -92,7 +92,7 @@ export default function RoleTestResultScreen() {
 
         {/* Horizontal bars */}
         <View style={styles.chartCard}>
-          <Text style={styles.chartTitle}>Puntaje por rol</Text>
+          <Text style={styles.chartTitle}>Puntaje por área</Text>
           <RoleBarChart scores={scores} />
         </View>
 
@@ -106,7 +106,7 @@ export default function RoleTestResultScreen() {
           </View>
           <Text style={styles.descText}>{topRole.description}</Text>
           <View style={styles.stackChip}>
-            <Text style={styles.stackLabel}>Stack recomendado</Text>
+            <Text style={styles.stackLabel}>Para explorar</Text>
             <Text style={styles.stackText}>{topRole.stack}</Text>
           </View>
         </View>

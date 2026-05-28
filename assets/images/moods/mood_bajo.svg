@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="24" fill="#D4922A"/>
+  <!-- cejas caídas -->
+  <path d="M28 37 L40 40" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <path d="M60 40 L72 37" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <!-- ojos -->
+  <circle cx="34" cy="50" r="4.5" fill="white"/>
+  <circle cx="66" cy="50" r="4.5" fill="white"/>
+  <!-- boca hacia abajo -->
+  <path d="M36 70 Q50 61 64 70" stroke="white" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+</svg>

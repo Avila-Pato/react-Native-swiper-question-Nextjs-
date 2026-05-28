@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <!-- estrella meta -->
+  <path d="M128 22 L131 31 L141 31 L133 37 L136 46 L128 40 L120 46 L123 37 L115 31 L125 31 Z" fill="#FFE168" stroke="#FFE168" stroke-width="1"/>
+  <!-- camino/linea punteada hacia estrella -->
+  <path d="M85 100 Q100 80 118 50" stroke="#FFE168" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round" fill="none" opacity="0.8"/>
+  <!-- blob -->
+  <path d="M30 125 Q22 98 44 74 Q60 54 85 56 Q112 54 126 80 Q140 108 120 130 Q104 148 70 147 Q38 147 30 125Z" fill="#FFE168"/>
+  <!-- persona caminando -->
+  <!-- pierna atras -->
+  <line x1="78" y1="114" x2="65" y2="138" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <!-- pierna adelante -->
+  <line x1="78" y1="114" x2="94" y2="132" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <!-- torso inclinado -->
+  <line x1="78" y1="114" x2="82" y2="82" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <!-- brazo adelante apuntando -->
+  <path d="M82 90 Q98 78 114 64" stroke="#2D1F60" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- brazo atras -->
+  <line x1="82" y1="90" x2="62" y2="98" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <!-- cabeza -->
+  <circle cx="84" cy="68" r="14" fill="none" stroke="#2D1F60" stroke-width="2.5"/>
+  <!-- mirada hacia arriba-adelante -->
+  <circle cx="80" cy="66" r="1.8" fill="#2D1F60"/>
+  <circle cx="90" cy="65" r="1.8" fill="#2D1F60"/>
+  <!-- sonrisa decidida -->
+  <path d="M78 72 Q84 77 90 72" stroke="#2D1F60" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- corazon -->
+  <path d="M78 94 Q82 89 86 94 Q90 99 82 104 Q74 99 78 94Z" fill="#E8706A"/>
+</svg>

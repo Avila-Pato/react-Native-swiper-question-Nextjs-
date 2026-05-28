@@ -1,12 +1,10 @@
 import { ImageSourcePropType } from "react-native";
 
 export type ChallengeType =
-  | "adivina_lenguaje"
-  | "encuentra_bug"
+  | "adivina_concepto"
+  | "identifica_patron"
   | "verdad_mito"
-  | "completa_codigo";
-
-export type Difficulty = "Fácil" | "Medio" | "Difícil";
+  | "completa_reflexion";
 
 export type ChallengeQuestion = {
   id: string;
@@ -15,7 +13,6 @@ export type ChallengeQuestion = {
   options: string[];
   correctIndex: number;
   explanation: string;
-  difficulty?: Difficulty;
 };
 
 export type Challenge = {
@@ -23,7 +20,6 @@ export type Challenge = {
   title: string;
   emoji: ImageSourcePropType;
   color: string;
-  difficulty: Difficulty;
   questions: ChallengeQuestion[];
-  borderColor: string; // Color del borde para la tarjeta del desafío
+  borderColor: string;
 };

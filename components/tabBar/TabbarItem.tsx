@@ -1,4 +1,3 @@
-import { TAB_ITEM_SIZE } from "@/constants/constants";
 import { useEffect } from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
 import Animated, {
@@ -8,7 +7,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-const ACCENT = "#34D59A";
+const ACCENT = "#8980B8";
 const ACTIVE_COLOR = "#111827";
 const INACTIVE_COLOR = "#9CA3AF";
 
@@ -64,7 +63,7 @@ export default TabbarItem;
 
 const styles = StyleSheet.create({
   container: {
-    width: TAB_ITEM_SIZE,
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     gap: 4,

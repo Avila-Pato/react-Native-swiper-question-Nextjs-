@@ -26,7 +26,7 @@ function computeScores(
   likertAnswers: Record<number, number>,
   choiceAnswers: Record<number, RoleKey>
 ): RoleScores {
-  const scores: RoleScores = { frontend: 0, backend: 0, datos: 0, devops: 0, seguridad: 0 };
+  const scores: RoleScores = { limites: 0, autoconocimiento: 0, vinculos: 0, felicidad: 0, proposito: 0 };
   QUESTIONS.forEach((q) => {
     if (!q.type || q.type === "likert") {
       if (q.role) scores[q.role] = (scores[q.role] ?? 0) + (likertAnswers[q.id] ?? 0);

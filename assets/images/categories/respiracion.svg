@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <!-- blob -->
+  <path d="M42 115 Q28 88 50 64 Q66 44 92 48 Q120 49 132 73 Q147 100 128 122 Q112 142 80 140 Q48 140 42 115Z" fill="#FFE168"/>
+  <!-- piernas cruzadas -->
+  <path d="M54 138 Q65 120 80 116 Q95 120 106 138" stroke="#2D1F60" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- torso -->
+  <line x1="80" y1="116" x2="80" y2="86" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <!-- brazo izquierdo -->
+  <path d="M80 99 Q65 91 51 98" stroke="#2D1F60" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- brazo derecho -->
+  <path d="M80 99 Q95 91 109 98" stroke="#2D1F60" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- cabeza -->
+  <circle cx="80" cy="72" r="14" fill="none" stroke="#2D1F60" stroke-width="2.5"/>
+  <!-- ojos cerrados felices -->
+  <path d="M74 70 Q77 67 80 70" stroke="#2D1F60" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <path d="M80 70 Q83 67 86 70" stroke="#2D1F60" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- sonrisa -->
+  <path d="M73 75 Q80 82 87 75" stroke="#2D1F60" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- corazon -->
+  <path d="M76 94 Q80 89 84 94 Q88 99 80 104 Q72 99 76 94Z" fill="#E8706A"/>
+</svg>

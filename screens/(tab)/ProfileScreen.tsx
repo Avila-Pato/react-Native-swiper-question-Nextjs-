@@ -37,8 +37,8 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 
 const SKILL_AREAS = [
-  { id: "adivina_lenguaje", label: "Lenguajes", emoji: "💻", color: P_TEAL.fg },
-  { id: "completa_codigo", label: "Código", emoji: "🧩", color: P_SLATE.fg },
+  { id: "adivina_concepto", label: "Conceptos", emoji: "🧠", color: P_TEAL.fg },
+  { id: "completa_reflexion", label: "Reflexiones", emoji: "✨", color: P_SLATE.fg },
 ];
 
 const SETTINGS = [
@@ -249,7 +249,7 @@ export default function ProfileScreen() {
                           { color: isComplete ? ACCENT : MUTED },
                         ]}
                       >
-                        {isComplete ? "Completado ✓" : c.difficulty}
+                        {isComplete ? "Completado ✓" : "En progreso"}
                       </Text>
                     </View>
                   </View>

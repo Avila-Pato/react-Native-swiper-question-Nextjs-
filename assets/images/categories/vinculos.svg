@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <!-- blob -->
+  <path d="M28 120 Q20 92 42 68 Q58 48 82 50 Q108 46 124 70 Q142 97 126 122 Q110 144 78 144 Q44 145 28 120Z" fill="#FFE168"/>
+  <!-- corazon central grande -->
+  <path d="M72 82 Q80 72 88 82 Q98 92 80 104 Q62 92 72 82Z" fill="#E8706A" opacity="0.9"/>
+  <!-- persona izquierda -->
+  <!-- piernas izq -->
+  <line x1="52" y1="118" x2="42" y2="140" stroke="#2D1F60" stroke-width="2.8" stroke-linecap="round"/>
+  <line x1="52" y1="118" x2="60" y2="140" stroke="#2D1F60" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- torso izq -->
+  <line x1="52" y1="118" x2="52" y2="90" stroke="#2D1F60" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- brazo hacia corazon -->
+  <path d="M52 100 Q62 92 70 88" stroke="#2D1F60" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+  <!-- brazo otro lado -->
+  <line x1="52" y1="100" x2="32" y2="92" stroke="#2D1F60" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- cabeza izq -->
+  <circle cx="52" cy="76" r="13" fill="none" stroke="#2D1F60" stroke-width="2.5"/>
+  <circle cx="47" cy="74" r="1.6" fill="#2D1F60"/>
+  <circle cx="57" cy="74" r="1.6" fill="#2D1F60"/>
+  <path d="M46 79 Q52 85 58 79" stroke="#2D1F60" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- persona derecha -->
+  <!-- piernas der -->
+  <line x1="108" y1="118" x2="98" y2="140" stroke="#2D1F60" stroke-width="2.8" stroke-linecap="round"/>
+  <line x1="108" y1="118" x2="118" y2="140" stroke="#2D1F60" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- torso der -->
+  <line x1="108" y1="118" x2="108" y2="90" stroke="#2D1F60" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- brazo hacia corazon -->
+  <path d="M108 100 Q98 92 90 88" stroke="#2D1F60" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+  <!-- brazo otro lado -->
+  <line x1="108" y1="100" x2="128" y2="92" stroke="#2D1F60" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- cabeza der -->
+  <circle cx="108" cy="76" r="13" fill="none" stroke="#2D1F60" stroke-width="2.5"/>
+  <circle cx="103" cy="74" r="1.6" fill="#2D1F60"/>
+  <circle cx="113" cy="74" r="1.6" fill="#2D1F60"/>
+  <path d="M102 79 Q108 85 114 79" stroke="#2D1F60" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+</svg>

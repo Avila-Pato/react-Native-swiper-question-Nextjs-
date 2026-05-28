@@ -1,3 +1,4 @@
+import { ConceptPickerSheet } from "@/components/challenges/ConceptPickerSheet";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { SPACING, TAB_ITEM_SIZE } from "@/constants/constants";
 import {
@@ -11,6 +12,7 @@ import {
 } from "@/constants/theme";
 import { WEEKLY_CHALLENGES } from "@/data/weeklyData";
 import { getAllProgress } from "@/store/challengeProgress";
+import { setSelectedLangs } from "@/store/languagePrefs";
 import { ChallengeType } from "@/types/challenges";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
@@ -46,26 +48,26 @@ type IconConfig = {
 };
 
 const ICON_MAP: Record<string, IconConfig> = {
-  adivina_lenguaje: {
-    image: require("@/assets/svg/tech1.svg"),
+  adivina_concepto: {
+    image: require("@/assets/icons/Dialog.svg"),
     bg: P_TEAL.bg,
     color: P_TEAL.fg,
     borderColor: P_TEAL.fg,
   },
-  encuentra_bug: {
-    image: require("@/assets/svg/tech2.svg"),
+  identifica_patron: {
+    image: require("@/assets/icons/Surveillance.svg"),
     bg: P_AMBER.bg,
     color: P_AMBER.fg,
     borderColor: P_AMBER.fg,
   },
   verdad_mito: {
-    image: require("@/assets/svg/tech3.svg"),
+    image: require("@/assets/icons/Approval.svg"),
     bg: P_GOLD.bg,
     color: P_GOLD.fg,
     borderColor: P_GOLD.fg,
   },
-  completa_codigo: {
-    image: require("@/assets/svg/tech4.svg"),
+  completa_reflexion: {
+    image: require("@/assets/icons/Documentation.svg"),
     bg: P_SLATE.bg,
     color: P_SLATE.fg,
     borderColor: P_SLATE.fg,
@@ -78,12 +80,27 @@ function openDetail(id: ChallengeType) {
 export default function ChallengesScreen() {
   const { bottom } = useSafeAreaInsets();
   const [progress, setProgressState] = useState<Record<string, number>>({});
+  const [langPickerOpen, setLangPickerOpen] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       setProgressState(getAllProgress());
     }, []),
   );
+
+  function handleCardPress(id: ChallengeType) {
+    if (id === "adivina_concepto") {
+      setLangPickerOpen(true);
+    } else {
+      openDetail(id);
+    }
+  }
+
+  function handleLangConfirm(langs: string[]) {
+    setSelectedLangs(langs);
+    setLangPickerOpen(false);
+    openDetail("adivina_concepto");
+  }
 
   const totalDone = WEEKLY_CHALLENGES.filter(
     (c) => (progress[c.id] ?? 0) >= c.questions.length,
@@ -110,15 +127,15 @@ export default function ChallengesScreen() {
             <Text style={styles.eyebrow}>Retos de la semana</Text>
             <Text style={styles.heroTitle}>Pon a prueba{"\n"}tu nivel.</Text>
             <Text style={styles.heroSub}>
-              4 desafíos para medir tus habilidades en el ecosistema tech.
+              4 desafíos para explorar tu bienestar y autoconocimiento.
             </Text>
             <View style={styles.iconStrip}>
               {(
                 [
-                  "adivina_lenguaje",
-                  "encuentra_bug",
+                  "adivina_concepto",
+                  "identifica_patron",
                   "verdad_mito",
-                  "completa_codigo",
+                  "completa_reflexion",
                 ] as ChallengeType[]
               ).map((id) => {
                 const { image, bg, color } = ICON_MAP[id];
@@ -202,7 +219,7 @@ export default function ChallengesScreen() {
                     { borderColor },
                     pressed && { opacity: 0.82 },
                   ]}
-                  onPress={() => openDetail(c.id)}
+                  onPress={() => handleCardPress(c.id)}
                 >
                   <Text style={[styles.cardTitle, { color }]}>{c.title}</Text>
                   <View
@@ -240,6 +257,13 @@ export default function ChallengesScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {langPickerOpen && (
+        <ConceptPickerSheet
+          onConfirm={handleLangConfirm}
+          onClose={() => setLangPickerOpen(false)}
+        />
+      )}
     </SafeAreaView>
   );
 }

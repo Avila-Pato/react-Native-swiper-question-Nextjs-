@@ -4,12 +4,12 @@ import { BG, MUTED, TEXT } from "@/constants/theme";
 import { RoleKey } from "@/types/roleTest";
 import { router } from "expo-router";
 import {
-  Cloud,
-  Database,
+  Compass,
+  Eye,
   LucideIcon,
-  Monitor,
-  Server,
   Shield,
+  Sun,
+  Users,
 } from "lucide-react-native";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import {
@@ -18,7 +18,7 @@ import {
 } from "react-native-safe-area-context";
 
 const BAR_HEIGHT = TAB_ITEM_SIZE + SPACING * 1.5;
-const ACCENT = "#34D59A";
+const ACCENT = "#8980B8";
 
 type RoleItem = {
   Icon: LucideIcon;
@@ -29,51 +29,51 @@ type RoleItem = {
 };
 
 const ROLES: Record<RoleKey, RoleItem> = {
-  frontend: {
-    Icon: Monitor,
-    label: "Frontend / UX",
-    desc: "Interfaces y experiencia visual",
-    color: "#D97706",
-    bg: "#FEF3C7",
-  },
-  backend: {
-    Icon: Server,
-    label: "Backend",
-    desc: "APIs, lógica y bases de datos",
-    color: "#2563EB",
-    bg: "#DBEAFE",
-  },
-  datos: {
-    Icon: Database,
-    label: "Datos / IA",
-    desc: "Modelos, análisis y predicciones",
+  limites: {
+    Icon: Shield,
+    label: "Límites",
+    desc: "Decir no, proteger tu energía y comunicar tus necesidades",
     color: "#7C3AED",
     bg: "#EDE9FE",
   },
-  devops: {
-    Icon: Cloud,
-    label: "DevOps / Cloud",
-    desc: "Infraestructura y automatización",
-    color: "#16A34A",
-    bg: "#DCFCE7",
+  autoconocimiento: {
+    Icon: Eye,
+    label: "Autoconocimiento",
+    desc: "Entender tus patrones, emociones y mundo interior",
+    color: "#0284C7",
+    bg: "#E0F2FE",
   },
-  seguridad: {
-    Icon: Shield,
-    label: "Ciberseguridad",
-    desc: "Seguridad y protección de datos",
-    color: "#DC2626",
-    bg: "#FEE2E2",
+  vinculos: {
+    Icon: Users,
+    label: "Vínculos",
+    desc: "Conexiones genuinas, profundas y recíprocas",
+    color: "#4D8B7A",
+    bg: "#E8F0EE",
+  },
+  felicidad: {
+    Icon: Sun,
+    label: "Felicidad",
+    desc: "Gratitud, mindfulness y bienestar cotidiano",
+    color: "#F59E0B",
+    bg: "#FEF3C7",
+  },
+  proposito: {
+    Icon: Compass,
+    label: "Propósito",
+    desc: "Valores, visión de vida y significado personal",
+    color: "#7B6BB5",
+    bg: "#EDE9F8",
   },
 };
 
-const KEYS: RoleKey[] = ["frontend", "backend", "datos", "devops", "seguridad"];
+const KEYS: RoleKey[] = ["limites", "autoconocimiento", "vinculos", "felicidad", "proposito"];
 
 export default function RoleTestScreen() {
   const { bottom } = useSafeAreaInsets();
 
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={styles.root}>
-      <ScreenHeader title="Mi Rol" />
+      <ScreenHeader title="Mi Camino" />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -86,11 +86,11 @@ export default function RoleTestScreen() {
 
           {/* Title block */}
           <View style={styles.titleBlock}>
-            <Text style={styles.eyebrow}>Test de personalidad tech</Text>
-            <Text style={styles.heroTitle}>Descubre tu perfil.</Text>
+            <Text style={styles.eyebrow}>Test de bienestar personal</Text>
+            <Text style={styles.heroTitle}>Tu camino.</Text>
             <Text style={styles.heroSub}>
-              20 preguntas para identificar qué rol del ecosistema tech define
-              mejor tu forma de pensar y trabajar.
+              20 preguntas para identificar qué área de tu bienestar tiene más
+              potencial de transformación en este momento.
             </Text>
             <View style={styles.iconStrip}>
               {KEYS.map((key) => {
@@ -142,7 +142,7 @@ export default function RoleTestScreen() {
 
         {/* ── Roles list ── */}
         <View style={styles.listSection}>
-          <Text style={styles.listLabel}>Los 5 perfiles</Text>
+          <Text style={styles.listLabel}>Los 5 caminos</Text>
 
           {KEYS.map((key, i) => {
             const { Icon, label, desc, color, bg } = ROLES[key];

@@ -3,115 +3,137 @@ import { Challenge } from "@/types/challenges";
 
 export const WEEKLY_CHALLENGES: Challenge[] = [
   {
-    id: "adivina_lenguaje",
-    title: "Adivina el lenguaje",
+    id: "adivina_concepto",
+    title: "Adivina el concepto",
     emoji: require("@/assets/svg/tech1.svg"),
     color: P_TEAL.fg,
-    difficulty: "Fácil",
     borderColor: P_TEAL.fg,
     questions: [
       {
-        id: "al1",
-        statement: "¿Qué lenguaje usa esta sintaxis?",
-        code: `nums = [x**2 for x in range(5)]\nprint(nums)`,
-        options: ["Python", "Ruby", "Kotlin", "Swift"],
-        correctIndex: 0,
-        explanation: "Las list comprehensions `[x for x in ...]` son una característica exclusiva de Python.",
-      },
-      {
-        id: "al2",
-        statement: "¿Qué lenguaje usa esta sintaxis?",
-        code: `func main() {\n    fmt.Println("Hola mundo")\n}`,
-        options: ["Rust", "C++", "Go", "Swift"],
-        correctIndex: 2,
-        explanation: "El paquete `fmt` y la función `func main()` sin paréntesis son propios de Go.",
-      },
-      {
-        id: "al3",
-        statement: "¿Qué lenguaje usa esta sintaxis?",
-        code: `fn main() {\n    let x: i32 = 42;\n    println!("{}", x);\n}`,
-        options: ["C++", "Go", "Java", "Rust"],
-        correctIndex: 3,
-        explanation: "`let x: i32` y las macros con `!` como `println!` son exclusivas de Rust.",
-      },
-      {
-        id: "al4",
-        statement: "¿Qué lenguaje usa esta sintaxis?",
-        code: `5.times { |i| puts "Iteración #{i}" }`,
-        options: ["Python", "Ruby", "Perl", "Lua"],
+        id: "ac1",
+        statement:
+          "María siempre dice que sí a todo lo que le piden, aunque esté agotada, por miedo a decepcionar a los demás. ¿Qué describe mejor esta situación?",
+        options: [
+          "Límite sano",
+          "Dificultad para poner límites",
+          "Comunicación asertiva",
+          "Autoconocimiento",
+        ],
         correctIndex: 1,
-        explanation: "El método `.times` con bloque `{ |i| }` y la interpolación con `#{}` son de Ruby.",
+        explanation:
+          "Decir sí compulsivamente por miedo al rechazo es una señal de falta de límites. Poner límites es un acto de autocuidado, no de egoísmo.",
       },
       {
-        id: "al5",
-        statement: "¿Qué lenguaje usa esta sintaxis?",
-        code: `fun saludar(nombre: String): String {\n    return "Hola, $nombre"\n}`,
-        options: ["Swift", "Dart", "Scala", "Kotlin"],
-        correctIndex: 3,
-        explanation: "La palabra clave `fun`, el tipado `String` y `$nombre` para interpolar son de Kotlin.",
+        id: "ac2",
+        statement:
+          "Pedro expresó calmamente a su compañero: 'Cuando interrumpes mis reuniones me cuesta concentrarme. Me ayudaría que lo comentáramos primero.' ¿Qué habilidad usó?",
+        options: [
+          "Manipulación",
+          "Pasividad",
+          "Comunicación asertiva",
+          "Agresividad",
+        ],
+        correctIndex: 2,
+        explanation:
+          "La comunicación asertiva permite expresar necesidades y sentimientos con claridad y respeto, sin atacar ni someterse. Es una de las habilidades más valiosas para las relaciones sanas.",
+      },
+      {
+        id: "ac3",
+        statement:
+          "Ana está convencida de que su jefe está enojado con ella, pero en realidad es ella quien está frustrada y lo proyecta en él. ¿Qué mecanismo psicológico ocurre aquí?",
+        options: ["Negación", "Proyección", "Racionalización", "Represión"],
+        correctIndex: 1,
+        explanation:
+          "La proyección es atribuir inconscientemente a otros los propios sentimientos o impulsos que no queremos reconocer en nosotros mismos. Es un mecanismo de defensa muy común.",
+      },
+      {
+        id: "ac4",
+        statement:
+          "Después de cometer un error, Luis se dice: 'Fue difícil, cometí un error, y eso es humano. ¿Qué puedo aprender de esto?' ¿Qué está practicando?",
+        options: ["Autocompasión", "Negación", "Perfeccionismo", "Autoexigencia excesiva"],
+        correctIndex: 0,
+        explanation:
+          "La autocompasión es tratarse con la misma amabilidad que tendrías con un amigo cuando comete un error. No es excusa para no mejorar; es el punto de partida para hacerlo.",
+      },
+      {
+        id: "ac5",
+        statement:
+          "Camila le dijo a su pareja: 'Necesito tiempo para mí los domingos por la tarde. Es importante para mí recargar energía.' Su pareja lo respetó. ¿Qué estableció Camila?",
+        options: [
+          "Un límite sano",
+          "Una conducta egoísta",
+          "Dependencia emocional",
+          "Aislamiento",
+        ],
+        correctIndex: 0,
+        explanation:
+          "Un límite sano comunica claramente lo que necesitas sin agredir. Nedra Tawwab lo define como la forma en que le dices a los demás cómo quieres ser tratado, y es fundamental para el bienestar.",
       },
     ],
   },
 
   {
-    id: "encuentra_bug",
-    title: "Encuentra el bug",
+    id: "identifica_patron",
+    title: "Identifica el patrón",
     emoji: require("@/assets/svg/tech2.svg"),
     color: P_AMBER.fg,
-    difficulty: "Medio",
     borderColor: P_AMBER.fg,
     questions: [
       {
-        id: "eb1",
-        statement: "¿Cuál es el problema en este código?",
-        code: `def dividir(a, b):\n    return a / b\n\nresultado = dividir(10, 0)\nprint(resultado)`,
+        id: "ip1",
+        statement:
+          "Marco le dice a Laura 'No me importa, haz lo que quieras' pero después la ignora todo el día y responde con monosílabos. ¿Qué patrón muestra Marco?",
         options: [
-          "La función no tiene `return`",
-          "División por cero — falta validar `b != 0`",
-          "Los parámetros están invertidos",
-          "No hay bug",
+          "Comunicación asertiva",
+          "Comunicación pasivo-agresiva",
+          "Escucha activa",
+          "Límite sano",
         ],
         correctIndex: 1,
-        explanation: "Dividir por cero lanza `ZeroDivisionError`. Siempre valida el divisor antes de operar.",
+        explanation:
+          "La comunicación pasivo-agresiva evita el conflicto directo pero lo expresa de forma indirecta: silencios, frialdad, respuestas cortantes. No resuelve el problema; lo prolonga.",
       },
       {
-        id: "eb2",
-        statement: "¿Cuál es el problema en este código?",
-        code: `const user = { nombre: "Ana" };\nif (user.nombre = "Carlos") {\n    console.log("Es Carlos");\n}`,
+        id: "ip2",
+        statement:
+          "Sofía piensa: 'Nunca hago nada bien', 'Siempre me equivoco', 'Jamás voy a mejorar'. ¿Cuál es el patrón de pensamiento?",
         options: [
-          "Falta el punto y coma al final",
-          "`user.nombre` debería ser `user.edad`",
-          "`=` asigna en vez de comparar, usa `===`",
-          "No hay bug",
+          "Pensamiento realista",
+          "Autoconocimiento",
+          "Generalización excesiva",
+          "Reflexión constructiva",
         ],
         correctIndex: 2,
-        explanation: "El operador `=` asigna y siempre evalúa como `true`. Para comparar usa `===` en JavaScript.",
+        explanation:
+          "La generalización excesiva usa palabras absolutas como 'nunca', 'siempre', 'jamás' para sacar conclusiones globales de eventos aislados. Es un patrón cognitivo que distorsiona la realidad.",
       },
       {
-        id: "eb3",
-        statement: "¿Cuál es el problema en este código?",
-        code: `lista = ["a", "b", "c"]\nfor i in range(1, len(lista) + 1):\n    print(lista[i])`,
+        id: "ip3",
+        statement:
+          "Cuando su amigo cancela planes, Diego se lo toma como señal de que ya no le importa y empieza a alejarse sin decir nada. ¿Qué patrón ocurre?",
         options: [
-          "`range` debería empezar en 0",
-          "`len(lista) + 1` causa IndexError al final",
-          "Faltan comillas en el `print`",
-          "No hay bug",
+          "Comunicación directa",
+          "Interpretación catastrófica sin verificar",
+          "Límite sano",
+          "Escucha activa",
         ],
         correctIndex: 1,
-        explanation: "Los índices van de 0 a len-1. Con `+ 1` el loop llega al índice 3 que no existe → IndexError.",
+        explanation:
+          "Sacar conclusiones negativas sin verificarlas ni comunicarlas genera distancia innecesaria. La forma sana es preguntar directamente en lugar de asumir la peor interpretación.",
       },
       {
-        id: "eb4",
-        statement: "¿Cuál es el problema en este código?",
-        code: `async function fetchData() {\n    const res = fetch("https://api.example.com/data");\n    const json = await res.json();\n    return json;\n}`,
+        id: "ip4",
+        statement:
+          "Cuando algo sale mal, Valeria no dice nada en el momento pero luego le cuenta a otras personas lo que le molestó, en lugar de hablar con quien corresponde. ¿Qué patrón es?",
         options: [
-          "Falta `await` antes de `fetch(...)`",
-          "`.json()` no existe en fetch",
-          "`return` no funciona en async",
-          "No hay bug",
+          "Comunicación indirecta",
+          "Asertividad",
+          "Empatía profunda",
+          "Escucha activa",
         ],
         correctIndex: 0,
-        explanation: "`fetch()` retorna una Promise. Sin `await`, `res` es una Promise, no la respuesta, y `.json()` falla.",
+        explanation:
+          "Comunicar el malestar a terceros en lugar de a la persona involucrada es comunicación indirecta. Aunque alivia en el corto plazo, no resuelve el conflicto y puede generar más tensión.",
       },
     ],
   },
@@ -122,89 +144,92 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
     emoji: require("@/assets/svg/tech3.svg"),
     color: P_GOLD.fg,
     borderColor: P_GOLD.fg,
-    difficulty: "Fácil",
     questions: [
       {
         id: "vm1",
-        statement: "JavaScript fue inventado por Microsoft.",
+        statement: "Poner límites en una relación es un acto de egoísmo.",
         options: ["Verdad", "Mito"],
         correctIndex: 1,
-        explanation: "Fue creado por Brendan Eich en Netscape en 1995, en solo 10 días. Microsoft creó JScript, su versión propia.",
+        explanation:
+          "Los límites son una forma de autocuidado y comunicación sana, no de egoísmo. Nedra Tawwab explica que los límites protegen el bienestar propio y mejoran las relaciones.",
       },
       {
         id: "vm2",
-        statement: "Git y GitHub son exactamente lo mismo.",
+        statement:
+          "La terapia psicológica es solo para personas con enfermedades mentales graves.",
         options: ["Verdad", "Mito"],
         correctIndex: 1,
-        explanation: "Git es el sistema de control de versiones (herramienta local). GitHub es una plataforma web que lo usa.",
+        explanation:
+          "Cualquier persona puede beneficiarse de la terapia. Es un espacio para crecer, conocerse mejor, mejorar relaciones o atravesar momentos difíciles, no solo para tratar diagnósticos clínicos.",
       },
       {
         id: "vm3",
-        statement: "El primer 'bug' de computadora fue literalmente un insecto.",
+        statement:
+          "Expresar emociones como la tristeza o el miedo es una señal de debilidad.",
         options: ["Verdad", "Mito"],
-        correctIndex: 0,
-        explanation: "En 1947, Grace Hopper encontró una polilla atascada en el Harvard Mark II. Lo pegaron en el log con la nota 'First actual bug found'.",
+        correctIndex: 1,
+        explanation:
+          "Reconocer y expresar emociones requiere valentía y autoconocimiento. La inteligencia emocional —que incluye expresar lo que sentimos— está relacionada con mayor bienestar y relaciones más sanas.",
       },
       {
         id: "vm4",
-        statement: "Python fue diseñado principalmente para inteligencia artificial.",
+        statement:
+          "La felicidad es un estado permanente que se alcanza cuando tienes todo en orden.",
         options: ["Verdad", "Mito"],
         correctIndex: 1,
-        explanation: "Python fue creado por Guido van Rossum en 1991 para ser un lenguaje de propósito general fácil de leer. La IA vino después.",
+        explanation:
+          "La felicidad es una experiencia temporal y variable, no un destino fijo. James Allen señala que el bienestar surge del estado interno de la mente, no de las circunstancias externas.",
       },
       {
         id: "vm5",
-        statement: "Un computador cuántico siempre es más rápido que uno clásico.",
+        statement:
+          "El perdón beneficia principalmente a quien perdona, no a quien cometió el error.",
         options: ["Verdad", "Mito"],
-        correctIndex: 1,
-        explanation: "Los qubits solo superan a los clásicos en problemas específicos (factorización, simulación). Para tareas cotidianas son más lentos.",
+        correctIndex: 0,
+        explanation:
+          "Perdonar libera el resentimiento propio, no necesariamente absuelve al otro. El perdón es un proceso interno que reduce el peso emocional y mejora el bienestar de quien perdona.",
       },
     ],
   },
 
   {
-    id: "completa_codigo",
-    title: "Completa el código",
+    id: "completa_reflexion",
+    title: "Completa la reflexión",
     emoji: require("@/assets/svg/tech8.svg"),
     color: P_SLATE.fg,
-    difficulty: "Difícil",
     borderColor: P_SLATE.fg,
     questions: [
       {
-        id: "cc1",
-        statement: "Elige qué va en el ___",
-        code: `nombres = ["Ana", "Luis", "Carlos"]\nfor nombre in ___:\n    print(nombre)`,
-        options: ["nombres", "range(nombres)", "len(nombres)", "enumerate(nombres)"],
+        id: "cr1",
+        statement: "Completa esta idea de James Allen: 'Un hombre es literalmente lo que ___, su carácter siendo la suma de todos sus pensamientos.'",
+        options: ["piensa", "siente", "dice", "hace"],
         correctIndex: 0,
-        difficulty: "Fácil",
-        explanation: "En Python se itera directamente sobre una lista con `for x in lista`. No necesitas índices.",
+        explanation:
+          "En 'Como el Hombre Piensa', James Allen sostiene que los pensamientos moldean el carácter y el destino. Cambiar el pensamiento es el primer paso para cambiar la vida.",
       },
       {
-        id: "cc2",
-        statement: "Elige qué va en el ___",
-        code: `const nums = [1, 2, 3, 4, 5];\nconst dobles = nums.___(n => n * 2);`,
-        options: ["filter", "map", "reduce", "find"],
-        correctIndex: 1,
-        difficulty: "Medio",
-        explanation: "`map()` transforma cada elemento y devuelve un nuevo array. `filter()` filtra, `reduce()` acumula en un valor.",
+        id: "cr2",
+        statement: "La comunicación asertiva te permite expresar lo que sientes y necesitas sin ___ a los demás.",
+        options: ["atacar", "escuchar", "respetar", "ayudar"],
+        correctIndex: 0,
+        explanation:
+          "La asertividad busca el equilibrio entre expresar las propias necesidades y respetar las del otro. Decir lo que sientes sin atacar ni someterte es la base de toda relación sana.",
       },
       {
-        id: "cc3",
-        statement: "Elige qué va en el ___",
-        code: `class Vehiculo:\n    def __init__(self, marca):\n        ___.marca = marca`,
-        options: ["self", "this", "cls", "Vehiculo"],
+        id: "cr3",
+        statement: "Según Nedra Tawwab, los límites son una expresión de ___ propio, no de rechazo hacia los demás.",
+        options: ["amor", "enojo", "miedo", "indiferencia"],
         correctIndex: 0,
-        difficulty: "Medio",
-        explanation: "En Python, `self` refiere a la instancia actual del objeto. Es equivalente a `this` en otros lenguajes.",
+        explanation:
+          "En 'Pon límites, encuentra la paz', Tawwab explica que establecer límites es una forma de amor propio. Protegen tu energía, tu tiempo y tus valores sin necesitar la aprobación de los demás.",
       },
       {
-        id: "cc4",
-        statement: "Elige qué va en el ___",
-        code: `function identity<T>(arg: ___): ___ {\n    return arg;\n}`,
-        options: ["T, T", "any, any", "T, void", "unknown, T"],
+        id: "cr4",
+        statement: "El ___ es el primer paso hacia el cambio personal: sin conocerte, no puedes transformarte.",
+        options: ["autoconocimiento", "éxito", "esfuerzo", "talento"],
         correctIndex: 0,
-        difficulty: "Difícil",
-        explanation: "Los genéricos en TypeScript usan `<T>` para que tanto el parámetro como el retorno tengan el mismo tipo dinámico.",
+        explanation:
+          "Conocerse a uno mismo —fortalezas, limitaciones, emociones, patrones— es la base del crecimiento personal. Sin autoconocimiento, los cambios suelen ser superficiales o temporales.",
       },
     ],
   },

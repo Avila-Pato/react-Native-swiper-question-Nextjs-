@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <!-- blob -->
+  <path d="M38 118 Q30 92 50 70 Q65 50 88 52 Q116 50 128 76 Q142 104 124 126 Q108 145 76 144 Q44 144 38 118Z" fill="#FFE168"/>
+  <!-- arcos de proteccion cortos alrededor -->
+  <path d="M48 65 Q44 80 50 95" stroke="#2D1F60" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.45"/>
+  <path d="M112 65 Q116 80 110 95" stroke="#2D1F60" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.45"/>
+  <path d="M60 48 Q80 42 100 48" stroke="#2D1F60" stroke-width="2.2" fill="none" stroke-linecap="round" opacity="0.45"/>
+  <!-- piernas -->
+  <line x1="80" y1="118" x2="68" y2="140" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <line x1="80" y1="118" x2="92" y2="140" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <!-- torso -->
+  <line x1="80" y1="118" x2="80" y2="84" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <!-- brazos extendidos gesto de limite -->
+  <line x1="80" y1="94" x2="52" y2="82" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <line x1="80" y1="94" x2="108" y2="82" stroke="#2D1F60" stroke-width="3" stroke-linecap="round"/>
+  <!-- manos abiertas (palma) -->
+  <path d="M48 79 Q50 75 54 78 Q52 82 48 79Z" fill="#2D1F60"/>
+  <path d="M112 79 Q110 75 106 78 Q108 82 112 79Z" fill="#2D1F60"/>
+  <!-- cabeza -->
+  <circle cx="80" cy="70" r="14" fill="none" stroke="#2D1F60" stroke-width="2.5"/>
+  <!-- ojos serenos -->
+  <circle cx="75" cy="68" r="1.8" fill="#2D1F60"/>
+  <circle cx="85" cy="68" r="1.8" fill="#2D1F60"/>
+  <!-- sonrisa tranquila -->
+  <path d="M74 74 Q80 79 86 74" stroke="#2D1F60" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- corazon -->
+  <path d="M76 98 Q80 93 84 98 Q88 103 80 108 Q72 103 76 98Z" fill="#E8706A"/>
+</svg>

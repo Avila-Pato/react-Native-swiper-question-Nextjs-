@@ -1,17 +1,17 @@
 import { SPACING } from "@/constants/constants";
 import { ROLES } from "@/data/roleTestData";
 import { RoleKey, RoleScores } from "@/types/roleTest";
-import { Cloud, Database, LucideIcon, Monitor, Server, Shield } from "lucide-react-native";
+import { Compass, Eye, LucideIcon, Shield, Sun, Users } from "lucide-react-native";
 import { StyleSheet, Text, View } from "react-native";
 
 type IconCfg = { Icon: LucideIcon; bg: string };
 
 const ICON_MAP: Record<RoleKey, IconCfg> = {
-  frontend:  { Icon: Monitor,  bg: "#FEF3C7" },
-  backend:   { Icon: Server,   bg: "#DBEAFE" },
-  datos:     { Icon: Database, bg: "#EDE9FE" },
-  devops:    { Icon: Cloud,    bg: "#DCFCE7" },
-  seguridad: { Icon: Shield,   bg: "#FEE2E2" },
+  limites:          { Icon: Shield,  bg: "#EDE9FE" },
+  autoconocimiento: { Icon: Eye,     bg: "#E0F2FE" },
+  vinculos:         { Icon: Users,   bg: "#E8F0EE" },
+  felicidad:        { Icon: Sun,     bg: "#FEF3C7" },
+  proposito:        { Icon: Compass, bg: "#EDE9F8" },
 };
 
 const MAX = 4 * 5;

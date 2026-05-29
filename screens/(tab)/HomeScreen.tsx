@@ -2,6 +2,7 @@
 import DearManAssistant from "@/components/home/DearManAssistant";
 import HappinessGameAssistant from "@/components/home/HappinessGameAssistant";
 import SelfEsteemMirrorAssistant from "@/components/home/SelfEsteemMirrorAssistant";
+import VinculosDelHilo from "@/components/home/VinculosDelHilo";
 import ReflectionModal from "@/components/home/ReflectionModal";
 import { SPACING } from "@/constants/constants";
 import { ACCENT, BG, BORDER, CARD_BG, MUTED, TEXT } from "@/constants/theme";
@@ -154,6 +155,7 @@ export default function HomeScreen() {
   const [dearManVisible, setDearManVisible] = useState(false);
   const [happinessVisible, setHappinessVisible] = useState(false);
   const [selfEsteemVisible, setSelfEsteemVisible] = useState(false);
+  const [vinculosVisible, setVinculosVisible] = useState(false);
 
   useEffect(() => {
     if (nombre) {
@@ -171,7 +173,7 @@ export default function HomeScreen() {
     dear_man: () => setDearManVisible(true),
     felicidad: () => setHappinessVisible(true),
     autoestima: () => setSelfEsteemVisible(true),
-    vinculos: () => {},
+    vinculos: () => setVinculosVisible(true),
     proposito: () => {},
   };
 
@@ -390,6 +392,10 @@ export default function HomeScreen() {
       <SelfEsteemMirrorAssistant
         visible={selfEsteemVisible}
         onClose={() => setSelfEsteemVisible(false)}
+      />
+      <VinculosDelHilo
+        visible={vinculosVisible}
+        onClose={() => setVinculosVisible(false)}
       />
     </SafeAreaView>
   );

@@ -1,30 +1,24 @@
-﻿import BreathingScreen from "@/components/home/BreathingScreen";
-import DearManAssistant from "@/components/home/DearManAssistant";
-import HappinessGameAssistant from "@/components/home/HappinessGameAssistant";
-import SelfEsteemMirrorAssistant from "@/components/home/SelfEsteemMirrorAssistant";
-import VinculosDelHilo from "@/components/home/VinculosDelHilo";
-import ReflectionModal from "@/components/home/ReflectionModal";
+﻿import BreathingScreen from "@/components/home/breathing";
+import DearManAssistant from "@/components/home/dearman";
+import HappinessGameAssistant from "@/components/home/happiness";
+import SelfEsteemMirrorAssistant from "@/components/home/selfesteemmirror";
+import VinculosDelHilo from "@/components/home/vinculos";
+import PurposeCompassAssistant from "@/components/home/purposecompass";
+import ReflectionModal from "@/components/home/reflection";
 import { SPACING } from "@/constants/constants";
 import { ACCENT, BG, BORDER, CARD_BG, MUTED, TEXT } from "@/constants/theme";
+import { MOODS } from "@/data/moods";
 import { WEEKLY_CHALLENGES } from "@/data/weeklyData";
 import { getUserName, saveUserName } from "@/store/userProfile";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getMoodHistory, saveMood, todayString } from "@/store/moodHistory";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { ArrowUpRight, Bell, ChevronRight, Zap } from "lucide-react-native";
+import { ArrowUpRight, Bell, Check, ChevronRight, Zap } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const MOODS = [
-  {
-    image: require("@/assets/images/moods/mood_dificil.svg"),
-    label: "Difícil",
-  },
-  { image: require("@/assets/images/moods/mood_bajo.svg"), label: "Bajo" },
-  { image: require("@/assets/images/moods/mood_neutro.svg"), label: "Neutro" },
-  { image: require("@/assets/images/moods/mood_bien.svg"), label: "Bien" },
-  { image: require("@/assets/images/moods/mood_genial.svg"), label: "Genial" },
-] as const;
 
 const MOOD_FEEDBACK = [
   "Está bien no estar bien. Hoy es un buen día para cuidarte con amabilidad.",
@@ -149,6 +143,13 @@ export default function HomeScreen() {
   const { nombre } = useLocalSearchParams<{ nombre?: string }>();
   const [userName, setUserName] = useState("...");
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
+
+  useEffect(() => {
+    getMoodHistory().then((h) => {
+      const idx = h[todayString()];
+      if (idx !== undefined) setSelectedMood(idx);
+    });
+  }, []);
   const [reflection, setReflection] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [breathingVisible, setBreathingVisible] = useState(false);
@@ -156,6 +157,26 @@ export default function HomeScreen() {
   const [happinessVisible, setHappinessVisible] = useState(false);
   const [selfEsteemVisible, setSelfEsteemVisible] = useState(false);
   const [vinculosVisible, setVinculosVisible] = useState(false);
+  const [propositoVisible, setPropositoVisible] = useState(false);
+  const [visitedCats, setVisitedCats] = useState<Set<CategoryAction>>(new Set());
+
+  const VISITED_KEY = "home_visited_categories";
+
+  useEffect(() => {
+    AsyncStorage.getItem(VISITED_KEY).then((raw) => {
+      if (raw) setVisitedCats(new Set(JSON.parse(raw) as CategoryAction[]));
+    });
+  }, []);
+
+  const markVisited = (action: CategoryAction) => {
+    setVisitedCats((prev) => {
+      if (prev.has(action)) return prev;
+      const next = new Set(prev);
+      next.add(action);
+      AsyncStorage.setItem(VISITED_KEY, JSON.stringify([...next]));
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (nombre) {
@@ -169,12 +190,12 @@ export default function HomeScreen() {
   }, [nombre]);
 
   const categoryHandlers: Record<CategoryAction, () => void> = {
-    breathing: () => setBreathingVisible(true),
-    dear_man: () => setDearManVisible(true),
-    felicidad: () => setHappinessVisible(true),
-    autoestima: () => setSelfEsteemVisible(true),
-    vinculos: () => setVinculosVisible(true),
-    proposito: () => {},
+    breathing: () => { markVisited("breathing"); setBreathingVisible(true); },
+    dear_man: () => { markVisited("dear_man"); setDearManVisible(true); },
+    felicidad: () => { markVisited("felicidad"); setHappinessVisible(true); },
+    autoestima: () => { markVisited("autoestima"); setSelfEsteemVisible(true); },
+    vinculos: () => { markVisited("vinculos"); setVinculosVisible(true); },
+    proposito: () => { markVisited("proposito"); setPropositoVisible(true); },
   };
 
   const day = new Date().getDay();
@@ -243,7 +264,10 @@ export default function HomeScreen() {
               return (
                 <Pressable
                   key={i}
-                  onPress={() => setSelectedMood(i)}
+                  onPress={() => {
+                    setSelectedMood(i);
+                    saveMood(todayString(), i);
+                  }}
                   style={[s.moodBtn, active && s.moodBtnActive]}
                 >
                   <Image
@@ -274,20 +298,37 @@ export default function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={s.catRow}
           >
-            {CATEGORIES.map((cat) => (
-              <Pressable
-                key={cat.action}
-                style={[s.catCard, { backgroundColor: cat.color }]}
-                onPress={categoryHandlers[cat.action]}
-              >
-                <Image
-                  source={cat.image}
-                  style={s.catIllustration}
-                  contentFit="contain"
-                />
-                <Text style={s.catLabel}>{cat.label}</Text>
-              </Pressable>
-            ))}
+            {CATEGORIES.map((cat) => {
+              const visited = visitedCats.has(cat.action);
+              return (
+                <Pressable
+                  key={cat.action}
+                  style={[s.catCard, { backgroundColor: cat.color }]}
+                  onPress={categoryHandlers[cat.action]}
+                >
+                  {/* Overlay gris al haber visitado */}
+                  {visited && <View style={s.catVisitedOverlay} />}
+
+                  {/* Badge check: siempre visible, lleno si visitado */}
+                  <View style={[s.catCheckBadge, visited && s.catCheckBadgeDone]}>
+                    <Check
+                      size={9}
+                      color={visited ? "#fff" : "rgba(80,80,100,0.45)"}
+                      strokeWidth={3}
+                    />
+                  </View>
+
+                  <Image
+                    source={cat.image}
+                    style={[s.catIllustration, visited && s.catIllustrationDone]}
+                    contentFit="contain"
+                  />
+                  <Text style={[s.catLabel, visited && s.catLabelDone]}>
+                    {cat.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </ScrollView>
 
           <View style={s.quoteCard}>
@@ -396,6 +437,10 @@ export default function HomeScreen() {
       <VinculosDelHilo
         visible={vinculosVisible}
         onClose={() => setVinculosVisible(false)}
+      />
+      <PurposeCompassAssistant
+        visible={propositoVisible}
+        onClose={() => setPropositoVisible(false)}
       />
     </SafeAreaView>
   );
@@ -569,6 +614,36 @@ const s = StyleSheet.create({
     paddingBottom: SPACING,
     overflow: "hidden",
     alignItems: "center",
+  },
+  catVisitedOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(137,128,184,0.1)",
+    borderRadius: 20,
+    zIndex: 1,
+  },
+  catCheckBadge: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: "rgba(255,255,255,0.55)",
+    borderWidth: 1.5,
+    borderColor: "rgba(137,128,184,0.3)",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
+  },
+  catCheckBadgeDone: {
+    backgroundColor: "#8980B8",
+    borderColor: "#8980B8",
+  },
+  catIllustrationDone: {
+    opacity: 0.78,
+  },
+  catLabelDone: {
+    color: MUTED,
   },
   catIllustration: {
     width: 110,

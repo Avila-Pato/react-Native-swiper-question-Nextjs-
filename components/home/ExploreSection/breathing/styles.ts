@@ -53,7 +53,7 @@ export const s = StyleSheet.create({
     borderRadius: 18, borderWidth: 1, borderColor: "rgba(255,255,255,0.85)",
     paddingVertical: 18, paddingHorizontal: 8, alignItems: "center", gap: 6,
   },
-  stepIcon:  { fontSize: 26 },
+  stepIcon:  { width: 48, height: 48 },
   stepPhase: { fontSize: 12, fontFamily: "Poppins-SemiBold", color: C_TITLE },
   stepTime:  { fontSize: 11, fontFamily: "Poppins-Regular", color: C_MUTED },
   startBtn: {

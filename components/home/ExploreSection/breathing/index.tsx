@@ -2,7 +2,7 @@ import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { X } from "lucide-react-native";
 import React from "react";
-import { Animated, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { FloatingParticle } from "./FloatingParticle";
 import { GRADIENT_COLORS, PARTICLES, PHASES, STEPS } from "./constants";
 import { s } from "./styles";
@@ -59,7 +59,7 @@ export default function BreathingScreen({ visible, onClose }: Props) {
           <View style={s.stepsRow}>
             {STEPS.map((step, i) => (
               <View key={i} style={s.stepCard}>
-                <Text style={s.stepIcon}>{step.icon}</Text>
+                <Image source={step.image} style={s.stepIcon} resizeMode="contain" />
                 <Text style={s.stepPhase}>{step.phase}</Text>
                 <Text style={s.stepTime}>{step.time}</Text>
               </View>

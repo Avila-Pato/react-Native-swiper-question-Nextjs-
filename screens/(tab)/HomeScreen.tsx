@@ -1,24 +1,29 @@
-﻿import BreathingScreen from "@/components/home/breathing";
-import DearManAssistant from "@/components/home/dearman";
-import HappinessGameAssistant from "@/components/home/happiness";
-import SelfEsteemMirrorAssistant from "@/components/home/selfesteemmirror";
-import VinculosDelHilo from "@/components/home/vinculos";
-import PurposeCompassAssistant from "@/components/home/purposecompass";
+﻿import BreathingScreen from "@/components/home/ExploreSection/breathing";
+import DearManAssistant from "@/components/home/ExploreSection/dearman";
+import HappinessGameAssistant from "@/components/home/ExploreSection/happiness";
+import PurposeCompassAssistant from "@/components/home/ExploreSection/purposecompass";
+import SelfEsteemMirrorAssistant from "@/components/home/ExploreSection/selfesteemmirror";
+import VinculosDelHilo from "@/components/home/ExploreSection/vinculos";
 import ReflectionModal from "@/components/home/reflection";
 import { SPACING } from "@/constants/constants";
 import { ACCENT, BG, BORDER, CARD_BG, MUTED, TEXT } from "@/constants/theme";
 import { MOODS } from "@/data/moods";
 import { WEEKLY_CHALLENGES } from "@/data/weeklyData";
+import { getMoodHistory, saveMood, todayString } from "@/store/moodHistory";
 import { getUserName, saveUserName } from "@/store/userProfile";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getMoodHistory, saveMood, todayString } from "@/store/moodHistory";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { ArrowUpRight, Bell, Check, ChevronRight, Zap } from "lucide-react-native";
+import {
+  ArrowUpRight,
+  Bell,
+  Check,
+  ChevronRight,
+  Zap,
+} from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 
 const MOOD_FEEDBACK = [
   "Está bien no estar bien. Hoy es un buen día para cuidarte con amabilidad.",
@@ -158,7 +163,9 @@ export default function HomeScreen() {
   const [selfEsteemVisible, setSelfEsteemVisible] = useState(false);
   const [vinculosVisible, setVinculosVisible] = useState(false);
   const [propositoVisible, setPropositoVisible] = useState(false);
-  const [visitedCats, setVisitedCats] = useState<Set<CategoryAction>>(new Set());
+  const [visitedCats, setVisitedCats] = useState<Set<CategoryAction>>(
+    new Set(),
+  );
 
   const VISITED_KEY = "home_visited_categories";
 
@@ -190,12 +197,30 @@ export default function HomeScreen() {
   }, [nombre]);
 
   const categoryHandlers: Record<CategoryAction, () => void> = {
-    breathing: () => { markVisited("breathing"); setBreathingVisible(true); },
-    dear_man: () => { markVisited("dear_man"); setDearManVisible(true); },
-    felicidad: () => { markVisited("felicidad"); setHappinessVisible(true); },
-    autoestima: () => { markVisited("autoestima"); setSelfEsteemVisible(true); },
-    vinculos: () => { markVisited("vinculos"); setVinculosVisible(true); },
-    proposito: () => { markVisited("proposito"); setPropositoVisible(true); },
+    breathing: () => {
+      markVisited("breathing");
+      setBreathingVisible(true);
+    },
+    dear_man: () => {
+      markVisited("dear_man");
+      setDearManVisible(true);
+    },
+    felicidad: () => {
+      markVisited("felicidad");
+      setHappinessVisible(true);
+    },
+    autoestima: () => {
+      markVisited("autoestima");
+      setSelfEsteemVisible(true);
+    },
+    vinculos: () => {
+      markVisited("vinculos");
+      setVinculosVisible(true);
+    },
+    proposito: () => {
+      markVisited("proposito");
+      setPropositoVisible(true);
+    },
   };
 
   const day = new Date().getDay();
@@ -310,7 +335,9 @@ export default function HomeScreen() {
                   {visited && <View style={s.catVisitedOverlay} />}
 
                   {/* Badge check: siempre visible, lleno si visitado */}
-                  <View style={[s.catCheckBadge, visited && s.catCheckBadgeDone]}>
+                  <View
+                    style={[s.catCheckBadge, visited && s.catCheckBadgeDone]}
+                  >
                     <Check
                       size={9}
                       color={visited ? "#fff" : "rgba(80,80,100,0.45)"}
@@ -320,7 +347,10 @@ export default function HomeScreen() {
 
                   <Image
                     source={cat.image}
-                    style={[s.catIllustration, visited && s.catIllustrationDone]}
+                    style={[
+                      s.catIllustration,
+                      visited && s.catIllustrationDone,
+                    ]}
                     contentFit="contain"
                   />
                   <Text style={[s.catLabel, visited && s.catLabelDone]}>

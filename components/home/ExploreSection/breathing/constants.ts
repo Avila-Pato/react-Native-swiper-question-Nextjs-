@@ -23,9 +23,9 @@ export const PHASES = [
 ];
 
 export const STEPS = [
-  { icon: "🌬️", phase: "Inhala", time: "4 seg" },
-  { icon: "🤍", phase: "Sostén", time: "4 seg" },
-  { icon: "🍃", phase: "Exhala", time: "4 seg" },
+  { image: require("../../../../assets/icons/inhala.png"), phase: "Inhala", time: "4 seg" },
+  { image: require("../../../../assets/icons/sosten.png"), phase: "Sostén", time: "4 seg" },
+  { image: require("../../../../assets/icons/exhala.png"), phase: "Exhala", time: "4 seg" },
 ];
 
 export const PARTICLES = Array.from({ length: 18 }, (_, i) => ({

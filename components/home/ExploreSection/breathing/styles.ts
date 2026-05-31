@@ -99,8 +99,21 @@ export const s = StyleSheet.create({
   countdownLabel: {
     fontSize: 11, fontFamily: "Poppins-SemiBold", color: C_MUTED, letterSpacing: 1.5,
   },
+  exercisePhaseImg: { width: 64, height: 64, marginBottom: 2 },
+  exerciseFooter:   { alignItems: "center", gap: 8 },
+  phaseDots:        { flexDirection: "row", gap: 10, alignItems: "center" },
+  dot:              { width: 7,  height: 7,  borderRadius: 4, backgroundColor: "rgba(168,149,200,0.25)" },
+  dotActive:        { width: 10, height: 10, borderRadius: 5, backgroundColor: C_ACCENT },
+
   cycleLabel: {
     fontSize: 10, fontFamily: "Poppins-SemiBold", color: "#C0B0D8",
     letterSpacing: 3, textTransform: "uppercase",
   },
+
+  doneEmoji:   { fontSize: 52 },
+  doneTitle:   { fontSize: 26, fontFamily: "Playfair-ExtraBold", color: C_TITLE, textAlign: "center", lineHeight: 34 },
+  doneSub:     { fontSize: 14, fontFamily: "Poppins-Regular", color: C_MUTED, textAlign: "center", lineHeight: 22, marginTop: 4 },
+  doneActions: { gap: 12, width: "100%", marginTop: 16 },
+  repeatBtn:   { width: "100%", borderRadius: 18, paddingVertical: 16, alignItems: "center", borderWidth: 1.5, borderColor: C_ACCENT, backgroundColor: "rgba(123,107,181,0.08)" },
+  repeatTxt:   { fontSize: 15, fontFamily: "Poppins-SemiBold", color: C_ACCENT, letterSpacing: 0.3 },
 });

@@ -140,7 +140,7 @@ export const WEEKLY_CHALLENGES: Challenge[] = [
 
   {
     id: "verdad_mito",
-    title: "¿Verdad o mito?",
+    title: "Mitos del bienestar",
     emoji: require("@/assets/svg/tech3.svg"),
     color: P_GOLD.fg,
     borderColor: P_GOLD.fg,

@@ -31,7 +31,7 @@ const DESCRIPTIONS: Record<ChallengeType, string> = {
   identifica_patron:
     "Analiza la situación y elige qué patrón de comportamiento se está dando. Entrena tu percepción.",
   verdad_mito:
-    "¿Sabes distinguir los hechos reales de los mitos sobre salud mental y bienestar?",
+    "Elige un tema y pon a prueba lo que crees saber sobre emociones, límites, relaciones y bienestar. ¿Verdad o mito?",
   completa_reflexion:
     "Elige la opción correcta para completar la reflexión o concepto de bienestar.",
 };

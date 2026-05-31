@@ -6,7 +6,7 @@ import SelfEsteemMirrorAssistant from "@/components/home/ExploreSection/selfeste
 import VinculosDelHilo from "@/components/home/ExploreSection/vinculos";
 import ReflectionModal from "@/components/home/reflection";
 import { SPACING } from "@/constants/constants";
-import { ACCENT, BG, BORDER, CARD_BG, MUTED, TEXT } from "@/constants/theme";
+import { ACCENT, BG, BORDER, MUTED, TEXT } from "@/constants/theme";
 import { MOODS } from "@/data/moods";
 import { WEEKLY_CHALLENGES } from "@/data/weeklyData";
 import { getMoodHistory, saveMood, todayString } from "@/store/moodHistory";
@@ -21,17 +21,17 @@ import {
   ChevronRight,
   Zap,
 } from "lucide-react-native";
-import { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  ImageSourcePropType,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-const MOOD_FEEDBACK = [
-  "Está bien no estar bien. Hoy es un buen día para cuidarte con amabilidad.",
-  "Los días bajos también forman parte del camino. Sé gentil contigo.",
-  "Un día neutro también es válido. Pequeños pasos cuentan.",
-  "¡Qué bueno! Aprovecha esta energía para explorar algo nuevo.",
-  "Excelente. Hoy tienes todo para ir un poco más lejos.",
-];
 
 type CategoryAction =
   | "breathing"
@@ -125,22 +125,22 @@ const QUOTES = [
   },
 ];
 
-const CHALLENGE_META: Record<string, { subtitle: string; emoji: string }> = {
+const CHALLENGE_META: Record<string, { subtitle: string; image: ImageSourcePropType }> = {
   adivina_concepto: {
     subtitle: "Identifica el concepto desde la situación",
-    emoji: "🧠",
+    image: require("@/assets/pincel/Group.svg"),
   },
   identifica_patron: {
     subtitle: "Detecta el patrón de comportamiento",
-    emoji: "🔍",
+    image: require("@/assets/pincel/Group-2.svg"),
   },
   verdad_mito: {
-    subtitle: "¿Sabes distinguir los mitos del bienestar?",
-    emoji: "⚡",
+    subtitle: "Límites, emociones, relaciones y más",
+    image: require("@/assets/pincel/Group-4.svg"),
   },
   completa_reflexion: {
     subtitle: "Completa la reflexión de los grandes autores",
-    emoji: "✨",
+    image: require("@/assets/pincel/Group-6.svg"),
   },
 };
 
@@ -166,6 +166,46 @@ export default function HomeScreen() {
   const [visitedCats, setVisitedCats] = useState<Set<CategoryAction>>(
     new Set(),
   );
+
+  const toastAnim = useRef(new Animated.Value(0)).current;
+  const moodScales = useRef(MOODS.map(() => new Animated.Value(1))).current;
+
+  const handleMoodPress = (i: number) => {
+    setSelectedMood(i);
+    saveMood(todayString(), i);
+
+    moodScales[i].setValue(1);
+    Animated.sequence([
+      Animated.spring(moodScales[i], {
+        toValue: 1.2,
+        useNativeDriver: true,
+        tension: 260,
+        friction: 5,
+      }),
+      Animated.spring(moodScales[i], {
+        toValue: 1,
+        useNativeDriver: true,
+        tension: 160,
+        friction: 7,
+      }),
+    ]).start();
+
+    toastAnim.stopAnimation();
+    toastAnim.setValue(0);
+    Animated.sequence([
+      Animated.timing(toastAnim, {
+        toValue: 1,
+        duration: 280,
+        useNativeDriver: true,
+      }),
+      Animated.delay(1800),
+      Animated.timing(toastAnim, {
+        toValue: 0,
+        duration: 380,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
 
   const VISITED_KEY = "home_visited_categories";
 
@@ -282,37 +322,67 @@ export default function HomeScreen() {
           </Pressable>
 
           {/* Registro de humor */}
-          <Text style={s.moodLogLabel}>{"Registro de humor"}</Text>
+          <View style={s.moodLogRow}>
+            <Text style={s.moodLogLabel}>{"Registro de humor"}</Text>
+            <Animated.View
+              pointerEvents="none"
+              style={[
+                s.moodToast,
+                {
+                  opacity: toastAnim,
+                  transform: [
+                    {
+                      translateX: toastAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [8, 0],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            >
+              {selectedMood !== null && (
+                <>
+                  <Image
+                    source={MOODS[selectedMood].image}
+                    style={s.moodToastEmoji}
+                    contentFit="contain"
+                  />
+                  <Text style={s.moodToastText}>{"Guardado En tu Perfil"}</Text>
+                  <Check
+                    size={12}
+                    color="rgba(45,31,96,0.65)"
+                    strokeWidth={2.5}
+                  />
+                </>
+              )}
+            </Animated.View>
+          </View>
           <View style={s.moodRow}>
             {MOODS.map((m, i) => {
               const active = selectedMood === i;
               return (
-                <Pressable
+                <Animated.View
                   key={i}
-                  onPress={() => {
-                    setSelectedMood(i);
-                    saveMood(todayString(), i);
-                  }}
-                  style={[s.moodBtn, active && s.moodBtnActive]}
+                  style={{ transform: [{ scale: moodScales[i] }] }}
                 >
-                  <Image
-                    source={m.image}
-                    style={s.moodEmoji}
-                    contentFit="contain"
-                  />
-                  <Text style={[s.moodLabel, active && s.moodLabelActive]}>
-                    {m.label}
-                  </Text>
-                </Pressable>
+                  <Pressable
+                    onPress={() => handleMoodPress(i)}
+                    style={[s.moodBtn, active && s.moodBtnActive]}
+                  >
+                    <Image
+                      source={m.image}
+                      style={s.moodEmoji}
+                      contentFit="contain"
+                    />
+                    <Text style={[s.moodLabel, active && s.moodLabelActive]}>
+                      {m.label}
+                    </Text>
+                  </Pressable>
+                </Animated.View>
               );
             })}
           </View>
-
-          {selectedMood !== null && (
-            <View style={s.feedbackBox}>
-              <Text style={s.feedbackText}>{MOOD_FEEDBACK[selectedMood]}</Text>
-            </View>
-          )}
         </View>
 
         {/* ── Body ── */}
@@ -374,8 +444,9 @@ export default function HomeScreen() {
           </View>
 
           <Text style={s.sectionTitle}>{"Desafío del día"}</Text>
+          {/* Desafio del dia */}
           <Pressable
-            style={[s.challengeCard, { borderLeftColor: featured.color }]}
+            style={[s.challengeCard, { borderLeftColor: featured.color, backgroundColor: featured.color + "14" }]}
             onPress={() =>
               router.push({
                 pathname: "/challenge-detail",
@@ -389,7 +460,11 @@ export default function HomeScreen() {
                 { backgroundColor: featured.color + "18" },
               ]}
             >
-              <Text style={s.challengeIconText}>{meta.emoji}</Text>
+              <Image
+                source={meta.image}
+                style={s.challengeIconImg}
+                contentFit="contain"
+              />
             </View>
             <View style={s.challengeInfo}>
               <View style={s.challengeBadge}>
@@ -414,7 +489,11 @@ export default function HomeScreen() {
               style={[s.quickCard, { backgroundColor: "#EDE9F8" }]}
               onPress={() => router.push("/four")}
             >
-              <Text style={s.quickEmoji}>{"🧭"}</Text>
+              <Image
+                source={require("@/assets/pincel/Group-5.svg")}
+                style={s.quickImg}
+                contentFit="contain"
+              />
               <Text style={[s.quickTitle, { color: "#7B6BB5" }]}>
                 {"Mi Camino"}
               </Text>
@@ -426,7 +505,11 @@ export default function HomeScreen() {
               style={[s.quickCard, { backgroundColor: "#F5E8EF" }]}
               onPress={() => router.push("/two")}
             >
-              <Text style={s.quickEmoji}>{"🏆"}</Text>
+              <Image
+                source={require("@/assets/pincel/Group-3.svg")}
+                style={s.quickImg}
+                contentFit="contain"
+              />
               <Text style={[s.quickTitle, { color: "#9E5C72" }]}>
                 {"Retos"}
               </Text>
@@ -436,7 +519,7 @@ export default function HomeScreen() {
             </Pressable>
           </View>
 
-          <View style={{ height: 110 }} />
+          <View style={{ height: 140 }} />
         </View>
       </ScrollView>
 
@@ -568,11 +651,16 @@ const s = StyleSheet.create({
   },
 
   /* Mood log */
+  moodLogRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: SPACING,
+  },
   moodLogLabel: {
     fontSize: 13,
     fontFamily: "Poppins-SemiBold",
     color: "rgba(30,15,70,0.55)",
-    marginBottom: SPACING,
   },
   moodRow: {
     flexDirection: "row",
@@ -601,20 +689,22 @@ const s = StyleSheet.create({
     color: "#1A1244",
     fontFamily: "Poppins-ExtraBold",
   },
-  feedbackBox: {
-    marginTop: SPACING * 1.5,
-    borderRadius: 14,
+  moodToast: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
     backgroundColor: "rgba(255,255,255,0.5)",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.7)",
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    borderColor: "rgba(255,255,255,0.75)",
   },
-  feedbackText: {
-    fontSize: 13,
-    fontFamily: "Poppins-Medium",
-    color: "#2D1F60",
-    lineHeight: 19,
+  moodToastEmoji: { width: 20, height: 20 },
+  moodToastText: {
+    fontSize: 11,
+    fontFamily: "Poppins-SemiBold",
+    color: "rgba(45,31,96,0.75)",
   },
 
   /* ── Body ── */
@@ -730,7 +820,6 @@ const s = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: SPACING,
-    backgroundColor: CARD_BG,
     borderRadius: 18,
     padding: SPACING * 1.2,
     marginBottom: SPACING * 2,
@@ -739,14 +828,15 @@ const s = StyleSheet.create({
     borderLeftWidth: 4,
   },
   challengeIcon: {
-    width: 52,
-    height: 52,
-    borderRadius: 14,
+    width: 64,
+    height: 64,
+    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+    overflow: "hidden",
   },
-  challengeIconText: { fontSize: 26 },
+  challengeIconImg: { width: 64, height: 64 },
   challengeInfo: { flex: 1, gap: 3 },
   challengeBadge: { flexDirection: "row", alignItems: "center", gap: 3 },
   challengeBadgeText: { fontSize: 11, fontFamily: "Poppins-Bold" },
@@ -760,7 +850,7 @@ const s = StyleSheet.create({
     padding: SPACING * 1.2,
     gap: 5,
   },
-  quickEmoji: { fontSize: 28, marginBottom: 2 },
+  quickImg: { width: 64, height: 64, marginBottom: 2 },
   quickTitle: { fontSize: 14, fontFamily: "Poppins-ExtraBold" },
   quickSub: { fontSize: 11, fontFamily: "Poppins-Medium", lineHeight: 16 },
 });

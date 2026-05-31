@@ -3,6 +3,7 @@ import { Dimensions } from "react-native";
 export const { width: W, height: H } = Dimensions.get("window");
 
 export const PHASE_DURATION = 4000;
+export const TOTAL_CYCLES  = 3;
 
 export const ORB   = 196;
 export const RING1 = ORB + 52;

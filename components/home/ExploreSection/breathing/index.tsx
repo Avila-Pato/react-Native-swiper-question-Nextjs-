@@ -4,7 +4,7 @@ import { X } from "lucide-react-native";
 import React from "react";
 import { Animated, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { FloatingParticle } from "./FloatingParticle";
-import { GRADIENT_COLORS, PARTICLES, PHASES, STEPS } from "./constants";
+import { GRADIENT_COLORS, PARTICLES, PHASES, STEPS, TOTAL_CYCLES } from "./constants";
 import { s } from "./styles";
 import { useBreathing } from "./useBreathing";
 
@@ -15,11 +15,11 @@ interface Props {
 
 export default function BreathingScreen({ visible, onClose }: Props) {
   const {
-    showIntro, phase, countdown,
-    fadeAnim, introOpacity, exerciseOpacity,
+    showIntro, done, phase, countdown, cycleNum,
+    fadeAnim, introOpacity, exerciseOpacity, doneOpacity,
     scaleAnim, ring1Anim, ring2Anim, textOpacity,
     ring1Opacity, ring2Opacity,
-    handleStart,
+    handleStart, handleRepeat,
   } = useBreathing(visible);
 
   return (
@@ -74,9 +74,10 @@ export default function BreathingScreen({ visible, onClose }: Props) {
         {/* ── Ejercicio ── */}
         <Animated.View
           style={[s.content, StyleSheet.absoluteFill, s.center, { opacity: exerciseOpacity }]}
-          pointerEvents={showIntro ? "none" : "auto"}
+          pointerEvents={showIntro || done ? "none" : "auto"}
         >
           <Animated.View style={[s.textBlock, { opacity: textOpacity }]}>
+            <Image source={STEPS[phase].image} style={s.exercisePhaseImg} resizeMode="contain" />
             <Text style={s.phaseLabel}>{PHASES[phase].label}</Text>
             <Text style={s.phaseSub}>{PHASES[phase].sub}</Text>
           </Animated.View>
@@ -92,7 +93,32 @@ export default function BreathingScreen({ visible, onClose }: Props) {
             </Animated.View>
           </View>
 
-          <Text style={s.cycleLabel}>{"CICLO  4 · 4 · 4"}</Text>
+          <View style={s.exerciseFooter}>
+            <View style={s.phaseDots}>
+              {[0, 1, 2].map(i => (
+                <View key={i} style={[s.dot, phase === i && s.dotActive]} />
+              ))}
+            </View>
+            <Text style={s.cycleLabel}>{`CICLO ${cycleNum} DE ${TOTAL_CYCLES}`}</Text>
+          </View>
+        </Animated.View>
+
+        {/* ── Completado ── */}
+        <Animated.View
+          style={[s.content, StyleSheet.absoluteFill, s.center, { opacity: doneOpacity }]}
+          pointerEvents={done ? "auto" : "none"}
+        >
+          <Text style={s.doneEmoji}>{"🌿"}</Text>
+          <Text style={s.doneTitle}>{"Respiración\ncompletada"}</Text>
+          <Text style={s.doneSub}>{`Completaste ${TOTAL_CYCLES} ciclos.\nTu mente ya está más en calma.`}</Text>
+          <View style={s.doneActions}>
+            <Pressable style={s.startBtn} onPress={handleRepeat}>
+              <Text style={s.startTxt}>{"Repetir"}</Text>
+            </Pressable>
+            <Pressable style={s.repeatBtn} onPress={onClose}>
+              <Text style={s.repeatTxt}>{"Cerrar"}</Text>
+            </Pressable>
+          </View>
         </Animated.View>
 
       </Animated.View>

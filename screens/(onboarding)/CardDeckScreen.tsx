@@ -3,7 +3,7 @@ import { AREA_COLORS, DeckCard, buildDeck } from "@/data/cardDeckData";
 import { useUserStore } from "@/store/useUserStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Dimensions,
   StyleSheet,
@@ -14,13 +14,16 @@ import {
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming,
 } from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 const CARD_W = width * 0.84;
 const CARD_H = 240;
+
+const SCALE = [1, 0.94, 0.88];
+const Y_OFF = [0, 18, 34];
+const DURATION = 320;
 
 function CardFace({ card }: { card: DeckCard }) {
   const colors = AREA_COLORS[card.area] ?? { accent: "#8980B8" };
@@ -31,6 +34,59 @@ function CardFace({ card }: { card: DeckCard }) {
       </Text>
       <Text style={styles.cardText}>{card.text}</Text>
     </View>
+  );
+}
+
+function AnimatedCard({
+  card,
+  position,
+  isExiting,
+  exitRight,
+}: {
+  card: DeckCard;
+  position: number;
+  isExiting: boolean;
+  exitRight: boolean;
+}) {
+  const initScale = SCALE[position] ?? 0.82;
+  const initY = Y_OFF[position] ?? 48;
+
+  const scaleV = useSharedValue(initScale);
+  const yV = useSharedValue(initY);
+  const xV = useSharedValue(0);
+  const opacityV = useSharedValue(position <= 2 ? 1 : 0);
+
+  useEffect(() => {
+    if (isExiting) {
+      scaleV.value = withTiming(0.95, { duration: 180 });
+      xV.value = withTiming(exitRight ? width + 80 : -(width + 80), {
+        duration: 360,
+      });
+      opacityV.value = withTiming(0, { duration: 300 });
+    } else {
+      scaleV.value = withTiming(SCALE[position] ?? 0.82, { duration: DURATION });
+      yV.value = withTiming(Y_OFF[position] ?? 48, { duration: DURATION });
+      opacityV.value = withTiming(1, { duration: DURATION });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [position, isExiting]);
+
+  const style = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: xV.value },
+      { translateY: yV.value },
+      { scale: scaleV.value },
+    ],
+    opacity: opacityV.value,
+    zIndex: isExiting ? 10 : (3 - position),
+  }));
+
+  const bg = AREA_COLORS[card.area]?.bg ?? "#EDE9F5";
+
+  return (
+    <Animated.View style={[styles.card, style, { backgroundColor: bg }]}>
+      <CardFace card={card} />
+    </Animated.View>
   );
 }
 
@@ -52,89 +108,74 @@ export default function CardDeckScreen() {
 
   const [currentIdx, setCurrentIdx] = useState(0);
   const [scores, setScores] = useState<Record<string, number>>({});
+  const [exitingInfo, setExitingInfo] = useState<{
+    idx: number;
+    right: boolean;
+  } | null>(null);
   const [busy, setBusy] = useState(false);
-
-  const cardX = useSharedValue(0);
-  const cardOpacity = useSharedValue(1);
-  const card2Scale = useSharedValue(0.94);
-  const card2Y = useSharedValue(20);
-  const card3Scale = useSharedValue(0.88);
-  const card3Y = useSharedValue(38);
-
-  const cardStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: cardX.value }],
-    opacity: cardOpacity.value,
-  }));
-  const card2Style = useAnimatedStyle(() => ({
-    transform: [{ scale: card2Scale.value }, { translateY: card2Y.value }],
-  }));
-  const card3Style = useAnimatedStyle(() => ({
-    transform: [{ scale: card3Scale.value }, { translateY: card3Y.value }],
-  }));
-
-  const advance = (nextIdx: number, finalScores: Record<string, number>) => {
-    if (nextIdx >= cards.length) {
-      const strengths = areas.filter((a) => (finalScores[a] ?? 0) <= 1);
-      const challenges = areas.filter((a) => (finalScores[a] ?? 0) >= 2);
-      saveDiagnostic({ scores: finalScores, strengths, challenges });
-      router.push({
-        pathname: "/personal",
-        params: {
-          startNode: params.startNode ?? "",
-          formacion: params.formacion ?? "",
-          ramas: params.ramas ?? "",
-        },
-      });
-      return;
-    }
-    setCurrentIdx(nextIdx);
-    cardX.value = 0;
-    cardOpacity.value = 1;
-    card2Scale.value = 0.94;
-    card2Y.value = 20;
-    card3Scale.value = 0.88;
-    card3Y.value = 38;
-    setBusy(false);
-  };
 
   const handleChoice = (resonates: boolean) => {
     if (busy) return;
     setBusy(true);
 
-    const card = cards[currentIdx];
+    const thisIdx = currentIdx;
+    const card = cards[thisIdx];
     const newScores = { ...scores };
     if (resonates) {
       newScores[card.area] = (newScores[card.area] ?? 0) + 1;
       setScores(newScores);
     }
 
-    cardX.value = withTiming(resonates ? width + 100 : -(width + 100), {
-      duration: 320,
-    });
-    cardOpacity.value = withTiming(0, { duration: 260 });
-    card2Scale.value = withSpring(1, { damping: 16, stiffness: 120 });
-    card2Y.value = withSpring(0, { damping: 16, stiffness: 120 });
-    card3Scale.value = withSpring(0.94, { damping: 16, stiffness: 120 });
-    card3Y.value = withSpring(20, { damping: 16, stiffness: 120 });
+    const nextIdx = thisIdx + 1;
+    const isDone = nextIdx >= cards.length;
 
-    setTimeout(() => advance(currentIdx + 1, newScores), 310);
+    setExitingInfo({ idx: thisIdx, right: resonates });
+    if (!isDone) setCurrentIdx(nextIdx);
+
+    setTimeout(() => {
+      setExitingInfo(null);
+      setBusy(false);
+
+      if (isDone) {
+        const strengths = areas.filter((a) => (newScores[a] ?? 0) <= 1);
+        const challenges = areas.filter((a) => (newScores[a] ?? 0) >= 2);
+        saveDiagnostic({ scores: newScores, strengths, challenges });
+        router.push({
+          pathname: "/personal",
+          params: {
+            startNode: params.startNode ?? "",
+            formacion: params.formacion ?? "",
+            ramas: params.ramas ?? "",
+          },
+        });
+      }
+    }, 400);
   };
 
-  const card = cards[currentIdx];
-  const next1 = cards[currentIdx + 1];
-  const next2 = cards[currentIdx + 2];
-
-  if (!card) return null;
-
-  const bg = AREA_COLORS[card.area]?.bg ?? "#EDE9F5";
-  const bg1 = next1 ? (AREA_COLORS[next1.area]?.bg ?? "#EDE9F5") : "#EDE9F5";
-  const bg2 = next2 ? (AREA_COLORS[next2.area]?.bg ?? "#EDE9F5") : "#EDE9F5";
-
   const progress = (currentIdx + 1) / cards.length;
+
+  // Build the list of cards to render
+  const visibleSlots: { card: DeckCard; idx: number; position: number }[] = [];
+
+  if (exitingInfo && cards[exitingInfo.idx]) {
+    visibleSlots.push({
+      card: cards[exitingInfo.idx],
+      idx: exitingInfo.idx,
+      position: 0,
+    });
+  }
+
+  for (let i = 0; i < 3; i++) {
+    const idx = currentIdx + i;
+    if (idx < cards.length) {
+      visibleSlots.push({ card: cards[idx], idx, position: i });
+    }
+  }
 
   return (
     <View style={styles.root}>
       <OnboardingProgress step={3} />
+
       <View style={styles.header}>
         <Text style={styles.title}>
           ¿Con cuál <Text style={{ color: "#8980B8" }}>resuenas?</Text>
@@ -144,7 +185,6 @@ export default function CardDeckScreen() {
         </Text>
       </View>
 
-      {/* Progress dots */}
       <View style={styles.progressRow}>
         <View style={styles.progressTrack}>
           <Animated.View
@@ -156,38 +196,18 @@ export default function CardDeckScreen() {
         </Text>
       </View>
 
-      {/* Card stack */}
       <View style={styles.stackWrap}>
-        {next2 && (
-          <Animated.View
-            style={[
-              styles.card,
-              card3Style,
-              { backgroundColor: bg2, zIndex: 1 },
-            ]}
-          >
-            <CardFace card={next2} />
-          </Animated.View>
-        )}
-        {next1 && (
-          <Animated.View
-            style={[
-              styles.card,
-              card2Style,
-              { backgroundColor: bg1, zIndex: 2 },
-            ]}
-          >
-            <CardFace card={next1} />
-          </Animated.View>
-        )}
-        <Animated.View
-          style={[styles.card, cardStyle, { backgroundColor: bg, zIndex: 3 }]}
-        >
-          <CardFace card={card} />
-        </Animated.View>
+        {visibleSlots.map(({ card, idx, position }) => (
+          <AnimatedCard
+            key={idx}
+            card={card}
+            position={position}
+            isExiting={exitingInfo?.idx === idx}
+            exitRight={exitingInfo?.right ?? true}
+          />
+        ))}
       </View>
 
-      {/* Actions */}
       <View style={styles.actions}>
         <TouchableOpacity
           style={styles.btnNo}
@@ -286,11 +306,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 1,
     textTransform: "uppercase",
-  },
-  cardEmoji: {
-    fontSize: 52,
-    textAlign: "center",
-    marginVertical: 8,
   },
   cardText: {
     color: "#1C1B29",

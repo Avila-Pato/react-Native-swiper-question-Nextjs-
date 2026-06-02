@@ -283,7 +283,8 @@ export default function CareerRamasScreen() {
         <Animated.View style={[styles.header, titleStyle]}>
           <View style={styles.headerTop}>
             <Text style={styles.title}>
-              ¿Qué área de{"\n"}<Text style={{ color: "#8980B8" }}>bienestar</Text> te interesa?
+              ¿Qué área de{"\n"}
+              <Text style={{ color: "#8980B8" }}>bienestar</Text> te interesa?
             </Text>
             {/* <Animated.Text style={[styles.counterBig, counterStyle]}>
               {totalSelected}
@@ -399,7 +400,8 @@ const styles = StyleSheet.create({
   },
   scroll: {
     paddingHorizontal: 24,
-    paddingVertical: 40,
+    paddingTop: 40,
+    paddingBottom: 56,
     flexGrow: 1,
     justifyContent: "flex-start",
   },
@@ -562,7 +564,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   btnDisabled: {
-    opacity: 0.3,
+    opacity: 0.1,
   },
   btnInner: {
     flexDirection: "row",
@@ -631,7 +633,3 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
-
-
-
-

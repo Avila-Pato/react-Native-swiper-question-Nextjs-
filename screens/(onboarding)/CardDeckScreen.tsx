@@ -167,7 +167,7 @@ export default function CardDeckScreen() {
 
   for (let i = 0; i < 3; i++) {
     const idx = currentIdx + i;
-    if (idx < cards.length) {
+    if (idx < cards.length && idx !== exitingInfo?.idx) {
       visibleSlots.push({ card: cards[idx], idx, position: i });
     }
   }

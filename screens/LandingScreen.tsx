@@ -189,11 +189,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     paddingTop: 68,
-    paddingHorizontal: 28,
+    paddingHorizontal: 18,
+    alignItems: "center",
   },
 
   badge: {
-    alignSelf: "flex-start",
+    alignSelf: "center",
     backgroundColor: "rgba(255,255,255,0.18)",
     borderRadius: 20,
     paddingVertical: 5,
@@ -217,6 +218,7 @@ const styles = StyleSheet.create({
     lineHeight: 50,
     letterSpacing: -1,
     marginBottom: 14,
+    textAlign: "center",
   },
 
   description: {
@@ -224,6 +226,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 22,
     fontWeight: "400",
+    textAlign: "center",
   },
 
   bottomContent: {

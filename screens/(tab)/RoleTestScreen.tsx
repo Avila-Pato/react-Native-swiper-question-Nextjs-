@@ -1,6 +1,7 @@
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { SPACING, TAB_ITEM_SIZE } from "@/constants/constants";
 import { BG, MUTED, TEXT } from "@/constants/theme";
+import { useUserStore } from "@/store/useUserStore";
 import { RoleKey } from "@/types/roleTest";
 import { router } from "expo-router";
 import {
@@ -70,6 +71,56 @@ const KEYS: RoleKey[] = ["limites", "autoconocimiento", "vinculos", "felicidad",
 
 export default function RoleTestScreen() {
   const { bottom } = useSafeAreaInsets();
+  const assessment = useUserStore((s) => s.assessment);
+  const onboarding = useUserStore((s) => s.onboarding);
+
+  // Si el test ya está hecho → ir directo a resultados guardados
+  if (assessment?.completed) {
+    return (
+      <SafeAreaView edges={["top", "left", "right"]} style={styles.root}>
+        <ScreenHeader title="Mi Camino" />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: BAR_HEIGHT + bottom + SPACING * 2 }}
+        >
+          <View style={styles.hero}>
+            <View style={styles.titleBlock}>
+              <Text style={styles.eyebrow}>Tu diagnóstico</Text>
+              <Text style={styles.heroTitle}>
+                {onboarding?.nombre ? `Hola, ${onboarding.nombre}.` : "Tu camino."}
+              </Text>
+              <Text style={styles.heroSub}>
+                Completaste tu evaluación el{" "}
+                {new Date(assessment.completedAt).toLocaleDateString("es", {
+                  day: "numeric", month: "long",
+                })}.
+              </Text>
+            </View>
+
+            <Pressable
+              style={({ pressed }) => [styles.cta, pressed && { opacity: 0.85 }]}
+              onPress={() =>
+                router.push({
+                  pathname: "/role-result",
+                  params: { scores: JSON.stringify(assessment.scores) },
+                })
+              }
+            >
+              <Text style={styles.ctaText}>Ver mis resultados</Text>
+              <Text style={styles.ctaArrow}>→</Text>
+            </Pressable>
+
+            <Pressable
+              style={({ pressed }) => [styles.retakeBtn, pressed && { opacity: 0.7 }]}
+              onPress={() => router.push("/role-test")}
+            >
+              <Text style={styles.retakeText}>Repetir evaluación</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={styles.root}>
@@ -289,5 +340,17 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "#F9FAFB",
     marginLeft: 38 + SPACING * 1.2,
+  },
+  retakeBtn: {
+    borderWidth: 1,
+    borderColor: "rgba(137,128,184,0.3)",
+    borderRadius: 14,
+    paddingVertical: SPACING * 1.2,
+    alignItems: "center",
+  },
+  retakeText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: MUTED,
   },
 });

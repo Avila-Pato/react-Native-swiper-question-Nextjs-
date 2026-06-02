@@ -97,6 +97,13 @@ export default function LandingScreen() {
         />
       </Animated.View>
 
+      {/* Vignette superior */}
+      <LinearGradient
+        colors={["rgba(8,5,25,0.75)", "transparent"]}
+        locations={[0, 1]}
+        style={styles.topVignette}
+      />
+
       {/* Overlay oscuro sobre el cabello para legibilidad */}
       <LinearGradient
         colors={["rgba(12,8,30,0.52)", "rgba(12,8,30,0.18)", "transparent"]}
@@ -154,6 +161,13 @@ export default function LandingScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: BG },
 
+  topVignette: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: height * 0.22,
+  },
   hairOverlay: {
     position: "absolute",
     top: 0,

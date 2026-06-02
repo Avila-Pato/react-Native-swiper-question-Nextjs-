@@ -48,6 +48,30 @@ const RAMAS = [
     label: "Autoestima",
     desc: "Fortalecer mi relación conmigo mismo",
   },
+  {
+    id: "estres",
+    icon: "flash-outline" as const,
+    label: "Estrés y ansiedad",
+    desc: "Herramientas para calmarme y recuperar la paz",
+  },
+  {
+    id: "mindfulness",
+    icon: "moon-outline" as const,
+    label: "Mindfulness",
+    desc: "Vivir más en el presente y cultivar la calma interior",
+  },
+  {
+    id: "proposito",
+    icon: "compass-outline" as const,
+    label: "Propósito",
+    desc: "Encontrar dirección y sentido en mi vida cotidiana",
+  },
+  {
+    id: "comunicacion",
+    icon: "chatbubbles-outline" as const,
+    label: "Comunicación",
+    desc: "Expresarme mejor y conectar de forma auténtica",
+  },
 ];
 
 function RamaRow({
@@ -227,7 +251,7 @@ export default function CareerRamasScreen() {
   const handleFinish = () => {
     const allRamas = [...selectedRamas, ...customRamas];
     router.push({
-      pathname: "/personal",
+      pathname: "/card-deck",
       params: {
         startNode: startNode ?? "inicio_perdido",
         formacion: formacion ?? "",

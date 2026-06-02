@@ -42,11 +42,24 @@ const GOALS = [
     desc: "Quiero reducir el estrés y cuidar mi bienestar diario",
     startNode: "equilibrio_bienestar",
   },
+  {
+    id: "autoestima",
+    icon: "star-outline" as const,
+    label: "Fortalecer mi autoestima",
+    desc: "Quiero sentirme más seguro y valorarme como soy",
+    startNode: "crecimiento_personal",
+  },
+  {
+    id: "sanacion",
+    icon: "heart-outline" as const,
+    label: "Sanar y soltar",
+    desc: "Quiero superar heridas del pasado y seguir adelante",
+    startNode: "equilibrio_bienestar",
+  },
 ];
 
 export default function GoalScreen() {
-  const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
-  const [startNode, setStartNode] = useState("crecimiento_personal");
+  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
 
   const titleOpacity = useSharedValue(0);
   const titleY = useSharedValue(30);
@@ -56,6 +69,10 @@ export default function GoalScreen() {
   const card2Y = useSharedValue(60);
   const card3Opacity = useSharedValue(0);
   const card3Y = useSharedValue(60);
+  const card4Opacity = useSharedValue(0);
+  const card4Y = useSharedValue(60);
+  const card5Opacity = useSharedValue(0);
+  const card5Y = useSharedValue(60);
   const btnOpacity = useSharedValue(0);
   const btnY = useSharedValue(24);
 
@@ -68,24 +85,35 @@ export default function GoalScreen() {
     card2Y.value = withDelay(320, withSpring(0, { damping: 16, stiffness: 100 }));
     card3Opacity.value = withDelay(440, withTiming(1, { duration: 350 }));
     card3Y.value = withDelay(440, withSpring(0, { damping: 16, stiffness: 100 }));
+    card4Opacity.value = withDelay(560, withTiming(1, { duration: 350 }));
+    card4Y.value = withDelay(560, withSpring(0, { damping: 16, stiffness: 100 }));
+    card5Opacity.value = withDelay(660, withTiming(1, { duration: 350 }));
+    card5Y.value = withDelay(660, withSpring(0, { damping: 16, stiffness: 100 }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const animateBtnIn = () => {
-    btnOpacity.value = withTiming(1, { duration: 300 });
-    btnY.value = withSpring(0, { damping: 16, stiffness: 130 });
-  };
+  useEffect(() => {
+    if (selectedGoals.length > 0) {
+      btnOpacity.value = withTiming(1, { duration: 280 });
+      btnY.value = withSpring(0, { damping: 16, stiffness: 130 });
+    } else {
+      btnOpacity.value = withTiming(0, { duration: 200 });
+      btnY.value = withTiming(24, { duration: 200 });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedGoals.length]);
 
   const handleCardPress = (id: string, node: string) => {
-    if (selectedGoal === id) return;
-    setSelectedGoal(id);
-    setStartNode(node);
-    if (!selectedGoal) animateBtnIn();
+    void node;
+    setSelectedGoals((prev) =>
+      prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id],
+    );
   };
 
   const handleNext = () => {
-    if (!selectedGoal) return;
-    router.push({ pathname: "/career-ramas", params: { startNode, formacion: "" } });
+    if (selectedGoals.length === 0) return;
+    const firstNode = GOALS.find((g) => g.id === selectedGoals[0])?.startNode ?? "crecimiento_personal";
+    router.push({ pathname: "/career-ramas", params: { startNode: firstNode, formacion: selectedGoals.join(",") } });
   };
 
   const titleStyle = useAnimatedStyle(() => ({
@@ -96,6 +124,8 @@ export default function GoalScreen() {
     useAnimatedStyle(() => ({ opacity: card1Opacity.value, transform: [{ translateY: card1Y.value }] })),
     useAnimatedStyle(() => ({ opacity: card2Opacity.value, transform: [{ translateY: card2Y.value }] })),
     useAnimatedStyle(() => ({ opacity: card3Opacity.value, transform: [{ translateY: card3Y.value }] })),
+    useAnimatedStyle(() => ({ opacity: card4Opacity.value, transform: [{ translateY: card4Y.value }] })),
+    useAnimatedStyle(() => ({ opacity: card5Opacity.value, transform: [{ translateY: card5Y.value }] })),
   ];
   const btnStyle = useAnimatedStyle(() => ({
     opacity: btnOpacity.value,
@@ -120,7 +150,11 @@ export default function GoalScreen() {
             <Text style={{ color: "#8980B8" }}>trae aquí?</Text>
           </Text>
           <Text style={styles.subtitle}>
-            Personalizamos tu camino según tus necesidades
+            {selectedGoals.length === 0
+              ? "Puedes seleccionar más de una"
+              : selectedGoals.length === 1
+                ? "1 seleccionada"
+                : `${selectedGoals.length} seleccionadas`}
           </Text>
         </Animated.View>
 
@@ -130,7 +164,7 @@ export default function GoalScreen() {
               <TouchableOpacity
                 style={[
                   styles.card,
-                  selectedGoal === goal.id && styles.cardSelected,
+                  selectedGoals.includes(goal.id) && styles.cardSelected,
                 ]}
                 onPress={() => handleCardPress(goal.id, goal.startNode)}
                 activeOpacity={0.78}
@@ -138,7 +172,7 @@ export default function GoalScreen() {
                 <View
                   style={[
                     styles.cardIcon,
-                    selectedGoal === goal.id && styles.cardIconSelected,
+                    selectedGoals.includes(goal.id) && styles.cardIconSelected,
                   ]}
                 >
                   <Ionicons name={goal.icon} size={22} color="#8980B8" />
@@ -148,9 +182,9 @@ export default function GoalScreen() {
                   <Text style={styles.cardDesc}>{goal.desc}</Text>
                 </View>
                 <Ionicons
-                  name={selectedGoal === goal.id ? "checkmark-circle" : "chevron-forward"}
+                  name={selectedGoals.includes(goal.id) ? "checkmark-circle" : "ellipse-outline"}
                   size={20}
-                  color={selectedGoal === goal.id ? "#8980B8" : "rgba(137,128,184,0.3)"}
+                  color={selectedGoals.includes(goal.id) ? "#8980B8" : "rgba(137,128,184,0.3)"}
                 />
               </TouchableOpacity>
             </Animated.View>
@@ -163,7 +197,14 @@ export default function GoalScreen() {
             onPress={handleNext}
             activeOpacity={0.82}
           >
-            <Text style={styles.btnText}>Siguiente →</Text>
+            <View style={styles.btnInner}>
+              {selectedGoals.length > 0 && (
+                <View style={styles.btnBadge}>
+                  <Text style={styles.btnBadgeText}>{selectedGoals.length}</Text>
+                </View>
+              )}
+              <Text style={styles.btnText}>Siguiente →</Text>
+            </View>
           </TouchableOpacity>
         </Animated.View>
       </ScrollView>
@@ -239,6 +280,26 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: "center",
+  },
+  btnInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  btnBadge: {
+    backgroundColor: "rgba(255,255,255,0.25)",
+    borderRadius: 20,
+    minWidth: 22,
+    height: 22,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 6,
+  },
+  btnBadgeText: {
+    color: "#fff",
+    fontSize: 11,
+    fontWeight: "700",
   },
   btnText: {
     color: "#fff",

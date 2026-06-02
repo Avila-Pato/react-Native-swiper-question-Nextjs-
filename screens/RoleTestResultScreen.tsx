@@ -3,6 +3,7 @@ import { RoleBarChart } from "@/components/roleTest/RoleBarChart";
 import { SPACING } from "@/constants/constants";
 import { BG, MUTED, TEXT } from "@/constants/theme";
 import { ROLES } from "@/data/roleTestData";
+import { useUserStore } from "@/store/useUserStore";
 import { RoleKey, RoleScores } from "@/types/roleTest";
 import { router, useLocalSearchParams } from "expo-router";
 import {
@@ -13,6 +14,7 @@ import {
   Sun,
   Users,
 } from "lucide-react-native";
+import { useEffect } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import {
   SafeAreaView,
@@ -32,9 +34,17 @@ const ROLE_ICON: Record<RoleKey, IconConfig> = {
 export default function RoleTestResultScreen() {
   const { bottom } = useSafeAreaInsets();
   const { scores: raw } = useLocalSearchParams<{ scores: string }>();
+  const saveAssessment = useUserStore((s) => s.saveAssessment);
+
   const scores: RoleScores = raw
     ? JSON.parse(raw)
     : { limites: 0, autoconocimiento: 0, vinculos: 0, felicidad: 0, proposito: 0 };
+
+  // Persist results the first time this screen mounts with real scores
+  useEffect(() => {
+    if (raw) saveAssessment(JSON.parse(raw));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const ranked = [...ROLES].sort(
     (a, b) => (scores[b.key] ?? 0) - (scores[a.key] ?? 0),

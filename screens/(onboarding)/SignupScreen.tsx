@@ -1,6 +1,7 @@
 ﻿import { GoogleSignInButton } from "@/components/onboarding/GoogleSignInButton";
 import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
 import { TEXT_FONT_SIZE } from "@/constants/constants";
+import { useUserStore } from "@/store/useUserStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { UserCircle } from "lucide-react-native";
@@ -30,6 +31,8 @@ export default function SignupScreen() {
     ramas?: string;
     nombre?: string;
   }>();
+
+  const { setUser, saveOnboarding } = useUserStore();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -85,30 +88,24 @@ export default function SignupScreen() {
 
   const isValid = email.trim().includes("@") && password.length >= 6;
 
-  const handleCreate = () => {
-    if (!isValid) return;
-    // TODO: llamar a tu servicio de auth aquí
-    router.replace({
-      pathname: "/(tab)",
-      params: {
-        startNode: params.startNode ?? "inicio_perdido",
-        formacion: params.formacion ?? "",
-        ramas: params.ramas ?? "",
-        nombre: params.nombre ?? "",
-      },
+  const persistContext = (userName?: string) => {
+    saveOnboarding({
+      goals: params.formacion ? params.formacion.split(",").filter(Boolean) : [],
+      areas: params.ramas ? params.ramas.split(",").filter(Boolean) : [],
+      nombre: userName ?? params.nombre ?? "",
     });
   };
 
+  const handleCreate = () => {
+    if (!isValid) return;
+    setUser({ id: email.trim(), name: params.nombre ?? "", email: email.trim() });
+    persistContext();
+    router.replace("/(tab)" as any);
+  };
+
   const handleSkip = () => {
-    router.replace({
-      pathname: "/(tab)",
-      params: {
-        startNode: params.startNode ?? "inicio_perdido",
-        formacion: params.formacion ?? "",
-        ramas: params.ramas ?? "",
-        nombre: params.nombre ?? "",
-      },
-    });
+    persistContext();
+    router.replace("/(tab)" as any);
   };
 
   return (
@@ -117,7 +114,7 @@ export default function SignupScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "padding"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
-      <OnboardingProgress step={4} />
+      <OnboardingProgress step={5} />
       <ScrollView
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
@@ -208,17 +205,11 @@ export default function SignupScreen() {
           </View>
 
           <GoogleSignInButton
-            onSuccess={(user) =>
-              router.replace({
-                pathname: "/(tab)",
-                params: {
-                  startNode: params.startNode ?? "inicio_perdido",
-                  formacion: params.formacion ?? "",
-                  ramas: params.ramas ?? "",
-                  nombre: user.name ?? params.nombre ?? "",
-                },
-              })
-            }
+            onSuccess={(user) => {
+              setUser({ id: user.id, name: user.name ?? "", email: user.email ?? "", picture: user.picture });
+              persistContext(user.name);
+              router.replace("/(tab)" as any);
+            }}
           />
 
           <TouchableOpacity

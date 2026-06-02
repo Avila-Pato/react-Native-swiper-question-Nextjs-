@@ -7,7 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const TOTAL = 4;
+const TOTAL = 5;
 
 function Segment({ index, step }: { index: number; step: number }) {
   const isBefore = step > index + 1;

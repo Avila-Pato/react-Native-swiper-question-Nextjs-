@@ -1,5 +1,5 @@
-import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
-import { GREEN, TEXT_FONT_SIZE } from "@/constants/constants";
+﻿import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
+import { TEXT_FONT_SIZE } from "@/constants/constants";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -87,11 +87,11 @@ export default function PersonalScreen() {
       <View style={styles.container}>
         <Animated.View style={[styles.header, titleStyle]}>
           <Text style={styles.title}>
-            ¿Cómo te <Text style={{ color: "#34D59A" }}>llamamos?</Text>
+            ¿Cómo te <Text style={{ color: "#8980B8" }}>llamamos?</Text>
           </Text>
           <Text style={styles.subtitle}>
             Tu nombre aparecerá en tu perfil y lo usaremos para personalizar tu
-            experiencia. Puedes usar tu nombre real o un alias.
+            camino de bienestar. Puedes usar tu nombre real o un alias.
           </Text>
         </Animated.View>
 
@@ -100,13 +100,13 @@ export default function PersonalScreen() {
             ref={inputRef}
             style={styles.input}
             placeholder="Tu nombre..."
-            placeholderTextColor="rgba(255,255,255,0.18)"
+            placeholderTextColor="rgba(28,27,41,0.3)"
             value={nombre}
             onChangeText={setNombre}
             returnKeyType="done"
             onSubmitEditing={handleContinue}
             autoCapitalize="words"
-            selectionColor={GREEN}
+            selectionColor={"#8980B8"}
           />
           <View style={styles.underline} />
         </Animated.View>
@@ -128,7 +128,7 @@ export default function PersonalScreen() {
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
-    backgroundColor: "#111120",
+    backgroundColor: "#FAF8F5",
   },
   container: {
     flex: 1,
@@ -140,13 +140,13 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   subtitle: {
-    color: "rgba(255,255,255,0.35)",
+    color: "#8A8A9A",
     fontSize: 13,
     fontWeight: "400",
     lineHeight: 20,
   },
   label: {
-    color: "rgba(255,255,255,0.3)",
+    color: "#8A8A9A",
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 1.2,
@@ -154,14 +154,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    color: "white",
+    color: "#1C1B29",
     fontSize: TEXT_FONT_SIZE,
     fontWeight: "700",
     lineHeight: 46,
   },
   inputBlock: {},
   input: {
-    color: "white",
+    color: "#1C1B29",
     fontSize: 15,
     fontWeight: "500",
     letterSpacing: -0.2,
@@ -170,12 +170,12 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(137,128,184,0.2)",
     borderRadius: 1,
   },
   btnWrapper: {},
   btn: {
-    backgroundColor: GREEN,
+    backgroundColor: "#8980B8",
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: "center",
@@ -184,9 +184,12 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   btnText: {
-    color: "#1a1a2e",
+    color: "#fff",
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.2,
   },
 });
+
+
+

@@ -1,4 +1,3 @@
-import { GREEN } from "@/constants/constants";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -22,254 +21,241 @@ import Animated, {
 
 const { height } = Dimensions.get("window");
 
-const PERFILES = [
-  { icon: "shield-outline" as const, label: "Seguridad" },
-  { icon: "cloud-outline" as const, label: "DevOps" },
-  { icon: "bar-chart-outline" as const, label: "Datos & IA" },
-  { icon: "code-slash-outline" as const, label: "Desarrollo" },
+const ACCENT = "#8980B8";
+const BG = "#FAF8F5";
+const TEXT_CLR = "#1C1B29";
+
+const AREAS = [
+  { icon: "heart-outline" as const, label: "Emociones" },
+  { icon: "people-outline" as const, label: "Relaciones" },
+  { icon: "leaf-outline" as const, label: "Límites" },
+  { icon: "star-outline" as const, label: "Autoestima" },
 ];
 
-export default function IntroScreen() {
-  const imageScale = useSharedValue(1.08);
-
+export default function LandingScreen() {
+  const imageScale = useSharedValue(1.06);
   const badgeX = useSharedValue(-60);
   const badgeOpacity = useSharedValue(0);
-
-  const titleY = useSharedValue(48);
+  const titleY = useSharedValue(40);
   const titleOpacity = useSharedValue(0);
-
   const descOpacity = useSharedValue(0);
-
-  const perfilesOpacity = useSharedValue(0);
-  const perfilesY = useSharedValue(20);
-
+  const areasOpacity = useSharedValue(0);
+  const areasY = useSharedValue(20);
 
   useEffect(() => {
     imageScale.value = withTiming(1, {
-      duration: 2000,
+      duration: 2200,
       easing: Easing.out(Easing.cubic),
     });
-
     badgeOpacity.value = withDelay(350, withTiming(1, { duration: 400 }));
     badgeX.value = withDelay(
       350,
       withSpring(0, { damping: 18, stiffness: 120 }),
     );
-
     titleOpacity.value = withDelay(550, withTiming(1, { duration: 500 }));
     titleY.value = withDelay(
       550,
       withSpring(0, { damping: 16, stiffness: 90 }),
     );
-
     descOpacity.value = withDelay(800, withTiming(1, { duration: 600 }));
-
-    perfilesOpacity.value = withDelay(950, withTiming(1, { duration: 500 }));
-    perfilesY.value = withDelay(
+    areasOpacity.value = withDelay(950, withTiming(1, { duration: 500 }));
+    areasY.value = withDelay(
       950,
       withSpring(0, { damping: 18, stiffness: 110 }),
     );
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const imageStyle = useAnimatedStyle(() => ({
     transform: [{ scale: imageScale.value }],
   }));
-
   const badgeStyle = useAnimatedStyle(() => ({
     opacity: badgeOpacity.value,
     transform: [{ translateX: badgeX.value }],
   }));
-
   const titleStyle = useAnimatedStyle(() => ({
     opacity: titleOpacity.value,
     transform: [{ translateY: titleY.value }],
   }));
-
-  const descStyle = useAnimatedStyle(() => ({
-    opacity: descOpacity.value,
+  const descStyle = useAnimatedStyle(() => ({ opacity: descOpacity.value }));
+  const areasStyle = useAnimatedStyle(() => ({
+    opacity: areasOpacity.value,
+    transform: [{ translateY: areasY.value }],
   }));
-
-  const perfilesStyle = useAnimatedStyle(() => ({
-    opacity: perfilesOpacity.value,
-    transform: [{ translateY: perfilesY.value }],
-  }));
-
 
   return (
     <View style={styles.container}>
-      {/* Hero image con zoom sutil */}
-      <Animated.View style={[styles.imageContainer, imageStyle]}>
+      {/* Fondo completo */}
+      <Animated.View style={[StyleSheet.absoluteFill, imageStyle]}>
         <Image
-          source={require("@/assets/Mask group.png")}
-          style={styles.heroImage}
-          contentFit="contain"
+          source={require("@/assets/fondo.jpeg")}
+          style={{ width: "100%", height: "100%" }}
+          contentFit="cover"
           contentPosition="top"
           priority="high"
           cachePolicy="memory-disk"
         />
       </Animated.View>
 
-      {/* Vignette superior suave */}
+      {/* Overlay oscuro sobre el cabello para legibilidad */}
       <LinearGradient
-        colors={["rgba(5,5,20,0.55)", "transparent"]}
-        style={styles.topVignette}
+        colors={["rgba(12,8,30,0.52)", "rgba(12,8,30,0.18)", "transparent"]}
+        locations={[0, 0.55, 1]}
+        style={styles.hairOverlay}
       />
 
-      {/* Gradiente principal: corta la imagen y transiciona al fondo */}
+      {/* Gradiente crema desde abajo (área de la persona) */}
       <LinearGradient
-        colors={["transparent", "rgba(26,26,46,0.75)", "#111120", "#111120"]}
-        locations={[0, 0.3, 0.58, 1]}
-        style={styles.gradient}
+        colors={["transparent", BG + "DD", BG]}
+        locations={[0, 0.55, 1]}
+        style={styles.bottomGradient}
       />
 
-      {/* Contenido animado */}
-      <View style={styles.content}>
-        {/* <Animated.View style={[styles.badge, badgeStyle]}>
-          <Text style={styles.badgeText}>⚡ RPG QUIZ</Text>
-        </Animated.View> */}
+      {/* Texto encima del cabello oscuro */}
+      <View style={styles.topContent}>
+        <Animated.View style={[styles.badge, badgeStyle]}>
+          <Text style={styles.badgeText}>✦ BIENESTAR EMOCIONAL</Text>
+        </Animated.View>
 
         <Animated.Text style={[styles.title, titleStyle]}>
-          Descubre tu perfil{" "}
-          <Text style={{ color: "#34D59A" }}>tecnológico</Text>
+          Tu camino al{"\n"}
+          <Text style={{ color: "#C9C3E8" }}>bienestar</Text>
         </Animated.Text>
 
         <Animated.Text style={[styles.description, descStyle]}>
-          Desliza para elegir. Descubre en qué área de la tecnología está tu
-          verdadero camino.
+          Explora tus emociones, relaciones y límites.{"\n"}
+          Retos semanales que transforman tu vida desde adentro.
         </Animated.Text>
+      </View>
 
-        <Animated.View style={[styles.perfilesRow, perfilesStyle]}>
-          {PERFILES.map(({ icon, label }) => (
-            <View key={label} style={styles.perfilChip}>
-              <Ionicons name={icon} size={22} color={GREEN} />
-              <Text style={styles.perfilLabel}>{label}</Text>
+      {/* Chips y botón abajo */}
+      <View style={styles.bottomContent}>
+        <Animated.View style={[styles.areasRow, areasStyle]}>
+          {AREAS.map(({ icon, label }) => (
+            <View key={label} style={styles.areaChip}>
+              <Ionicons name={icon} size={18} color={ACCENT} />
+              <Text style={styles.areaLabel}>{label}</Text>
             </View>
           ))}
         </Animated.View>
 
-        <View style={styles.buttonWrapper}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => router.push("/career")}
-            activeOpacity={0.82}
-          >
-            <Text style={styles.buttonText}>Comenzar →</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/career")}
+          activeOpacity={0.82}
+        >
+          <Text style={styles.buttonText}>Comenzar →</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#111120",
-  },
-  imageContainer: {
-    position: "absolute",
-    top: 60,
-    left: 0,
-    right: 0,
-    height: height,
-  },
-  heroImage: {
-    width: "110%",
-    height: "100%",
-  },
-  topVignette: {
+  container: { flex: 1, backgroundColor: BG },
+
+  hairOverlay: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    height: height * 0.22,
+    height: height * 0.6,
   },
-  gradient: {
+  bottomGradient: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    height: height * 0.75,
+    height: height * 0.44,
   },
-  content: {
+
+  topContent: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    paddingTop: 68,
+    paddingHorizontal: 28,
+  },
+
+  badge: {
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(255,255,255,0.18)",
+    borderRadius: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 14,
+    marginBottom: 18,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.28)",
+  },
+  badgeText: {
+    color: "#fff",
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 1.5,
+    textTransform: "uppercase",
+  },
+
+  title: {
+    color: "#fff",
+    fontSize: 42,
+    fontWeight: "800",
+    lineHeight: 50,
+    letterSpacing: -1,
+    marginBottom: 14,
+  },
+
+  description: {
+    color: "rgba(255,255,255,0.68)",
+    fontSize: 14,
+    lineHeight: 22,
+    fontWeight: "400",
+  },
+
+  bottomContent: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     paddingHorizontal: 28,
-    paddingBottom: 62,
+    paddingBottom: 52,
   },
-  // badge: {
-  //   alignSelf: "flex-start",
-  //   backgroundColor: GREEN,
-  //   borderRadius: 20,
-  //   paddingVertical: 5,
-  //   paddingHorizontal: 14,
-  //   marginBottom: 20,
-  // },
-  // badgeText: {
-  //   color: "#1a1a2e",
-  //   fontSize: 11,
-  //   fontWeight: "800",
-  //   letterSpacing: 1.5,
-  //   textTransform: "uppercase",
-  // },
-  title: {
-    color: "white",
-    fontSize: 42,
-    fontWeight: "800",
-    textAlign: "center",
-    lineHeight: 50,
-    letterSpacing: -0.5,
-    marginBottom: 16,
-    textShadowColor: "rgba(0,0,0,0.6)",
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 12,
-  },
-  description: {
-    color: "rgba(255,255,255,0.58)",
-    fontSize: 15,
-    lineHeight: 23,
-    fontWeight: "400",
-    marginBottom: 24,
-  },
-  perfilesRow: {
+
+  areasRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 28,
+    marginBottom: 22,
   },
-  perfilChip: {
+  areaChip: {
     flex: 1,
     alignItems: "center",
-    gap: 6,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    gap: 5,
+    backgroundColor: "rgba(255,255,255,0.82)",
     borderRadius: 14,
     paddingVertical: 10,
-    marginHorizontal: 4,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
+    marginHorizontal: 3,
   },
-  perfilLabel: {
-    color: "rgba(255,255,255,0.72)",
+  areaLabel: {
+    color: TEXT_CLR,
     fontSize: 10,
     fontWeight: "700",
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
     textAlign: "center",
   },
-  buttonWrapper: {
-    borderRadius: 18,
-    overflow: "hidden",
-  },
+
   button: {
-    backgroundColor: GREEN,
+    backgroundColor: ACCENT,
     borderRadius: 18,
     paddingVertical: 18,
     alignItems: "center",
+    shadowColor: ACCENT,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 14,
+    elevation: 6,
   },
   buttonText: {
-    color: "#1a1a2e",
+    color: "#fff",
     fontSize: 17,
     fontWeight: "800",
     letterSpacing: 0.3,

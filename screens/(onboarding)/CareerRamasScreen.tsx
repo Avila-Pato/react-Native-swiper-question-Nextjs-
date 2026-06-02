@@ -1,5 +1,5 @@
-import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
-import { GREEN, TEXT_FONT_SIZE } from "@/constants/constants";
+﻿import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
+import { TEXT_FONT_SIZE } from "@/constants/constants";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -25,28 +25,28 @@ import Animated, {
 
 const RAMAS = [
   {
-    id: "seguridad",
+    id: "emociones",
+    icon: "heart-outline" as const,
+    label: "Emociones",
+    desc: "Entender y gestionar lo que siento cada día",
+  },
+  {
+    id: "limites",
     icon: "shield-outline" as const,
-    label: "Ciberseguridad",
-    desc: "Proteger sistemas, redes y datos de ataques",
+    label: "Límites",
+    desc: "Aprender a decir no y cuidar mi energía",
   },
   {
-    id: "devops",
-    icon: "cloud-outline" as const,
-    label: "DevOps / Infraestructura",
-    desc: "Servidores, despliegues, automatización en la nube",
+    id: "relaciones",
+    icon: "people-outline" as const,
+    label: "Relaciones",
+    desc: "Mejorar mis vínculos y comunicación con otros",
   },
   {
-    id: "datos_ia",
-    icon: "bar-chart-outline" as const,
-    label: "Datos & Inteligencia Artificial",
-    desc: "Análisis de datos, machine learning y modelos de IA",
-  },
-  {
-    id: "desarrollo",
-    icon: "code-slash-outline" as const,
-    label: "Desarrollo de Software",
-    desc: "Crear apps web, móviles o programas desde cero",
+    id: "autoestima",
+    icon: "star-outline" as const,
+    label: "Autoestima",
+    desc: "Fortalecer mi relación conmigo mismo",
   },
 ];
 
@@ -71,14 +71,14 @@ function RamaRow({
   }, [active]);
 
   const rowStyle = useAnimatedStyle(() => ({
-    backgroundColor: `rgba(52,213,154,${0.065 * progress.value})`,
+    backgroundColor: `rgba(137,128,184,${0.065 * progress.value})`,
   }));
 
   const borderStyle = useAnimatedStyle(() => ({
     backgroundColor: interpolateColor(
       progress.value,
       [0, 1],
-      ["rgba(255,255,255,0.1)", GREEN],
+      ["rgba(137,128,184,0.15)", "#8980B8"],
     ),
   }));
 
@@ -96,7 +96,7 @@ function RamaRow({
       <Animated.View style={[styles.row, rowStyle]}>
         <Animated.View style={[styles.rowBorder, borderStyle]} />
         <Animated.View style={iconStyle}>
-          <Ionicons name={icon} size={20} color={GREEN} />
+          <Ionicons name={icon} size={20} color="#8980B8" />
         </Animated.View>
         <View style={{ flex: 1 }}>
           <Text style={[styles.rowLabel, active && styles.rowLabelActive]}>
@@ -105,7 +105,7 @@ function RamaRow({
           <Text style={styles.rowDesc}>{desc}</Text>
         </View>
         <Animated.View style={checkStyle}>
-          <Ionicons name="checkmark" size={20} color={GREEN} />
+          <Ionicons name="checkmark" size={20} color="#8980B8" />
         </Animated.View>
       </Animated.View>
     </TouchableOpacity>
@@ -259,7 +259,7 @@ export default function CareerRamasScreen() {
         <Animated.View style={[styles.header, titleStyle]}>
           <View style={styles.headerTop}>
             <Text style={styles.title}>
-              ¿Qué área <Text style={{ color: "#34D59A" }}>te llama?</Text>
+              ¿Qué área de{"\n"}<Text style={{ color: "#8980B8" }}>bienestar</Text> te interesa?
             </Text>
             {/* <Animated.Text style={[styles.counterBig, counterStyle]}>
               {totalSelected}
@@ -310,8 +310,8 @@ export default function CareerRamasScreen() {
                   <TextInput
                     ref={otraInputRef}
                     style={styles.modalInput}
-                    placeholder="Ej: UX/UI, Blockchain..."
-                    placeholderTextColor="rgba(255,255,255,0.22)"
+                    placeholder="Ej: Mindfulness, Propósito..."
+                    placeholderTextColor="rgba(28,27,41,0.3)"
                     value={otraInput}
                     onChangeText={setOtraInput}
                     returnKeyType="done"
@@ -371,7 +371,7 @@ export default function CareerRamasScreen() {
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
-    backgroundColor: "#111120",
+    backgroundColor: "#FAF8F5",
   },
   scroll: {
     paddingHorizontal: 24,
@@ -389,21 +389,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   title: {
-    color: "white",
+    color: "#1C1B29",
     fontSize: TEXT_FONT_SIZE,
     fontWeight: "700",
     lineHeight: 40,
     letterSpacing: -1.0,
   },
   counterBig: {
-    color: GREEN,
+    color: "#8980B8",
     fontSize: 84,
     fontWeight: "900",
     lineHeight: 84,
     letterSpacing: -4,
   },
   subtitle: {
-    color: "rgba(255,255,255,0.3)",
+    color: "#8A8A9A",
     fontSize: 12,
     fontWeight: "400",
     letterSpacing: 0.2,
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     gap: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.05)",
+    borderBottomColor: "rgba(137,128,184,0.12)",
   },
   rowBorder: {
     position: "absolute",
@@ -427,24 +427,24 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   rowNum: {
-    color: GREEN,
+    color: "#8980B8",
     fontSize: 11,
     fontWeight: "800",
     letterSpacing: 1.5,
     width: 24,
   },
   rowLabel: {
-    color: "rgba(255,255,255,0.55)",
+    color: "rgba(28,27,41,0.4)",
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: -0.4,
     marginBottom: 2,
   },
   rowLabelActive: {
-    color: "white",
+    color: "#1C1B29",
   },
   rowDesc: {
-    color: "rgba(255,255,255,0.28)",
+    color: "#8A8A9A",
     fontSize: 12,
     fontWeight: "400",
     lineHeight: 16,
@@ -463,10 +463,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: 3,
     borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(137,128,184,0.2)",
   },
   rowNumOtra: {
-    color: "rgba(255,255,255,0.28)",
+    color: "#8A8A9A",
     fontSize: 18,
     fontWeight: "700",
     width: 24,
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
   },
   rowLabelOtra: {
     flex: 1,
-    color: "rgba(255,255,255,0.32)",
+    color: "rgba(28,27,41,0.35)",
     fontSize: 16,
     fontWeight: "600",
   },
@@ -487,20 +487,20 @@ const styles = StyleSheet.create({
   },
   otraInput: {
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: "rgba(137,128,184,0.06)",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(137,128,184,0.2)",
     paddingHorizontal: 14,
     paddingVertical: 12,
-    color: "white",
+    color: "#1C1B29",
     fontSize: 15,
   },
   otraConfirm: {
     width: 44,
     height: 44,
     borderRadius: 12,
-    backgroundColor: GREEN,
+    backgroundColor: "#8980B8",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -522,16 +522,16 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: GREEN,
-    backgroundColor: "rgba(52,213,154,0.08)",
+    borderColor: "#8980B8",
+    backgroundColor: "rgba(137,128,184,0.08)",
   },
   customTagText: {
-    color: GREEN,
+    color: "#8980B8",
     fontSize: 13,
     fontWeight: "600",
   },
   btn: {
-    backgroundColor: GREEN,
+    backgroundColor: "#8980B8",
     borderRadius: 10,
     paddingVertical: 14,
     paddingHorizontal: 20,
@@ -547,7 +547,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   btnBadge: {
-    backgroundColor: "#1a1a2e",
+    backgroundColor: "rgba(255,255,255,0.25)",
     borderRadius: 20,
     minWidth: 22,
     height: 22,
@@ -556,12 +556,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
   },
   btnBadgeText: {
-    color: GREEN,
+    color: "#fff",
     fontSize: 11,
     fontWeight: "700",
   },
   btnText: {
-    color: "#1a1a2e",
+    color: "#fff",
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.2,
@@ -572,14 +572,14 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalCard: {
-    backgroundColor: "#1a1a2e",
+    backgroundColor: "#FAF8F5",
     borderTopLeftRadius: 14,
     borderTopRightRadius: 14,
     padding: 20,
     gap: 14,
   },
   modalTitle: {
-    color: "white",
+    color: "#1C1B29",
     fontSize: 15,
     fontWeight: "600",
     letterSpacing: -0.3,
@@ -588,22 +588,26 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.05)",
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
+    borderColor: "rgba(137,128,184,0.18)",
     paddingHorizontal: 14,
     paddingVertical: 12,
-    color: "white",
+    color: "#1C1B29",
     fontSize: 14,
   },
   modalBtn: {
-    backgroundColor: GREEN,
+    backgroundColor: "#8980B8",
     borderRadius: 10,
     paddingVertical: 13,
     alignItems: "center",
     marginBottom: 6,
   },
   modalBtnText: {
-    color: "#1a1a2e",
+    color: "#fff",
     fontSize: 15,
     fontWeight: "700",
   },
 });
+
+
+
+

@@ -1,6 +1,6 @@
-import { GoogleSignInButton } from "@/components/onboarding/GoogleSignInButton";
+﻿import { GoogleSignInButton } from "@/components/onboarding/GoogleSignInButton";
 import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
-import { GREEN, TEXT_FONT_SIZE } from "@/constants/constants";
+import { TEXT_FONT_SIZE } from "@/constants/constants";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { UserCircle } from "lucide-react-native";
@@ -126,11 +126,11 @@ export default function SignupScreen() {
         {/* Encabezado */}
         <Animated.View style={[styles.header, titleStyle]}>
           <Text style={styles.title}>
-            Crea tu <Text style={{ color: "#34D59A" }}>cuenta.</Text>
+            Crea tu <Text style={{ color: "#8980B8" }}>cuenta.</Text>
           </Text>
           <Text style={styles.subtitle}>
-            Para una mejor experiencia, crea tu cuenta y guarda tu progreso,
-            ruta de aprendizaje.
+            Crea tu cuenta y guarda tu progreso en tu camino de bienestar
+            personal.
           </Text>
         </Animated.View>
 
@@ -144,14 +144,14 @@ export default function SignupScreen() {
                 ref={emailRef}
                 style={styles.input}
                 placeholder="hola@ejemplo.com"
-                placeholderTextColor="rgba(255,255,255,0.18)"
+                placeholderTextColor="rgba(28,27,41,0.3)"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 returnKeyType="next"
                 onSubmitEditing={() => passwordRef.current?.focus()}
-                selectionColor={GREEN}
+                selectionColor="#8980B8"
               />
             </View>
             <View style={styles.underline} />
@@ -165,13 +165,13 @@ export default function SignupScreen() {
                 ref={passwordRef}
                 style={[styles.input, { flex: 1 }]}
                 placeholder="Mínimo 6 caracteres"
-                placeholderTextColor="rgba(255,255,255,0.18)"
+                placeholderTextColor="rgba(28,27,41,0.3)"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 returnKeyType="done"
                 onSubmitEditing={handleCreate}
-                selectionColor={GREEN}
+                selectionColor="#8980B8"
               />
               <TouchableOpacity
                 onPress={() => setShowPassword((p) => !p)}
@@ -180,7 +180,7 @@ export default function SignupScreen() {
                 <Ionicons
                   name={showPassword ? "eye-off-outline" : "eye-outline"}
                   size={20}
-                  color="rgba(255,255,255,0.35)"
+                  color="#8A8A9A"
                 />
               </TouchableOpacity>
             </View>
@@ -226,7 +226,7 @@ export default function SignupScreen() {
             onPress={handleSkip}
             activeOpacity={0.7}
           >
-            <UserCircle size={18} color="rgba(255,255,255,0.5)" />
+            <UserCircle size={18} color="#8A8A9A" />
             <Text style={styles.guestText}>Entrar como invitado</Text>
           </TouchableOpacity>
         </Animated.View>
@@ -238,7 +238,7 @@ export default function SignupScreen() {
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
-    backgroundColor: "#111120",
+    backgroundColor: "#FAF8F5",
   },
   container: {
     flexGrow: 1,
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   label: {
-    color: "rgba(255,255,255,0.35)",
+    color: "#8A8A9A",
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 1.2,
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    color: "white",
+    color: "#1C1B29",
     fontSize: TEXT_FONT_SIZE,
     fontWeight: "700",
     lineHeight: 46,
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   subtitle: {
-    color: "rgba(255,255,255,0.35)",
+    color: "#8A8A9A",
     fontSize: 13,
     fontWeight: "400",
     lineHeight: 20,
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
   },
   fieldBlock: {},
   fieldLabel: {
-    color: "rgba(255,255,255,0.3)",
+    color: "#8A8A9A",
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 1.2,
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   input: {
-    color: "white",
+    color: "#1C1B29",
     fontSize: 15,
     fontWeight: "500",
     letterSpacing: -0.2,
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   },
   underline: {
     height: 1,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: "rgba(137,128,184,0.18)",
     borderRadius: 1,
   },
   hint: {
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   btn: {
-    backgroundColor: GREEN,
+    backgroundColor: "#8980B8",
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: "center",
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
     opacity: 0.3,
   },
   btnText: {
-    color: "#1a1a2e",
+    color: "#fff",
     fontSize: 15,
     fontWeight: "700",
     letterSpacing: 0.2,
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
   },
   guestText: {
-    color: "rgba(255,255,255,0.5)",
+    color: "#8A8A9A",
     fontSize: 14,
     fontWeight: "600",
   },
@@ -358,3 +358,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
 });
+
+
+
+

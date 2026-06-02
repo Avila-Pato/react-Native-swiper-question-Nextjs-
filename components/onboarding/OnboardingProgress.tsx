@@ -1,4 +1,3 @@
-import { GREEN } from "@/constants/constants";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, {
@@ -62,12 +61,12 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(137,128,184,0.15)",
     overflow: "hidden",
   },
   segFill: {
     height: "100%",
-    backgroundColor: GREEN,
+    backgroundColor: "#8980B8",
     borderRadius: 2,
   },
 });

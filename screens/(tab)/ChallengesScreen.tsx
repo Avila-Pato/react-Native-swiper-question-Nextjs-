@@ -14,7 +14,6 @@ import { getAllProgress } from "@/store/challengeProgress";
 import { setSelectedLangs } from "@/store/languagePrefs";
 import { ChallengeType } from "@/types/challenges";
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import {
@@ -32,12 +31,19 @@ import {
 
 const BAR_HEIGHT = TAB_ITEM_SIZE + SPACING * 1.5;
 
-
 type IconConfig = {
   image: ImageSourcePropType;
   bg: string;
   color: string;
   cardImage: ImageSourcePropType;
+  character: ImageSourcePropType;
+};
+
+const TAG_LABELS: Record<string, string> = {
+  adivina_concepto: "#Conceptos",
+  identifica_patron: "#Patrones",
+  verdad_mito: "#Verdad o Mito",
+  completa_reflexion: "#Reflexión",
 };
 
 const ICON_MAP: Record<string, IconConfig> = {
@@ -46,24 +52,28 @@ const ICON_MAP: Record<string, IconConfig> = {
     bg: P_TEAL.bg,
     color: P_TEAL.fg,
     cardImage: require("@/assets/abstracts/Group-11.png"),
+    character: require("@/assets/character/3.png"),
   },
   identifica_patron: {
     image: require("@/assets/icons/Surveillance.svg"),
     bg: P_AMBER.bg,
     color: P_AMBER.fg,
     cardImage: require("@/assets/abstracts/Group-6.png"),
+    character: require("@/assets/character/7.png"),
   },
   verdad_mito: {
     image: require("@/assets/icons/Approval.svg"),
     bg: P_GOLD.bg,
     color: P_GOLD.fg,
     cardImage: require("@/assets/abstracts/Group-8.png"),
+    character: require("@/assets/character/14.png"),
   },
   completa_reflexion: {
     image: require("@/assets/icons/Documentation.svg"),
     bg: P_SLATE.bg,
     color: P_SLATE.fg,
     cardImage: require("@/assets/abstracts/Group-1.png"),
+    character: require("@/assets/character/22.png"),
   },
 };
 
@@ -100,17 +110,6 @@ export default function ChallengesScreen() {
     (c) => (progress[c.id] ?? 0) >= c.questions.length,
   ).length;
 
-  const nextId = (WEEKLY_CHALLENGES.find(
-    (c) => (progress[c.id] ?? 0) < c.questions.length,
-  )?.id ?? WEEKLY_CHALLENGES[0].id) as ChallengeType;
-
-  const ctaLabel =
-    totalDone === 0
-      ? "Comenzar reto →"
-      : totalDone === 4
-        ? "Repasar retos →"
-        : "Continuar reto →";
-
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={s.root}>
       <ScrollView
@@ -121,82 +120,87 @@ export default function ChallengesScreen() {
         ]}
       >
         {/* ── Hero card ── */}
-        <LinearGradient
-          colors={["#E8F0EE", "#EDE9F8", "#F2E8EF"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={s.heroCard}
-        >
-          {/* Decoraciones esquinas */}
-          <Image source={require("@/assets/abstracts/Group-1.png")} style={s.decoTopRight} contentFit="contain" />
-          <Image source={require("@/assets/abstracts/Group-5.png")} style={s.decoTopLeft} contentFit="contain" />
-          <Image source={require("@/assets/abstracts/Group-9.png")} style={s.decoStarLeft} contentFit="contain" />
-
+        <View style={s.heroCard}>
+          {/* Fondo */}
+          <Image
+            source={require("@/assets/images/fondo2.jpeg")}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            contentPosition="top"
+          />
           {/* Fila: texto izquierda + ilustración derecha */}
           <View style={s.heroRow}>
             <View style={s.heroLeft}>
-              <Text style={s.heroGreeting}>{"Retos ✦"}</Text>
-              <Text style={s.heroTitle}>{"Encuentra\ntu reto"}</Text>
+              <Text style={s.heroGreeting}>{"Retos semanales ✦"}</Text>
+              <Text style={s.heroTitle}>
+                {"Entrena tu\n"}
+                <Text style={s.heroTitleAccent}>{"bienestar"}</Text>
+              </Text>
+              <Text style={s.heroDesc}>
+                {
+                  "Practica con ejercicios cortos diseñados\npara fortalecer tu mente cada semana."
+                }
+              </Text>
               <Text style={s.heroSub}>
                 {totalDone === 4
-                  ? "¡Todo completado!"
-                  : `${4 - totalDone} de 4 pendientes`}
+                  ? "✓ Semana completa — ¡buen trabajo!"
+                  : `${4 - totalDone} de 4 retos pendientes`}
               </Text>
-              <Pressable
-                style={({ pressed }) => [s.heroBtn, pressed && { opacity: 0.85 }]}
-                onPress={() => handleCardPress(nextId)}
-              >
-                <Text style={s.heroBtnTxt}>{ctaLabel}</Text>
-              </Pressable>
             </View>
-
-            <Image
-              source={require("@/assets/abstracts/2.svg")}
-              style={s.heroIllustration}
-              contentFit="contain"
-            />
           </View>
-        </LinearGradient>
+        </View>
 
         <View style={[s.listSection, { backgroundColor: BG }]}>
           <Text style={s.listLabel}>{"Todos los retos"}</Text>
           <View style={s.list}>
+            {/* Línea vertical del timeline */}
+            <View style={s.timelineLine} />
+
             {WEEKLY_CHALLENGES.map((c) => {
               const done = progress[c.id] ?? 0;
               const total = c.questions.length;
               const cfg = ICON_MAP[c.id];
-
               const completed = done >= total;
 
               return (
-                <Pressable
-                  key={c.id}
-                  style={({ pressed }) => [
-                    s.row,
-                    { backgroundColor: cfg.bg },
-                    pressed && { opacity: 0.78 },
-                  ]}
-                  onPress={() => handleCardPress(c.id)}
-                >
-                  <View style={s.rowBody}>
-                    <Text style={[s.rowTitle, { color: cfg.color }]}>
-                      {c.title}
-                    </Text>
-                    <Text style={s.rowSub}>
-                      {completed
-                        ? "✓ Completado"
-                        : done > 0
-                          ? `${done} de ${total} correctas`
-                          : `${total} preguntas`}
-                    </Text>
+                <View key={c.id} style={s.timelineItem}>
+                  {/* Izquierda: solo el dot */}
+                  <View style={s.timelineLeft}>
+                    <View style={[s.timelineDot, { backgroundColor: cfg.bg, borderColor: cfg.color }]}>
+                      <Image source={cfg.cardImage} style={s.timelineDotIcon} contentFit="contain" />
+                    </View>
                   </View>
 
-                  <Image
-                    source={cfg.cardImage}
-                    style={s.rowIllustration}
-                    contentFit="contain"
-                  />
-                </Pressable>
+                  {/* Derecha: etiqueta encima de la card + personaje + card */}
+                  <View style={s.cardWrapper}>
+                    <Text style={[s.timelineLabel, { color: cfg.color }]}>
+                      {TAG_LABELS[c.id].replace("#", "")}
+                    </Text>
+                    <Image
+                      source={cfg.character}
+                      style={s.rowCharacter}
+                      contentFit="contain"
+                      contentPosition="bottom"
+                    />
+                    <Pressable
+                      style={({ pressed }) => [
+                        s.row,
+                        { backgroundColor: cfg.bg },
+                        pressed && { opacity: 0.82 },
+                      ]}
+                      onPress={() => handleCardPress(c.id)}
+                    >
+                      <Text style={[s.rowTitle, { color: cfg.color }]}>{c.title}</Text>
+                      <Text style={s.rowSub}>
+                        {completed
+                          ? "✓ Completado"
+                          : done > 0
+                            ? `${done} de ${total} correctas`
+                            : `${total} preguntas`}
+                      </Text>
+                    </Pressable>
+                  </View>
+                </View>
               );
             })}
           </View>
@@ -244,8 +248,7 @@ const s = StyleSheet.create({
   heroGreeting: {
     fontSize: 13,
     fontWeight: "700",
-    color: TEXT,
-    opacity: 0.55,
+    color: "#8980B8",
     letterSpacing: 0.3,
   },
   heroTitle: {
@@ -255,10 +258,20 @@ const s = StyleSheet.create({
     letterSpacing: -1,
     lineHeight: 36,
   },
+  heroTitleAccent: {
+    color: "#8980B8",
+    fontWeight: "900",
+  },
+  heroDesc: {
+    fontSize: 13,
+    color: MUTED,
+    fontWeight: "400",
+    lineHeight: 19,
+  },
   heroSub: {
     fontSize: 12,
-    color: MUTED,
-    fontWeight: "500",
+    color: "#8980B8",
+    fontWeight: "700",
   },
   heroBtn: {
     backgroundColor: BG,
@@ -318,34 +331,142 @@ const s = StyleSheet.create({
     marginHorizontal: SPACING * 2,
   },
   list: {
-    marginHorizontal: SPACING * 2,
-    gap: SPACING * 1.2,
+    marginHorizontal: SPACING,
+    gap: SPACING * 2,
+    position: "relative",
+  },
+
+  /* ── Timeline ── */
+  timelineLine: {
+    position: "absolute",
+    left: 19,
+    top: 50,
+    bottom: 50,
+    width: 1.5,
+    borderLeftWidth: 1.5,
+    borderStyle: "dashed",
+    borderColor: "rgba(137,128,184,0.3)",
+  },
+  timelineItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: SPACING,
+  },
+  timelineLeft: {
+    alignItems: "center",
+    paddingTop: 60 + 22,
+    width: 42,
+  },
+  timelineDot: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1.5,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  timelineDotIcon: {
+    width: 38,
+    height: 38,
+  },
+  timelineLabel: {
+    fontSize: 12,
+    fontWeight: "800",
+    letterSpacing: 0.3,
+    marginBottom: 6,
+  },
+
+  /* ── Card wrapper (derecha del timeline) ── */
+  cardWrapper: {
+    flex: 1,
+    position: "relative",
+    paddingTop: 60,
+  },
+  rowWrapper: {
+    position: "relative",
+    paddingTop: 60,
   },
   row: {
-    flexDirection: "row",
-    alignItems: "center",
     borderRadius: 24,
+    overflow: "hidden",
+    minHeight: 120,
     paddingTop: SPACING * 2,
     paddingBottom: SPACING * 2,
-    paddingLeft: SPACING * 2.5,
-    overflow: "hidden",
-    minHeight: 95,
+    paddingLeft: SPACING * 2,
+    paddingRight: 160,
+    gap: 6,
   },
-  rowBody: {
+  rowTop: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: SPACING,
+  },
+  rowLeft: {
     flex: 1,
-    gap: 5,
-    paddingRight: SPACING,
+    gap: 6,
+  },
+  rowCharacter: {
+    position: "absolute",
+    right: 4,
+    bottom: 0,
+    height: 300,
+    width: 200,
+    zIndex: 1,
   },
   rowTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "900",
-    letterSpacing: -0.4,
-    lineHeight: 23,
+    color: TEXT,
+    letterSpacing: -0.5,
+    lineHeight: 26,
   },
-  rowSub: { fontSize: 12, color: MUTED, fontWeight: "500" },
+  rowTagChip: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: MUTED,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+  },
+  rowSub: {
+    fontSize: 12,
+    color: MUTED,
+    fontWeight: "500",
+  },
+  rowBadge: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 1,
+  },
+  rowBadgeNum: {
+    fontSize: 16,
+    fontWeight: "900",
+    letterSpacing: -0.5,
+    color: "#fff",
+  },
+  rowBadgeLabel: {
+    fontSize: 9,
+    fontWeight: "600",
+    textAlign: "center",
+    color: "rgba(255,255,255,0.8)",
+  },
+  rowBtn: {
+    borderRadius: 14,
+    paddingVertical: SPACING * 1.1,
+    paddingHorizontal: SPACING * 1.8,
+    alignSelf: "flex-start",
+  },
+  rowBtnTxt: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: "#fff",
+  },
   rowIllustration: {
     width: 95,
     height: 95,
-    marginRight: -8,
   },
 });

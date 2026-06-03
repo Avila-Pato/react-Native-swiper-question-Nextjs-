@@ -107,6 +107,16 @@ export default function LandingScreen() {
     transform: [{ translateY: areasY.value }],
   }));
 
+  const overlayStyle = useAnimatedStyle(() => ({ opacity: overlayOp.value }));
+  const logoAnimStyle = useAnimatedStyle(() => ({
+    opacity: logoOp.value,
+    transform: [{ scale: logoScale.value }],
+  }));
+  const nameAnimStyle = useAnimatedStyle(() => ({
+    opacity: nameOp.value,
+    transform: [{ translateY: nameY.value }],
+  }));
+
   return (
     <View style={styles.container}>
       {/* Fondo completo */}
@@ -178,6 +188,20 @@ export default function LandingScreen() {
           <Text style={styles.buttonText}>Comenzar →</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Splash overlay */}
+      {showSplash && (
+        <Animated.View style={[styles.splashOverlay, overlayStyle]} pointerEvents="none">
+          <Animated.Image
+            source={require("@/assets/logo.png")}
+            style={[styles.splashLogo, logoAnimStyle]}
+            resizeMode="contain"
+          />
+          <Animated.Text style={[styles.splashName, nameAnimStyle]}>
+            Lumina
+          </Animated.Text>
+        </Animated.View>
+      )}
     </View>
   );
 }
@@ -300,5 +324,24 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "800",
     letterSpacing: 0.3,
+  },
+
+  splashOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: BG,
+    zIndex: 99,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  splashLogo: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+  },
+  splashName: {
+    color: ACCENT,
+    fontSize: 34,
+    fontWeight: "800",
+    letterSpacing: 1.5,
   },
 });

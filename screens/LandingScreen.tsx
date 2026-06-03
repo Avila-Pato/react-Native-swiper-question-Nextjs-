@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Dimensions,
   StyleSheet,
@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import Animated, {
   Easing,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -33,6 +34,16 @@ const AREAS = [
 ];
 
 export default function LandingScreen() {
+  const [showSplash, setShowSplash] = useState(true);
+
+  // Splash animado
+  const logoScale = useSharedValue(0.5);
+  const logoOp = useSharedValue(0);
+  const nameOp = useSharedValue(0);
+  const nameY = useSharedValue(16);
+  const overlayOp = useSharedValue(1);
+
+  // Landing (se inician con delay para que el splash ya esté saliendo)
   const imageScale = useSharedValue(1.06);
   const badgeX = useSharedValue(-60);
   const badgeOpacity = useSharedValue(0);
@@ -43,6 +54,19 @@ export default function LandingScreen() {
   const areasY = useSharedValue(20);
 
   useEffect(() => {
+    // — Splash entra —
+    logoOp.value = withTiming(1, { duration: 500 });
+    logoScale.value = withSpring(1, { damping: 13, stiffness: 70 });
+    nameOp.value = withDelay(550, withTiming(1, { duration: 450 }));
+    nameY.value = withDelay(550, withSpring(0, { damping: 16, stiffness: 90 }));
+
+    // — Splash sale y desaparece —
+    overlayOp.value = withDelay(
+      2000,
+      withTiming(0, { duration: 600 }, () => {
+        runOnJS(setShowSplash)(false);
+      }),
+    );
     imageScale.value = withTiming(1, {
       duration: 2200,
       easing: Easing.out(Easing.cubic),
@@ -121,7 +145,7 @@ export default function LandingScreen() {
       {/* Texto encima del cabello oscuro */}
       <View style={styles.topContent}>
         <Animated.View style={[styles.badge, badgeStyle]}>
-          <Text style={styles.badgeText}>✦ BIENESTAR EMOCIONAL</Text>
+          <Text style={styles.badgeText}>✦</Text>
         </Animated.View>
 
         <Animated.Text style={[styles.title, titleStyle]}>
@@ -148,7 +172,7 @@ export default function LandingScreen() {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push("/career")}
+          onPress={() => router.push("/intro")}
           activeOpacity={0.82}
         >
           <Text style={styles.buttonText}>Comenzar →</Text>

@@ -90,5 +90,10 @@ export function buildDeck(areas: string[]): DeckCard[] {
       deck.push({ ...c, area, areaLabel: AREA_LABELS[area] ?? area });
     }
   }
+  if (deck.length === 0) {
+    for (const c of RAW["emociones"]) {
+      deck.push({ ...c, area: "emociones", areaLabel: AREA_LABELS["emociones"] });
+    }
+  }
   return deck;
 }

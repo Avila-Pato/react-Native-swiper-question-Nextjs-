@@ -140,7 +140,7 @@ export default function CardDeckScreen() {
         const strengths = areas.filter((a) => (newScores[a] ?? 0) <= 1);
         const challenges = areas.filter((a) => (newScores[a] ?? 0) >= 2);
         saveDiagnostic({ scores: newScores, strengths, challenges });
-        router.push({
+        router.replace({
           pathname: "/personal",
           params: {
             startNode: params.startNode ?? "",

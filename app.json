@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "gameReact",
+    "name": "Lumina",
     "slug": "gameReact",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/logo.png",
     "scheme": "gamereact",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -48,12 +48,12 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/logo.png",
+          "imageWidth": 180,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#FAF8F5",
           "dark": {
-            "backgroundColor": "#000000"
+            "backgroundColor": "#2D1B69"
           }
         }
       ],

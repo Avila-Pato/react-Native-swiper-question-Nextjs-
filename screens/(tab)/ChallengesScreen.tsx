@@ -213,6 +213,7 @@ export default function ChallengesScreen() {
           onClose={() => setLangPickerOpen(false)}
         />
       )}
+      
     </SafeAreaView>
   );
 }

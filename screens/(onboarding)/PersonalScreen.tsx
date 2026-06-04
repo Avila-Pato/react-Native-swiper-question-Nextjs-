@@ -83,7 +83,7 @@ export default function PersonalScreen() {
       style={styles.flex}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <OnboardingProgress step={4} />
+      <OnboardingProgress step={5} />
       <View style={styles.container}>
         <Animated.View style={[styles.header, titleStyle]}>
           <Text style={styles.title}>

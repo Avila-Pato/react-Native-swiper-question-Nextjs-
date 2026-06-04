@@ -131,7 +131,7 @@ function RamaRow({
             </Text>
             {suggested && !active && (
               <View style={styles.suggestedBadge}>
-                <Text style={styles.suggestedText}>Para ti</Text>
+                <Text style={styles.suggestedText}>Recomendado.</Text>
               </View>
             )}
           </View>
@@ -181,10 +181,10 @@ function CustomTag({
 
 const GOAL_TO_AREAS: Record<string, string[]> = {
   crecimiento: ["emociones", "autoestima"],
-  relaciones:  ["relaciones", "comunicacion", "limites"],
-  equilibrio:  ["estres", "mindfulness"],
-  autoestima:  ["autoestima", "emociones"],
-  sanacion:    ["emociones", "mindfulness"],
+  relaciones: ["relaciones", "comunicacion", "limites"],
+  equilibrio: ["estres", "mindfulness"],
+  autoestima: ["autoestima", "emociones"],
+  sanacion: ["emociones", "mindfulness"],
 };
 
 export default function CareerRamasScreen() {

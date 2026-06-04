@@ -114,7 +114,7 @@ export default function SignupScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "padding"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
-      <OnboardingProgress step={5} />
+      <OnboardingProgress step={6} />
       <ScrollView
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"

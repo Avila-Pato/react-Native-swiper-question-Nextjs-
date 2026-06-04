@@ -27,7 +27,7 @@ const BUBBLES = [
 const SLIDES = [
   {
     key: "books",
-    title: "Basada en los libros\nmás reconocidos",
+    title: "Respaldada en algunos de los libros\ más populares del mundo",
     subtitle:
       "Cada reto y herramienta está inspirado en estudios de autores referentes en psicología y bienestar.",
     visual: "books" as const,
@@ -40,6 +40,13 @@ const SLIDES = [
     visual: "areas" as const,
   },
   {
+    key: "moment",
+    title: "Actúa y piensa\nen el momento",
+    subtitle:
+      "Lumina te guía con herramientas prácticas para cada situación de tu día a día.",
+    visual: "moment" as const,
+  },
+  {
     key: "ready",
     title: "¡Bienvenido/a\na Lumina!",
     subtitle: "Un camino diseñado para ti, a tu ritmo, desde adentro.",
@@ -48,21 +55,94 @@ const SLIDES = [
 ];
 
 const BOOKS = [
-  { src: require("@/assets/portada/1_book.jpg"),  author: "Amir Levine"  },
-  { src: require("@/assets/portada/2_book.jpg"),  author: "Brené Brown"  },
-  { src: require("@/assets/portada/3_book.jpg"),  author: "Nedra Tawwab" },
-  { src: require("@/assets/portada/5_book.jpeg"), author: "Walter Riso"  },
-  { src: require("@/assets/portada/6_book.jpeg"), author: "James Allen"  },
+  { src: require("@/assets/portada/1_book.jpg"), author: "Amir Levine" },
+  { src: require("@/assets/portada/2_book.jpg"), author: "Brené Brown" },
+  { src: require("@/assets/portada/3_book.jpg"), author: "Nedra Tawwab" },
+  { src: require("@/assets/portada/5_book.jpeg"), author: "Walter Riso" },
+  { src: require("@/assets/portada/6_book.jpeg"), author: "James Allen" },
   { src: require("@/assets/portada/7_book.jpeg"), author: "Esther Perel" },
 ];
 
 const AREAS = [
-  { icon: "heart" as const,            label: "Emociones",   tag: "Siente más",      color: "#C45E7A", bg: "#FFF0F5", img: require("@/assets/abstracts/Group-1.png")  },
-  { icon: "people" as const,           label: "Relaciones",  tag: "Conecta mejor",   color: "#7B68BF", bg: "#F4EEFA", img: require("@/assets/abstracts/Group-3.png")  },
-  { icon: "shield-checkmark" as const, label: "Límites",     tag: "Protégete",       color: "#4A80C4", bg: "#EAF4FF", img: require("@/assets/abstracts/Group-5.png")  },
-  { icon: "star" as const,             label: "Autoestima",  tag: "Cree en ti",      color: "#C49030", bg: "#FFFAEC", img: require("@/assets/abstracts/Group-7.png")  },
-  { icon: "flash" as const,            label: "Estrés",      tag: "Encuentra calma", color: "#C46030", bg: "#FFF4EE", img: require("@/assets/abstracts/Group-9.png")  },
-  { icon: "moon" as const,             label: "Mindfulness", tag: "Vive el momento", color: "#3B9A5A", bg: "#EEF7F1", img: require("@/assets/abstracts/Group-11.png") },
+  {
+    icon: "heart" as const,
+    label: "Emociones",
+    tag: "Siente más",
+    color: "#C45E7A",
+    bg: "#FFF0F5",
+    img: require("@/assets/abstracts/Group-1.png"),
+  },
+  {
+    icon: "people" as const,
+    label: "Relaciones",
+    tag: "Conecta mejor",
+    color: "#7B68BF",
+    bg: "#F4EEFA",
+    img: require("@/assets/abstracts/Group-3.png"),
+  },
+  {
+    icon: "shield-checkmark" as const,
+    label: "Límites",
+    tag: "Protégete",
+    color: "#4A80C4",
+    bg: "#EAF4FF",
+    img: require("@/assets/abstracts/Group-5.png"),
+  },
+  {
+    icon: "star" as const,
+    label: "Autoestima",
+    tag: "Cree en ti",
+    color: "#C49030",
+    bg: "#FFFAEC",
+    img: require("@/assets/abstracts/Group-7.png"),
+  },
+  {
+    icon: "flash" as const,
+    label: "Estrés",
+    tag: "Encuentra calma",
+    color: "#C46030",
+    bg: "#FFF4EE",
+    img: require("@/assets/abstracts/Group-9.png"),
+  },
+  {
+    icon: "moon" as const,
+    label: "Mindfulness",
+    tag: "Vive el momento",
+    color: "#3B9A5A",
+    bg: "#EEF7F1",
+    img: require("@/assets/abstracts/Group-11.png"),
+  },
+];
+
+const MOMENTS = [
+  {
+    situation: "En una\ndiscusión",
+    tip: "Pausa · Respira · Responde",
+    color: "#C45E7A",
+    bg: "#FFF0F5",
+    img: require("@/assets/abstracts/Group-2.png"),
+  },
+  {
+    situation: "Bajo\npresión",
+    tip: "Foco en lo que controlas",
+    color: "#4A80C4",
+    bg: "#EAF4FF",
+    img: require("@/assets/abstracts/Group-4.png"),
+  },
+  {
+    situation: "Al\ndesperar",
+    tip: "Una intención para el día",
+    color: "#C49030",
+    bg: "#FFFAEC",
+    img: require("@/assets/abstracts/Group-6.png"),
+  },
+  {
+    situation: "Cuando\nestás solo/a",
+    tip: "Conecta primero contigo",
+    color: "#7B68BF",
+    bg: "#F4EEFA",
+    img: require("@/assets/abstracts/Group-8.png"),
+  },
 ];
 
 const SLIDE_DURATION = 5000;
@@ -79,17 +159,26 @@ export default function IntroScreen() {
   const slideX = useRef(new Animated.Value(0)).current;
 
   // Animaciones para slide "glow"
-  const pulseAnim  = useRef(new Animated.Value(1)).current;
+  const pulseAnim = useRef(new Animated.Value(1)).current;
   const bounceAnim = useRef(new Animated.Value(1)).current;
-  const star1Anim  = useRef(new Animated.Value(1)).current;
-  const star2Anim  = useRef(new Animated.Value(1)).current;
-  const star3Anim  = useRef(new Animated.Value(1)).current;
+  const star1Anim = useRef(new Animated.Value(1)).current;
+  const star2Anim = useRef(new Animated.Value(1)).current;
+  const star3Anim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     // Entrada suave al abrir la pantalla
     Animated.parallel([
-      Animated.timing(slideOpacity, { toValue: 1, duration: 600, useNativeDriver: true }),
-      Animated.timing(mountY, { toValue: 0, duration: 550, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+      Animated.timing(slideOpacity, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.timing(mountY, {
+        toValue: 0,
+        duration: 550,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }),
     ]).start();
     runSlide(0, 0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,26 +186,62 @@ export default function IntroScreen() {
 
   useEffect(() => {
     // Pulso del anillo exterior
-    Animated.loop(Animated.sequence([
-      Animated.timing(pulseAnim, { toValue: 1.14, duration: 2000, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-      Animated.timing(pulseAnim, { toValue: 1,    duration: 2000, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-    ])).start();
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.14,
+          duration: 2000,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 2000,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
 
     // Bounce del logo: sube y baja suavemente
-    Animated.loop(Animated.sequence([
-      Animated.timing(bounceAnim, { toValue: 0.94, duration: 500, easing: Easing.out(Easing.quad), useNativeDriver: true }),
-      Animated.timing(bounceAnim, { toValue: 1,    duration: 500, easing: Easing.out(Easing.back(3)), useNativeDriver: true }),
-      Animated.delay(900),
-    ])).start();
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(bounceAnim, {
+          toValue: 0.94,
+          duration: 500,
+          easing: Easing.out(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(bounceAnim, {
+          toValue: 1,
+          duration: 500,
+          easing: Easing.out(Easing.back(3)),
+          useNativeDriver: true,
+        }),
+        Animated.delay(900),
+      ]),
+    ).start();
 
     // Estrellas: destellan en momentos distintos
     const starLoop = (anim: Animated.Value, delay: number) =>
-      Animated.loop(Animated.sequence([
-        Animated.delay(delay),
-        Animated.timing(anim, { toValue: 1.5, duration: 350, easing: Easing.out(Easing.quad), useNativeDriver: true }),
-        Animated.timing(anim, { toValue: 1,   duration: 350, easing: Easing.in(Easing.quad),  useNativeDriver: true }),
-        Animated.delay(2000),
-      ])).start();
+      Animated.loop(
+        Animated.sequence([
+          Animated.delay(delay),
+          Animated.timing(anim, {
+            toValue: 1.5,
+            duration: 350,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(anim, {
+            toValue: 1,
+            duration: 350,
+            easing: Easing.in(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.delay(2000),
+        ]),
+      ).start();
 
     starLoop(star1Anim, 0);
     starLoop(star2Anim, 600);
@@ -142,8 +267,17 @@ export default function IntroScreen() {
     if (idx < SLIDES.length - 1) {
       // Sale hacia la izquierda + fade out
       Animated.parallel([
-        Animated.timing(slideOpacity, { toValue: 0, duration: 200, useNativeDriver: true }),
-        Animated.timing(slideX, { toValue: -W * 0.28, duration: 220, easing: Easing.in(Easing.quad), useNativeDriver: true }),
+        Animated.timing(slideOpacity, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideX, {
+          toValue: -W * 0.28,
+          duration: 220,
+          easing: Easing.in(Easing.quad),
+          useNativeDriver: true,
+        }),
       ]).start(() => {
         slideOpacity.setValue(0);
         slideX.setValue(W * 0.28); // nuevo contenido entra desde la derecha
@@ -152,8 +286,17 @@ export default function IntroScreen() {
         requestAnimationFrame(() => {
           // Entra desde la derecha + fade in
           Animated.parallel([
-            Animated.timing(slideOpacity, { toValue: 1, duration: 300, useNativeDriver: true }),
-            Animated.timing(slideX, { toValue: 0, duration: 340, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+            Animated.timing(slideOpacity, {
+              toValue: 1,
+              duration: 300,
+              useNativeDriver: true,
+            }),
+            Animated.timing(slideX, {
+              toValue: 0,
+              duration: 340,
+              easing: Easing.out(Easing.quad),
+              useNativeDriver: true,
+            }),
           ]).start();
         });
       });
@@ -189,8 +332,18 @@ export default function IntroScreen() {
     bubbleAnims.forEach((anim, i) => {
       Animated.loop(
         Animated.sequence([
-          Animated.timing(anim, { toValue: 1, duration: BUBBLES[i].duration, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
-          Animated.timing(anim, { toValue: 0, duration: BUBBLES[i].duration, easing: Easing.inOut(Easing.sin), useNativeDriver: true }),
+          Animated.timing(anim, {
+            toValue: 1,
+            duration: BUBBLES[i].duration,
+            easing: Easing.inOut(Easing.sin),
+            useNativeDriver: true,
+          }),
+          Animated.timing(anim, {
+            toValue: 0,
+            duration: BUBBLES[i].duration,
+            easing: Easing.inOut(Easing.sin),
+            useNativeDriver: true,
+          }),
         ]),
       ).start();
     });
@@ -217,12 +370,14 @@ export default function IntroScreen() {
               left: b.x,
               top: b.y,
               opacity: b.opacity,
-              transform: [{
-                translateY: bubbleAnims[i].interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, -20],
-                }),
-              }],
+              transform: [
+                {
+                  translateY: bubbleAnims[i].interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, -20],
+                  }),
+                },
+              ],
             },
           ]}
         />
@@ -253,9 +408,20 @@ export default function IntroScreen() {
       </View>
 
       {/* Tap = avanza, Hold = pausa */}
-      <Pressable style={s.touchArea} onPressIn={handlePressIn} onPressOut={handlePressOut}>
-        <Animated.View style={[s.content, { opacity: slideOpacity, transform: [{ translateX: slideX }, { translateY: mountY }] }]}>
-
+      <Pressable
+        style={s.touchArea}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      >
+        <Animated.View
+          style={[
+            s.content,
+            {
+              opacity: slideOpacity,
+              transform: [{ translateX: slideX }, { translateY: mountY }],
+            },
+          ]}
+        >
           <Text style={s.title}>{slide.title}</Text>
           <Text style={s.subtitle}>{slide.subtitle}</Text>
 
@@ -273,17 +439,43 @@ export default function IntroScreen() {
           {/* Anillos + logo abajo */}
           {slide.visual === "glow" && (
             <View style={s.ringContainer}>
-              <Animated.View style={[s.glowOuter, { transform: [{ scale: pulseAnim }] }]} />
+              <Animated.View
+                style={[s.glowOuter, { transform: [{ scale: pulseAnim }] }]}
+              />
               <View style={s.glowMid} />
-              <Animated.View style={[s.logoWrap, { transform: [{ scale: bounceAnim }] }]}>
-                <Image source={require("@/assets/logo.png")} style={s.glowLogo} contentFit="contain" />
-                <Animated.View style={[s.star, s.star1, { transform: [{ scale: star1Anim }] }]}>
+              <Animated.View
+                style={[s.logoWrap, { transform: [{ scale: bounceAnim }] }]}
+              >
+                <Image
+                  source={require("@/assets/logo.png")}
+                  style={s.glowLogo}
+                  contentFit="contain"
+                />
+                <Animated.View
+                  style={[
+                    s.star,
+                    s.star1,
+                    { transform: [{ scale: star1Anim }] },
+                  ]}
+                >
                   <Ionicons name="star" size={18} color="#8980B8" />
                 </Animated.View>
-                <Animated.View style={[s.star, s.star2, { transform: [{ scale: star2Anim }] }]}>
+                <Animated.View
+                  style={[
+                    s.star,
+                    s.star2,
+                    { transform: [{ scale: star2Anim }] },
+                  ]}
+                >
                   <Ionicons name="star" size={12} color="#C9C3E8" />
                 </Animated.View>
-                <Animated.View style={[s.star, s.star3, { transform: [{ scale: star3Anim }] }]}>
+                <Animated.View
+                  style={[
+                    s.star,
+                    s.star3,
+                    { transform: [{ scale: star3Anim }] },
+                  ]}
+                >
                   <Ionicons name="star" size={22} color="#5B3FA6" />
                 </Animated.View>
               </Animated.View>
@@ -296,8 +488,15 @@ export default function IntroScreen() {
               <View style={s.booksGrid}>
                 {BOOKS.map((book, i) => (
                   <View key={i} style={s.bookItem}>
-                    <Image source={book.src} style={s.bookCover} contentFit="cover" priority="high" />
-                    <Text style={s.authorName} numberOfLines={2}>{book.author}</Text>
+                    <Image
+                      source={book.src}
+                      style={s.bookCover}
+                      contentFit="cover"
+                      priority="high"
+                    />
+                    <Text style={s.authorName} numberOfLines={2}>
+                      {book.author}
+                    </Text>
                   </View>
                 ))}
               </View>
@@ -309,25 +508,61 @@ export default function IntroScreen() {
             <View style={s.areasGrid}>
               <View style={s.areasCol}>
                 {AREAS.slice(0, 3).map((area, i) => (
-                  <View key={i} style={[s.areaCardV2, { backgroundColor: area.bg }]}>
-                    <Image source={area.img} style={s.areaAbstract} contentFit="contain" />
-                    <View style={[s.areaIconCircle, { backgroundColor: area.color + "25" }]}>
-                      <Ionicons name={area.icon} size={22} color={area.color} />
-                    </View>
-                    <Text style={[s.areaNameV2, { color: area.color }]}>{area.label}</Text>
+                  <View
+                    key={i}
+                    style={[s.areaCardV2, { backgroundColor: area.bg }]}
+                  >
+                    <Image
+                      source={area.img}
+                      style={s.areaAbstract}
+                      contentFit="contain"
+                    />
+                    <Text style={[s.areaNameV2, { color: area.color }]}>
+                      {area.label}
+                    </Text>
                     <Text style={s.areaTagV2}>{area.tag}</Text>
                   </View>
                 ))}
               </View>
               <View style={[s.areasCol, { marginTop: 28 }]}>
                 {AREAS.slice(3, 6).map((area, i) => (
-                  <View key={i} style={[s.areaCardV2, { backgroundColor: area.bg }]}>
-                    <Image source={area.img} style={s.areaAbstract} contentFit="contain" />
-                    <View style={[s.areaIconCircle, { backgroundColor: area.color + "25" }]}>
-                      <Ionicons name={area.icon} size={22} color={area.color} />
-                    </View>
-                    <Text style={[s.areaNameV2, { color: area.color }]}>{area.label}</Text>
+                  <View
+                    key={i}
+                    style={[s.areaCardV2, { backgroundColor: area.bg }]}
+                  >
+                    <Image
+                      source={area.img}
+                      style={s.areaAbstract}
+                      contentFit="contain"
+                    />
+                    <Text style={[s.areaNameV2, { color: area.color }]}>
+                      {area.label}
+                    </Text>
                     <Text style={s.areaTagV2}>{area.tag}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
+
+          {/* Visual: momentos del día — grid 2x2 */}
+          {slide.visual === "moment" && (
+            <View style={s.momentsGrid}>
+              <View style={s.momentsRow}>
+                {MOMENTS.slice(0, 2).map((m, i) => (
+                  <View key={i} style={[s.momentCard, { backgroundColor: m.bg }]}>
+                    <Image source={m.img} style={s.momentImg} contentFit="contain" />
+                    <Text style={[s.momentSituation, { color: m.color }]}>{m.situation}</Text>
+                    <Text style={s.momentTip}>{m.tip}</Text>
+                  </View>
+                ))}
+              </View>
+              <View style={[s.momentsRow, { marginTop: 10 }]}>
+                {MOMENTS.slice(2, 4).map((m, i) => (
+                  <View key={i} style={[s.momentCard, { backgroundColor: m.bg, marginTop: i === 1 ? -18 : 18 }]}>
+                    <Image source={m.img} style={s.momentImg} contentFit="contain" />
+                    <Text style={[s.momentSituation, { color: m.color }]}>{m.situation}</Text>
+                    <Text style={s.momentTip}>{m.tip}</Text>
                   </View>
                 ))}
               </View>
@@ -458,12 +693,10 @@ const s = StyleSheet.create({
     fontWeight: "500",
   },
   areaAbstract: {
-    position: "absolute",
-    width: 70,
-    height: 70,
-    right: -8,
-    top: -8,
-    opacity: 0.35,
+    width: 64,
+    height: 60,
+    alignSelf: "center",
+    marginBottom: 6,
   },
 
   // Glow / Bienvenida
@@ -508,8 +741,8 @@ const s = StyleSheet.create({
   star: {
     position: "absolute",
   },
-  star1: { top: -8,  right: -4  },
-  star2: { top: 20,  left: -16  },
+  star1: { top: -8, right: -4 },
+  star2: { top: 20, left: -16 },
   star3: { bottom: 0, right: -12 },
   glowLabel: {
     fontSize: 36,
@@ -534,6 +767,43 @@ const s = StyleSheet.create({
     fontSize: 12,
     color: "#8980B8",
     fontWeight: "600",
+  },
+
+  // Moments
+  momentsGrid: {
+    marginTop: 20,
+    width: "100%",
+  },
+  momentsRow: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  momentCard: {
+    flex: 1,
+    borderRadius: 20,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  momentImg: {
+    width: 80,
+    height: 72,
+    marginBottom: 12,
+  },
+  momentSituation: {
+    fontSize: 13,
+    fontWeight: "800",
+    textAlign: "center",
+    lineHeight: 18,
+    marginBottom: 4,
+  },
+  momentTip: {
+    fontSize: 10,
+    color: "rgba(28,27,41,0.5)",
+    fontWeight: "500",
+    textAlign: "center",
+    lineHeight: 14,
   },
 
   waveContainer: {

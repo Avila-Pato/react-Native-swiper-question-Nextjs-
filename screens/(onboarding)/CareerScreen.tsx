@@ -80,15 +80,30 @@ export default function GoalScreen() {
     titleOpacity.value = withTiming(1, { duration: 400 });
     titleY.value = withSpring(0, { damping: 18, stiffness: 100 });
     card1Opacity.value = withDelay(200, withTiming(1, { duration: 350 }));
-    card1Y.value = withDelay(200, withSpring(0, { damping: 16, stiffness: 100 }));
+    card1Y.value = withDelay(
+      200,
+      withSpring(0, { damping: 16, stiffness: 100 }),
+    );
     card2Opacity.value = withDelay(320, withTiming(1, { duration: 350 }));
-    card2Y.value = withDelay(320, withSpring(0, { damping: 16, stiffness: 100 }));
+    card2Y.value = withDelay(
+      320,
+      withSpring(0, { damping: 16, stiffness: 100 }),
+    );
     card3Opacity.value = withDelay(440, withTiming(1, { duration: 350 }));
-    card3Y.value = withDelay(440, withSpring(0, { damping: 16, stiffness: 100 }));
+    card3Y.value = withDelay(
+      440,
+      withSpring(0, { damping: 16, stiffness: 100 }),
+    );
     card4Opacity.value = withDelay(560, withTiming(1, { duration: 350 }));
-    card4Y.value = withDelay(560, withSpring(0, { damping: 16, stiffness: 100 }));
+    card4Y.value = withDelay(
+      560,
+      withSpring(0, { damping: 16, stiffness: 100 }),
+    );
     card5Opacity.value = withDelay(660, withTiming(1, { duration: 350 }));
-    card5Y.value = withDelay(660, withSpring(0, { damping: 16, stiffness: 100 }));
+    card5Y.value = withDelay(
+      660,
+      withSpring(0, { damping: 16, stiffness: 100 }),
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -112,8 +127,13 @@ export default function GoalScreen() {
 
   const handleNext = () => {
     if (selectedGoals.length === 0) return;
-    const firstNode = GOALS.find((g) => g.id === selectedGoals[0])?.startNode ?? "crecimiento_personal";
-    router.push({ pathname: "/career-ramas", params: { startNode: firstNode, formacion: selectedGoals.join(",") } });
+    const firstNode =
+      GOALS.find((g) => g.id === selectedGoals[0])?.startNode ??
+      "crecimiento_personal";
+    router.push({
+      pathname: "/career-ramas",
+      params: { startNode: firstNode, formacion: selectedGoals.join(",") },
+    });
   };
 
   const titleStyle = useAnimatedStyle(() => ({
@@ -121,11 +141,26 @@ export default function GoalScreen() {
     transform: [{ translateY: titleY.value }],
   }));
   const cardAnimStyles = [
-    useAnimatedStyle(() => ({ opacity: card1Opacity.value, transform: [{ translateY: card1Y.value }] })),
-    useAnimatedStyle(() => ({ opacity: card2Opacity.value, transform: [{ translateY: card2Y.value }] })),
-    useAnimatedStyle(() => ({ opacity: card3Opacity.value, transform: [{ translateY: card3Y.value }] })),
-    useAnimatedStyle(() => ({ opacity: card4Opacity.value, transform: [{ translateY: card4Y.value }] })),
-    useAnimatedStyle(() => ({ opacity: card5Opacity.value, transform: [{ translateY: card5Y.value }] })),
+    useAnimatedStyle(() => ({
+      opacity: card1Opacity.value,
+      transform: [{ translateY: card1Y.value }],
+    })),
+    useAnimatedStyle(() => ({
+      opacity: card2Opacity.value,
+      transform: [{ translateY: card2Y.value }],
+    })),
+    useAnimatedStyle(() => ({
+      opacity: card3Opacity.value,
+      transform: [{ translateY: card3Y.value }],
+    })),
+    useAnimatedStyle(() => ({
+      opacity: card4Opacity.value,
+      transform: [{ translateY: card4Y.value }],
+    })),
+    useAnimatedStyle(() => ({
+      opacity: card5Opacity.value,
+      transform: [{ translateY: card5Y.value }],
+    })),
   ];
   const btnStyle = useAnimatedStyle(() => ({
     opacity: btnOpacity.value,
@@ -146,8 +181,9 @@ export default function GoalScreen() {
       >
         <Animated.View style={[styles.header, titleStyle]}>
           <Text style={styles.title}>
-            ¿Qué te{"\n"}
-            <Text style={{ color: "#8980B8" }}>trae aquí?</Text>
+            <Text style={{ color: "black" }}>Comenzemos</Text>
+            {"\n"}
+            <Text style={{ color: "#8980B8" }}>¿Qué te trae aquí?</Text>
           </Text>
           <Text style={styles.subtitle}>
             {selectedGoals.length === 0
@@ -182,9 +218,17 @@ export default function GoalScreen() {
                   <Text style={styles.cardDesc}>{goal.desc}</Text>
                 </View>
                 <Ionicons
-                  name={selectedGoals.includes(goal.id) ? "checkmark-circle" : "ellipse-outline"}
+                  name={
+                    selectedGoals.includes(goal.id)
+                      ? "checkmark-circle"
+                      : "ellipse-outline"
+                  }
                   size={20}
-                  color={selectedGoals.includes(goal.id) ? "#8980B8" : "rgba(137,128,184,0.3)"}
+                  color={
+                    selectedGoals.includes(goal.id)
+                      ? "#8980B8"
+                      : "rgba(137,128,184,0.3)"
+                  }
                 />
               </TouchableOpacity>
             </Animated.View>
@@ -200,7 +244,9 @@ export default function GoalScreen() {
             <View style={styles.btnInner}>
               {selectedGoals.length > 0 && (
                 <View style={styles.btnBadge}>
-                  <Text style={styles.btnBadgeText}>{selectedGoals.length}</Text>
+                  <Text style={styles.btnBadgeText}>
+                    {selectedGoals.length}
+                  </Text>
                 </View>
               )}
               <Text style={styles.btnText}>Siguiente →</Text>
@@ -308,6 +354,3 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
 });
-
-
-

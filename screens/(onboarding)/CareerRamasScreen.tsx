@@ -2,7 +2,7 @@
 import { TEXT_FONT_SIZE } from "@/constants/constants";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
   Modal,
@@ -79,12 +79,14 @@ function RamaRow({
   label,
   desc,
   active,
+  suggested,
   onPress,
 }: {
   icon: React.ComponentProps<typeof Ionicons>["name"];
   label: string;
   desc: string;
   active: boolean;
+  suggested: boolean;
   onPress: () => void;
 }) {
   const progress = useSharedValue(active ? 1 : 0);
@@ -123,9 +125,16 @@ function RamaRow({
           <Ionicons name={icon} size={20} color="#8980B8" />
         </Animated.View>
         <View style={{ flex: 1 }}>
-          <Text style={[styles.rowLabel, active && styles.rowLabelActive]}>
-            {label}
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+            <Text style={[styles.rowLabel, active && styles.rowLabelActive]}>
+              {label}
+            </Text>
+            {suggested && !active && (
+              <View style={styles.suggestedBadge}>
+                <Text style={styles.suggestedText}>Para ti</Text>
+              </View>
+            )}
+          </View>
           <Text style={styles.rowDesc}>{desc}</Text>
         </View>
         <Animated.View style={checkStyle}>
@@ -170,11 +179,25 @@ function CustomTag({
   );
 }
 
+const GOAL_TO_AREAS: Record<string, string[]> = {
+  crecimiento: ["emociones", "autoestima"],
+  relaciones:  ["relaciones", "comunicacion", "limites"],
+  equilibrio:  ["estres", "mindfulness"],
+  autoestima:  ["autoestima", "emociones"],
+  sanacion:    ["emociones", "mindfulness"],
+};
+
 export default function CareerRamasScreen() {
   const { startNode, formacion } = useLocalSearchParams<{
     startNode?: string;
     formacion?: string;
   }>();
+
+  const suggested = useMemo(() => {
+    const goals = formacion?.split(",").filter(Boolean) ?? [];
+    const areas = goals.flatMap((g) => GOAL_TO_AREAS[g] ?? []);
+    return new Set(areas);
+  }, [formacion]);
 
   const [selectedRamas, setSelectedRamas] = useState<string[]>([]);
   const [customRamas, setCustomRamas] = useState<string[]>([]);
@@ -302,6 +325,7 @@ export default function CareerRamasScreen() {
               label={rama.label}
               desc={rama.desc}
               active={selectedRamas.includes(rama.id)}
+              suggested={suggested.has(rama.id)}
               onPress={() => toggleRama(rama.id)}
             />
           ))}
@@ -631,5 +655,19 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 15,
     fontWeight: "700",
+  },
+  suggestedBadge: {
+    backgroundColor: "rgba(137,128,184,0.12)",
+    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderWidth: 1,
+    borderColor: "rgba(137,128,184,0.25)",
+  },
+  suggestedText: {
+    color: "#8980B8",
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 0.2,
   },
 });

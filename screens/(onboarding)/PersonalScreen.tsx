@@ -24,10 +24,15 @@ export default function PersonalScreen() {
     startNode?: string;
     formacion?: string;
     ramas?: string;
+    _rk?: string;
   }>();
 
   const [nombre, setNombre] = useState("");
   const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    setNombre("");
+  }, [params._rk]);
 
   const titleOpacity = useSharedValue(0);
   const titleY = useSharedValue(30);

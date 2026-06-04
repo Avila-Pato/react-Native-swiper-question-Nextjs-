@@ -100,12 +100,12 @@ export default function SignupScreen() {
     if (!isValid) return;
     setUser({ id: email.trim(), name: params.nombre ?? "", email: email.trim() });
     persistContext();
-    router.replace("/(tab)" as any);
+    router.replace("/(onboarding)/welcome-loading" as any);
   };
 
   const handleSkip = () => {
     persistContext();
-    router.replace("/(tab)" as any);
+    router.replace("/(onboarding)/welcome-loading" as any);
   };
 
   return (
@@ -208,7 +208,7 @@ export default function SignupScreen() {
             onSuccess={(user) => {
               setUser({ id: user.id, name: user.name ?? "", email: user.email ?? "", picture: user.picture });
               persistContext(user.name);
-              router.replace("/(tab)" as any);
+              router.replace("/(onboarding)/welcome-loading" as any);
             }}
           />
 

@@ -342,6 +342,7 @@ export default function ResultsScreen() {
         startNode: params.startNode ?? "",
         formacion: params.formacion ?? "",
         ramas: params.ramas ?? "",
+        _rk: Date.now().toString(),
       },
     });
   };

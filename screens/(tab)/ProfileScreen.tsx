@@ -1,34 +1,18 @@
 import { SPACING, TAB_ITEM_SIZE } from "@/constants/constants";
-import {
-  ACCENT,
-  BG,
-  BORDER,
-  CARD_BG,
-  MUTED,
-  P_SLATE,
-  P_TEAL,
-  TEXT,
-} from "@/constants/theme";
-import { WEEKLY_CHALLENGES } from "@/data/weeklyData";
+import { ARCHETYPE, AREA_META } from "@/constants/diagnosticData";
+import { ACCENT, BG, BORDER, CARD_BG, MUTED, TEXT } from "@/constants/theme";
 import { getAllProgress } from "@/store/challengeProgress";
-import { MOODS } from "@/data/moods";
-import { getMoodHistory, MoodHistory, todayString } from "@/store/moodHistory";
-import { Image } from "expo-image";
-import { router, useFocusEffect } from "expo-router";
-import {
-  ChevronLeft,
-  ChevronRight,
-  MapPin,
-  SlidersHorizontal,
-  UserPlus,
-} from "lucide-react-native";
+import { getMoodHistory, MoodHistory } from "@/store/moodHistory";
+import { useUserStore } from "@/store/useUserStore";
+import { AjustesTab } from "@/components/profile/AjustesTab";
+import { EjerciciosTab } from "@/components/profile/EjerciciosTab";
+import { HumorTab } from "@/components/profile/HumorTab";
+import { ProgresoTab } from "@/components/profile/ProgresoTab";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { SlidersHorizontal, UserPlus } from "lucide-react-native";
 import { useCallback, useState } from "react";
-import { Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
-import Svg, { Circle } from "react-native-svg";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 const BAR_HEIGHT = TAB_ITEM_SIZE + SPACING * 1.5;
 
@@ -41,272 +25,23 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "ajustes", label: "AJUSTES" },
 ];
 
-const SKILL_AREAS = [
-  { id: "adivina_concepto", label: "Conceptos", emoji: "🧠", color: P_TEAL.fg },
-  { id: "completa_reflexion", label: "Reflexiones", emoji: "✨", color: P_SLATE.fg },
-];
-
-const SETTINGS = [
-  { id: "notif", label: "Notificaciones", icon: "🔔" },
-  { id: "privacy", label: "Privacidad", icon: "🔒" },
-  { id: "about", label: "Acerca de la app", icon: "ℹ️" },
-];
-
-const SCREEN_W = Dimensions.get("window").width;
-const CAL_CARD_PAD = 16;
-const CIRCLE = Math.floor((SCREEN_W - SPACING * 4 - CAL_CARD_PAD * 2) / 7);
-// semana empieza el lunes
-const DAY_NAMES = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"];
-const MONTH_NAMES = [
-  "Enero","Febrero","Marzo","Abril","Mayo","Junio",
-  "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre",
-];
-
-function MoodCalendar({ history }: { history: MoodHistory }) {
-  const now = new Date();
-  const [year, setYear] = useState(now.getFullYear());
-  const [month, setMonth] = useState(now.getMonth());
-  const today = todayString();
-  const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
-
-  const goBack = () => {
-    if (month === 0) { setMonth(11); setYear((y) => y - 1); }
-    else setMonth((m) => m - 1);
-  };
-  const goForward = () => {
-    if (isCurrentMonth) return;
-    if (month === 11) { setMonth(0); setYear((y) => y + 1); }
-    else setMonth((m) => m + 1);
-  };
-
-  // Primer día del mes, ajustado a lunes=0
-  const rawFirst = new Date(year, month, 1).getDay(); // 0=Dom
-  const firstDay = (rawFirst + 6) % 7; // 0=Lun
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const todayNum = now.getDate();
-
-  const cells: (number | null)[] = [
-    ...Array(firstDay).fill(null),
-    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
-  ];
-  while (cells.length % 7 !== 0) cells.push(null);
-
-  return (
-    <View style={cs.wrap}>
-      {/* Cabecera */}
-      <View style={cs.header}>
-        <Pressable onPress={goBack} hitSlop={14} style={cs.arrow}>
-          <ChevronLeft size={20} color={ACCENT} strokeWidth={2.5} />
-        </Pressable>
-        <Text style={cs.monthLabel}>{`${MONTH_NAMES[month]}`}</Text>
-        <Pressable onPress={goForward} hitSlop={14} style={cs.arrow}>
-          <ChevronRight size={20} color={isCurrentMonth ? "#D0CEDF" : ACCENT} strokeWidth={2.5} />
-        </Pressable>
-      </View>
-
-      {/* Nombres de días */}
-      <View style={cs.namesRow}>
-        {DAY_NAMES.map((d) => (
-          <View key={d} style={cs.nameCell}>
-            <Text style={cs.nameText}>{d}</Text>
-          </View>
-        ))}
-      </View>
-
-      {/* Grid de días */}
-      <View style={cs.grid}>
-        {cells.map((day, i) => {
-          if (!day) {
-            return <View key={`e${i}`} style={cs.circleWrap} />;
-          }
-          const mm = String(month + 1).padStart(2, "0");
-          const dd = String(day).padStart(2, "0");
-          const dateStr = `${year}-${mm}-${dd}`;
-          const idx = history[dateStr];
-          const mood = idx !== undefined ? MOODS[idx] : null;
-          const isToday = dateStr === today;
-          const isFuture = isCurrentMonth && day > todayNum;
-
-          return (
-            <View key={dateStr} style={cs.circleWrap}>
-              <View style={[
-                cs.circle,
-                isToday && cs.circleToday,
-                mood && !isToday && cs.circleMood,
-                isFuture && cs.circleFuture,
-              ]}>
-                {mood ? (
-                  <Image
-                    source={mood.image}
-                    style={[cs.moodImg, isToday && cs.moodImgToday]}
-                    contentFit="contain"
-                  />
-                ) : (
-                  <Text style={[
-                    cs.dayNum,
-                    isToday && cs.dayNumToday,
-                    isFuture && cs.dayNumFuture,
-                  ]}>
-                    {day}
-                  </Text>
-                )}
-              </View>
-            </View>
-          );
-        })}
-      </View>
-    </View>
-  );
-}
-
-const cs = StyleSheet.create({
-  wrap: {
-    backgroundColor: "#fff",
-    borderRadius: 24,
-    marginHorizontal: SPACING * 2,
-    paddingVertical: SPACING * 1.5,
-    paddingHorizontal: CAL_CARD_PAD,
-    shadowColor: "#8980B8",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 3,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 4,
-    marginBottom: SPACING * 1.2,
-  },
-  arrow: { padding: 4 },
-  monthLabel: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: TEXT,
-    letterSpacing: -0.3,
-  },
-  namesRow: {
-    flexDirection: "row",
-    marginBottom: 6,
-  },
-  nameCell: {
-    width: CIRCLE,
-    height: 24,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  nameText: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: MUTED,
-    letterSpacing: 0.3,
-  },
-  grid: { flexDirection: "row", flexWrap: "wrap" },
-  circleWrap: {
-    width: CIRCLE,
-    height: CIRCLE,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 2,
-  },
-  circle: {
-    width: CIRCLE - 6,
-    height: CIRCLE - 6,
-    borderRadius: (CIRCLE - 6) / 2,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#F2F0F8",
-  },
-  circleToday: {
-    backgroundColor: ACCENT,
-  },
-  circleMood: {
-    backgroundColor: "#EDE9F8",
-  },
-  circleFuture: {
-    backgroundColor: "transparent",
-  },
-  moodImg: {
-    width: CIRCLE - 10,
-    height: CIRCLE - 10,
-  },
-  moodImgToday: {
-    tintColor: undefined,
-  },
-  dayNum: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: TEXT,
-  },
-  dayNumToday: {
-    color: "#fff",
-    fontWeight: "800",
-  },
-  dayNumFuture: {
-    color: "#C8C4DC",
-  },
-  legendRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingHorizontal: SPACING,
-    paddingVertical: SPACING * 1.5,
-    marginTop: SPACING,
-    backgroundColor: "#F7F5FC",
-    borderRadius: 16,
-    marginHorizontal: SPACING * 2,
-  },
-  legendItem: { alignItems: "center", gap: 4 },
-  legendImg: { width: 32, height: 32 },
-  legendLabel: { fontSize: 9, fontWeight: "600", color: MUTED },
-});
-
-function CircleProgress({
-  pct,
-  color,
-  size = 140,
-  strokeWidth = 9,
-}: {
-  pct: number;
-  color: string;
-  size?: number;
-  strokeWidth?: number;
-}) {
-  const r = (size - strokeWidth) / 2;
-  const circ = 2 * Math.PI * r;
-  const offset = circ - (Math.min(pct, 100) / 100) * circ;
-  const c = size / 2;
-  return (
-    <Svg width={size} height={size}>
-      <Circle
-        cx={c}
-        cy={c}
-        r={r}
-        stroke="#EAECF0"
-        strokeWidth={strokeWidth}
-        fill="none"
-      />
-      <Circle
-        cx={c}
-        cy={c}
-        r={r}
-        stroke={color}
-        strokeWidth={strokeWidth}
-        fill="none"
-        strokeDasharray={circ}
-        strokeDashoffset={offset}
-        strokeLinecap="round"
-        transform={`rotate(-90, ${c}, ${c})`}
-      />
-    </Svg>
-  );
-}
-
 export default function ProfileScreen() {
   const { bottom } = useSafeAreaInsets();
   const [tab, setTab] = useState<Tab>("progreso");
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [moodHistory, setMoodHistory] = useState<MoodHistory>({});
+
+  const diagnostic = useUserStore((s) => s.diagnostic);
+  const scores = diagnostic?.scores ?? {};
+  const sortedAreas = Object.entries(scores)
+    .filter(([, v]) => v > 0)
+    .sort(([, a], [, b]) => b - a);
+  const topArea = sortedAreas[0]?.[0] ?? "emociones";
+  const archetype = ARCHETYPE[topArea] ?? ARCHETYPE.emociones;
+  const areaMeta = AREA_META[topArea];
+
+  const params = useLocalSearchParams<{ nombre: string; formacion?: string }>();
+  const userNombre = params.nombre || "Invitado";
 
   useFocusEffect(
     useCallback(() => {
@@ -317,7 +52,6 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={s.root}>
-      {/* ── Header ── */}
       <View style={s.headerWrap}>
         <View style={s.header}>
           <Text style={s.headerTitle}>Perfil</Text>
@@ -338,196 +72,37 @@ export default function ProfileScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: BAR_HEIGHT + bottom + SPACING * 2,
-        }}
+        contentContainerStyle={{ paddingBottom: BAR_HEIGHT + bottom + SPACING * 2 }}
       >
-        {/* ── Avatar + nombre ── */}
         <View style={s.profileSection}>
-          <View style={s.avatarRing}>
-            <View style={s.avatar}>
-              <Text style={s.avatarInitial}>I</Text>
+          <View style={[s.avatarRing, { borderColor: archetype.color + "55" }]}>
+            <View style={[s.avatar, { backgroundColor: archetype.color }]}>
+              <Text style={s.avatarInitial}>{userNombre.charAt(0).toUpperCase()}</Text>
             </View>
           </View>
-          <Text style={s.name}>Invitado</Text>
-          <View style={s.locationRow}>
-            <MapPin size={13} color={MUTED} strokeWidth={1.8} />
-            <Text style={s.locationText}>Tech Explorer</Text>
-          </View>
+          <Text style={s.name}>{userNombre}</Text>
+          <Text style={[s.archetypeType, { color: archetype.color }]}>{archetype.tipo}</Text>
+          <Text style={s.archetypeTagline}>{archetype.tagline}</Text>
+          {areaMeta && (
+            <View style={[s.areaTag, { backgroundColor: areaMeta.bg }]}>
+              <Text style={[s.areaTagText, { color: areaMeta.color }]}>{areaMeta.label}</Text>
+            </View>
+          )}
         </View>
 
-        {/* ── Amigos ── */}
-        <View style={s.friendsSection}>
-          <Text style={s.friendsCount}>Amigos (0)</Text>
-          <Pressable style={s.friendBtn}>
-            <Text style={s.friendBtnText}>Encontrar compañeros tech</Text>
-          </Pressable>
-        </View>
-
-        {/* ── Tab bar ── */}
         <View style={s.tabBar}>
           {TABS.map((t) => (
-            <Pressable
-              key={t.id}
-              style={s.tabItem}
-              onPress={() => setTab(t.id)}
-            >
-              <Text style={[s.tabLabel, tab === t.id && s.tabLabelActive]}>
-                {t.label}
-              </Text>
+            <Pressable key={t.id} style={s.tabItem} onPress={() => setTab(t.id)}>
+              <Text style={[s.tabLabel, tab === t.id && s.tabLabelActive]}>{t.label}</Text>
               {tab === t.id && <View style={s.tabUnderline} />}
             </Pressable>
           ))}
         </View>
 
-        {/* ── PROGRESO ── */}
-        {tab === "progreso" && (
-          <View style={s.tabContent}>
-            {SKILL_AREAS.map((area, idx) => {
-              const challenge = WEEKLY_CHALLENGES.find((c) => c.id === area.id);
-              const done = progress[area.id] ?? 0;
-              const total = challenge?.questions.length ?? 1;
-              const pct = Math.round((done / total) * 100);
-
-              return (
-                <View key={area.id} style={idx > 0 && s.domainSeparator}>
-                  {/* Dominio row */}
-                  <View style={s.domainRow}>
-                    <Text style={s.domainLabel}>Dominio</Text>
-                    <View style={s.domainRight}>
-                      <Text style={s.domainEmoji}>{area.emoji}</Text>
-                      <Text style={[s.domainName, { color: area.color }]}>
-                        {area.label}
-                      </Text>
-                    </View>
-                  </View>
-
-                  {/* Círculo de progreso */}
-                  <View style={s.circleWrap}>
-                    <CircleProgress pct={pct} color={area.color} size={140} />
-                    <View style={s.circleInner}>
-                      <Text style={s.circlePct}>{pct} %</Text>
-                    </View>
-                  </View>
-                  <Text style={s.circleSub}>
-                    Dominio de {area.label.toLowerCase()}
-                  </Text>
-
-                  {/* Stats */}
-                  <View style={s.statsRow}>
-                    <View style={s.statItem}>
-                      <Text style={s.statEmoji}>📈</Text>
-                      <Text style={s.statValue}>{done * 3}</Text>
-                      <Text style={s.statLabel}>Conceptos aprendidos</Text>
-                    </View>
-                    <View style={s.statDivider} />
-                    <View style={s.statItem}>
-                      <Text style={s.statEmoji}>🏆</Text>
-                      <Text style={s.statValue}>{done >= total ? 1 : 0}</Text>
-                      <Text style={s.statLabel}>Certificados</Text>
-                    </View>
-                  </View>
-                </View>
-              );
-            })}
-          </View>
-        )}
-
-        {/* ── EJERCICIOS ── */}
-        {tab === "ejercicios" && (
-          <View style={s.tabContent}>
-            {WEEKLY_CHALLENGES.map((c) => {
-              const done = progress[c.id] ?? 0;
-              const total = c.questions.length;
-              const pct = Math.round((done / total) * 100);
-              const isComplete = done >= total;
-              return (
-                <Pressable
-                  key={c.id}
-                  style={({ pressed }) => [
-                    s.exerciseRow,
-                    pressed && { opacity: 0.75 },
-                  ]}
-                  onPress={() =>
-                    router.push({
-                      pathname: "/challenge-detail",
-                      params: { id: c.id },
-                    })
-                  }
-                >
-                  <View style={s.exerciseLeft}>
-                    {/* <Text style={s.exerciseEmoji}>{c.emoji}</Text> */}
-                    <View style={s.exerciseInfo}>
-                      <Text style={s.exerciseTitle}>{c.title}</Text>
-                      <Text
-                        style={[
-                          s.exerciseDiff,
-                          { color: isComplete ? ACCENT : MUTED },
-                        ]}
-                      >
-                        {isComplete ? "Completado ✓" : "En progreso"}
-                      </Text>
-                    </View>
-                  </View>
-                  <View style={s.exerciseCircle}>
-                    <CircleProgress
-                      pct={pct}
-                      color={isComplete ? ACCENT : c.color}
-                      size={46}
-                      strokeWidth={5}
-                    />
-                    <View style={s.exerciseCircleInner}>
-                      <Text style={s.exerciseCirclePct}>{pct}%</Text>
-                    </View>
-                  </View>
-                </Pressable>
-              );
-            })}
-          </View>
-        )}
-
-        {/* ── HUMOR ── */}
-        {tab === "humor" && (
-          <View style={s.tabContent}>
-            <Text style={s.humorTitle}>{"Tu registro de humor"}</Text>
-            <Text style={s.humorSub}>
-              {"Cada día que registras tu estado se guarda aquí."}
-            </Text>
-            <MoodCalendar history={moodHistory} />
-
-            {/* Leyenda */}
-            <View style={cs.legendRow}>
-              {MOODS.map((m, i) => (
-                <View key={i} style={cs.legendItem}>
-                  <Image source={m.image} style={cs.legendImg} contentFit="contain" />
-                  <Text style={cs.legendLabel}>{m.label}</Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {/* ── AJUSTES ── */}
-        {tab === "ajustes" && (
-          <View style={[s.tabContent, s.settingsCard]}>
-            {SETTINGS.map((item, i) => (
-              <View key={item.id}>
-                <Pressable
-                  style={({ pressed }) => [
-                    s.settingRow,
-                    pressed && { opacity: 0.7 },
-                  ]}
-                >
-                  <Text style={s.settingEmoji}>{item.icon}</Text>
-                  <Text style={s.settingLabel}>{item.label}</Text>
-                  <ChevronRight size={16} color={MUTED} />
-                </Pressable>
-                {i < SETTINGS.length - 1 && <View style={s.separator} />}
-              </View>
-            ))}
-            <Text style={s.version}>Versión 1.0.0</Text>
-          </View>
-        )}
+        {tab === "progreso" && <ProgresoTab progress={progress} topArea={topArea} />}
+        {tab === "ejercicios" && <EjerciciosTab progress={progress} />}
+        {tab === "humor" && <HumorTab moodHistory={moodHistory} />}
+        {tab === "ajustes" && <AjustesTab />}
       </ScrollView>
     </SafeAreaView>
   );
@@ -535,8 +110,6 @@ export default function ProfileScreen() {
 
 const s = StyleSheet.create({
   root: { flex: 1, backgroundColor: BG },
-
-  /* Header */
   headerWrap: { backgroundColor: "#fff" },
   header: {
     flexDirection: "row",
@@ -553,12 +126,7 @@ const s = StyleSheet.create({
     borderBottomRightRadius: 3,
   },
   headerMutedLine: { flex: 1, backgroundColor: BORDER },
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: "800",
-    color: TEXT,
-    letterSpacing: -0.4,
-  },
+  headerTitle: { fontSize: 22, fontWeight: "800", color: TEXT, letterSpacing: -0.4 },
   headerActions: { flexDirection: "row", gap: SPACING * 0.8 },
   iconBtn: {
     width: 38,
@@ -568,8 +136,6 @@ const s = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
-  /* Profile section */
   profileSection: {
     alignItems: "center",
     paddingTop: SPACING * 1.5,
@@ -596,27 +162,22 @@ const s = StyleSheet.create({
   },
   avatarInitial: { fontSize: 32, fontWeight: "800", color: "#fff" },
   name: { fontSize: 22, fontWeight: "800", color: TEXT, letterSpacing: -0.5 },
-  locationRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  locationText: { fontSize: 13, color: MUTED, fontWeight: "500" },
-
-  /* Friends */
-  friendsSection: {
-    alignItems: "center",
-    gap: SPACING,
-    paddingBottom: SPACING * 2,
+  archetypeType: { fontSize: 14, fontWeight: "700", letterSpacing: 0.2, marginTop: 2 },
+  archetypeTagline: {
+    fontSize: 12,
+    color: MUTED,
+    fontStyle: "italic",
+    fontWeight: "500",
+    marginTop: 2,
+    marginBottom: SPACING * 0.4,
   },
-  friendsCount: { fontSize: 14, fontWeight: "600", color: TEXT },
-  friendBtn: {
-    backgroundColor: CARD_BG,
+  areaTag: {
     borderRadius: 20,
-    paddingHorizontal: SPACING * 2.2,
-    paddingVertical: SPACING * 0.9,
-    borderWidth: 1,
-    borderColor: BORDER,
+    paddingVertical: 4,
+    paddingHorizontal: 14,
+    marginTop: SPACING * 0.2,
   },
-  friendBtnText: { fontSize: 13, color: MUTED, fontWeight: "600" },
-
-  /* Tab bar */
+  areaTagText: { fontSize: 12, fontWeight: "700" },
   tabBar: {
     flexDirection: "row",
     borderTopWidth: 1,
@@ -625,12 +186,7 @@ const s = StyleSheet.create({
     backgroundColor: "#fff",
   },
   tabItem: { flex: 1, alignItems: "center", paddingVertical: SPACING * 1.2 },
-  tabLabel: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: MUTED,
-    letterSpacing: 0.5,
-  },
+  tabLabel: { fontSize: 11, fontWeight: "700", color: MUTED, letterSpacing: 0.5 },
   tabLabelActive: { color: ACCENT },
   tabUnderline: {
     position: "absolute",
@@ -640,149 +196,5 @@ const s = StyleSheet.create({
     height: 2,
     backgroundColor: ACCENT,
     borderRadius: 2,
-  },
-
-  /* Tab content */
-  tabContent: { paddingTop: SPACING * 2 },
-
-  /* Dominio / progress section */
-  domainSeparator: {
-    marginTop: SPACING * 3,
-    borderTopWidth: 1,
-    borderColor: BORDER,
-    paddingTop: SPACING * 2,
-  },
-  domainRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: SPACING * 2,
-    marginBottom: SPACING * 1.5,
-  },
-  domainLabel: { fontSize: 14, fontWeight: "700", color: TEXT },
-  domainRight: { flexDirection: "row", alignItems: "center", gap: 6 },
-  domainEmoji: { fontSize: 16 },
-  domainName: { fontSize: 14, fontWeight: "700" },
-
-  circleWrap: {
-    alignItems: "center",
-    position: "relative",
-    marginBottom: SPACING * 0.5,
-  },
-  circleInner: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  circlePct: {
-    fontSize: 26,
-    fontWeight: "900",
-    color: TEXT,
-    letterSpacing: -1,
-  },
-  circleSub: {
-    textAlign: "center",
-    fontSize: 14,
-    fontWeight: "600",
-    color: TEXT,
-    marginBottom: SPACING * 2,
-  },
-
-  /* Stats */
-  statsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderTopWidth: 1,
-    borderColor: BORDER,
-    marginHorizontal: SPACING * 2,
-    paddingTop: SPACING * 1.5,
-    paddingBottom: SPACING * 0.5,
-  },
-  statItem: { flex: 1, alignItems: "center", gap: 3 },
-  statEmoji: { fontSize: 18 },
-  statValue: { fontSize: 18, fontWeight: "800", color: TEXT },
-  statLabel: {
-    fontSize: 11,
-    color: MUTED,
-    fontWeight: "500",
-    textAlign: "center",
-  },
-  statDivider: { width: 1, height: 44, backgroundColor: BORDER },
-
-  /* Exercises tab */
-  exerciseRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: SPACING * 2,
-    paddingVertical: SPACING * 1.2,
-    borderBottomWidth: 1,
-    borderColor: BORDER,
-  },
-  exerciseLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: SPACING * 1.2,
-    flex: 1,
-  },
-  exerciseEmoji: { fontSize: 24, width: 34, textAlign: "center" },
-  exerciseInfo: { gap: 3 },
-  exerciseTitle: { fontSize: 14, fontWeight: "700", color: TEXT },
-  exerciseDiff: { fontSize: 12, fontWeight: "500" },
-  exerciseCircle: {
-    position: "relative",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  exerciseCircleInner: {
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  exerciseCirclePct: { fontSize: 9, fontWeight: "800", color: TEXT },
-
-  /* Settings */
-  settingsCard: {
-    backgroundColor: "#fff",
-    borderRadius: 18,
-    marginHorizontal: SPACING * 2,
-    paddingHorizontal: SPACING * 1.8,
-    paddingTop: 0,
-  },
-  settingRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: SPACING * 1.4,
-    gap: SPACING * 1.2,
-  },
-  settingEmoji: { fontSize: 18, width: 28, textAlign: "center" },
-  settingLabel: { flex: 1, fontSize: 14, fontWeight: "600", color: TEXT },
-  separator: { height: 1, backgroundColor: "#F9FAFB", marginLeft: 40 },
-  version: {
-    fontSize: 11,
-    color: MUTED,
-    textAlign: "center",
-    marginTop: SPACING * 1.5,
-    paddingBottom: SPACING,
-  },
-
-  /* Humor tab calendar */
-  humorTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: TEXT,
-    paddingHorizontal: SPACING * 2,
-    marginBottom: 4,
-  },
-  humorSub: {
-    fontSize: 12,
-    color: MUTED,
-    fontWeight: "500",
-    paddingHorizontal: SPACING * 2,
-    marginBottom: SPACING * 1.5,
   },
 });

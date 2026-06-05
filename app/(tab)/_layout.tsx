@@ -37,7 +37,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="four"
         options={{
-          title: "Mi Camino",
+          title: "Mi Mapa",
           tabBarIcon: ({ color }) => <Target size={24} color={color} />,
         }}
       />

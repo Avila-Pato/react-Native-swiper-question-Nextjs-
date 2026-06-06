@@ -2,10 +2,11 @@ import { RadarChart as RadarChartFull } from "@/components/roleTest/RadarChart";
 import { RoleBarChart } from "@/components/roleTest/RoleBarChart";
 import { RadarChart as RadarChartSimple } from "@/components/ui/RadarChart";
 import { SPACING, TAB_ITEM_SIZE } from "@/constants/constants";
-import { ROLES } from "@/data/roleTestData";
 import { BG, MUTED, TEXT } from "@/constants/theme";
+import { ROLES } from "@/data/roleTestData";
 import { useUserStore } from "@/store/useUserStore";
 import { RoleKey, RoleScores } from "@/types/roleTest";
+import { Image } from "expo-image";
 import { router } from "expo-router";
 import {
   Compass,
@@ -16,7 +17,10 @@ import {
   Users,
 } from "lucide-react-native";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 const BAR_HEIGHT = TAB_ITEM_SIZE + SPACING * 1.5;
 const ACCENT = "#8980B8";
@@ -25,15 +29,21 @@ const MAX_SCORE = 4 * 5;
 type IconConfig = { Icon: LucideIcon; bg: string; color: string };
 
 const ROLE_ICON: Record<RoleKey, IconConfig> = {
-  limites:          { Icon: Shield,  bg: "#EDE9FE", color: "#7C3AED" },
-  autoconocimiento: { Icon: Eye,     bg: "#E0F2FE", color: "#0284C7" },
-  vinculos:         { Icon: Users,   bg: "#E8F0EE", color: "#4D8B7A" },
-  felicidad:        { Icon: Sun,     bg: "#FEF3C7", color: "#D97706" },
-  proposito:        { Icon: Compass, bg: "#EDE9F8", color: "#7B6BB5" },
+  limites: { Icon: Shield, bg: "#EDE9FE", color: "#7C3AED" },
+  autoconocimiento: { Icon: Eye, bg: "#E0F2FE", color: "#0284C7" },
+  vinculos: { Icon: Users, bg: "#E8F0EE", color: "#4D8B7A" },
+  felicidad: { Icon: Sun, bg: "#FEF3C7", color: "#D97706" },
+  proposito: { Icon: Compass, bg: "#EDE9F8", color: "#7B6BB5" },
 };
 
-const ROLE_KEYS: RoleKey[] = ["limites", "autoconocimiento", "vinculos", "felicidad", "proposito"];
-const RADAR_COLORS  = ROLE_KEYS.map((k) => ROLE_ICON[k].color);
+const ROLE_KEYS: RoleKey[] = [
+  "limites",
+  "autoconocimiento",
+  "vinculos",
+  "felicidad",
+  "proposito",
+];
+const RADAR_COLORS = ROLE_KEYS.map((k) => ROLE_ICON[k].color);
 const RADAR_LABELS_SHORT: Record<RoleKey, string> = {
   limites: "Límites",
   autoconocimiento: "Autocon.",
@@ -44,35 +54,40 @@ const RADAR_LABELS_SHORT: Record<RoleKey, string> = {
 
 export default function RoleTestScreen() {
   const { bottom } = useSafeAreaInsets();
-  const assessment       = useUserStore((s) => s.assessment);
-  const onboarding       = useUserStore((s) => s.onboarding);
-  const resetAssessment  = useUserStore((s) => s.resetAssessment);
+  const assessment = useUserStore((s) => s.assessment);
+  const onboarding = useUserStore((s) => s.onboarding);
+  const resetAssessment = useUserStore((s) => s.resetAssessment);
 
-  const completed   = !!assessment?.completed;
-  const scores      = assessment?.scores as RoleScores | undefined;
+  const completed = !!assessment?.completed;
+  const scores = assessment?.scores as RoleScores | undefined;
 
   // Ranked roles for results view
-  const ranked      = [...ROLES].sort((a, b) => (scores?.[b.key] ?? 0) - (scores?.[a.key] ?? 0));
+  const ranked = [...ROLES].sort(
+    (a, b) => (scores?.[b.key] ?? 0) - (scores?.[a.key] ?? 0),
+  );
   const topRoleData = ranked[0];
-  const topIconCfg  = ROLE_ICON[topRoleData?.key ?? "proposito"];
-  const TopIcon     = topIconCfg.Icon;
-  const pct         = (key: RoleKey) =>
+  const topIconCfg = ROLE_ICON[topRoleData?.key ?? "proposito"];
+  const TopIcon = topIconCfg.Icon;
+  const pct = (key: RoleKey) =>
     scores ? Math.round(((scores[key] ?? 0) / MAX_SCORE) * 100) : 0;
 
   // Pre-test simple radar values (empty)
-  const simpleRadarValues = completed && scores
-    ? (() => {
-        const vals = ROLE_KEYS.map((k) => scores[k] ?? 0);
-        const max  = Math.max(...vals, 1);
-        return vals.map((v) => v / max);
-      })()
-    : ROLE_KEYS.map(() => 0);
+  const simpleRadarValues =
+    completed && scores
+      ? (() => {
+          const vals = ROLE_KEYS.map((k) => scores[k] ?? 0);
+          const max = Math.max(...vals, 1);
+          return vals.map((v) => v / max);
+        })()
+      : ROLE_KEYS.map(() => 0);
 
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={s.root}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: BAR_HEIGHT + bottom + SPACING * 2 }}
+        contentContainerStyle={{
+          paddingBottom: BAR_HEIGHT + bottom + SPACING * 2,
+        }}
       >
         {/* ── Hero ── */}
         <View style={s.hero}>
@@ -82,32 +97,52 @@ export default function RoleTestScreen() {
           <Text style={s.heroTitle}>
             {completed
               ? "Tu mapa de bienestar."
-              : (onboarding?.nombre ? `Hola, ${onboarding.nombre}.` : "Mi Mapa.")}
+              : onboarding?.nombre
+                ? `Hola, ${onboarding.nombre}.`
+                : "Mi Mapa."}
           </Text>
           <Text style={s.heroSub}>
             {completed
               ? "Aquí está tu análisis completo. Úsalo como brújula en tu camino."
               : "Descubre qué área de tu bienestar tiene más potencial de transformación ahora."}
           </Text>
+          <Image
+            source={require("@/assets/character/5.png")}
+            style={s.heroCharacter}
+            contentFit="contain"
+            contentPosition="top"
+          />
         </View>
 
         {/* ── Body ── */}
         <View style={s.body}>
-
           {completed && scores ? (
             <>
               {/* Top role highlight */}
               <View style={[s.topCard, { borderLeftColor: topRoleData.color }]}>
-                <View style={[s.topIconBox, { backgroundColor: topIconCfg.bg }]}>
-                  <TopIcon size={28} color={topIconCfg.color} strokeWidth={1.6} />
+                <View
+                  style={[s.topIconBox, { backgroundColor: topIconCfg.bg }]}
+                >
+                  <TopIcon
+                    size={28}
+                    color={topIconCfg.color}
+                    strokeWidth={1.6}
+                  />
                 </View>
                 <View style={s.topBody}>
                   <Text style={s.topLabel}>Tu área principal</Text>
                   <Text style={s.topName}>{topRoleData.label}</Text>
                   <Text style={s.topPct}>{pct(topRoleData.key)}% afinidad</Text>
                 </View>
-                <View style={[s.topBadge, { backgroundColor: topRoleData.color + "22" }]}>
-                  <Text style={[s.topBadgeText, { color: topRoleData.color }]}>#1</Text>
+                <View
+                  style={[
+                    s.topBadge,
+                    { backgroundColor: topRoleData.color + "22" },
+                  ]}
+                >
+                  <Text style={[s.topBadgeText, { color: topRoleData.color }]}>
+                    #1
+                  </Text>
                 </View>
               </View>
 
@@ -126,10 +161,18 @@ export default function RoleTestScreen() {
               </View>
 
               {/* Top role description */}
-              <View style={[s.descCard, { borderColor: topRoleData.color + "44" }]}>
+              <View
+                style={[s.descCard, { borderColor: topRoleData.color + "44" }]}
+              >
                 <View style={s.descHeader}>
-                  <View style={[s.descIconBox, { backgroundColor: topIconCfg.bg }]}>
-                    <TopIcon size={20} color={topIconCfg.color} strokeWidth={1.6} />
+                  <View
+                    style={[s.descIconBox, { backgroundColor: topIconCfg.bg }]}
+                  >
+                    <TopIcon
+                      size={20}
+                      color={topIconCfg.color}
+                      strokeWidth={1.6}
+                    />
                   </View>
                   <Text style={s.descTitle}>{topRoleData.label}</Text>
                 </View>
@@ -142,7 +185,10 @@ export default function RoleTestScreen() {
 
               {/* Reiniciar */}
               <Pressable
-                style={({ pressed }) => [s.retakeBtn, pressed && { opacity: 0.6 }]}
+                style={({ pressed }) => [
+                  s.retakeBtn,
+                  pressed && { opacity: 0.6 },
+                ]}
                 onPress={resetAssessment}
               >
                 <Text style={s.retakeText}>Reiniciar test</Text>
@@ -162,7 +208,9 @@ export default function RoleTestScreen() {
                     size={220}
                   />
                 </View>
-                <Text style={s.radarHint}>Completa el test para ver tu mapa</Text>
+                <Text style={s.radarHint}>
+                  Completa el test para ver tu mapa
+                </Text>
               </View>
 
               {/* Stats strip */}
@@ -187,12 +235,13 @@ export default function RoleTestScreen() {
               <View style={s.introCard}>
                 <Text style={s.introTitle}>¿Qué es Mi Mapa?</Text>
                 <Text style={s.introText}>
-                  Tu Mapa de Bienestar es una radiografía de cómo estás en las 5 dimensiones que más
-                  impactan tu vida: límites, autoconocimiento, vínculos, felicidad y propósito.
+                  Tu Mapa de Bienestar es una radiografía de cómo estás en las 5
+                  dimensiones que más impactan tu vida: límites,
+                  autoconocimiento, vínculos, felicidad y propósito.
                 </Text>
                 <Text style={s.introText}>
-                  El test te ayuda a identificar tu área de mayor potencial para que puedas enfocarte
-                  donde realmente importa.
+                  El test te ayuda a identificar tu área de mayor potencial para
+                  que puedas enfocarte donde realmente importa.
                 </Text>
               </View>
 
@@ -219,9 +268,13 @@ export default function RoleTestScreen() {
                         </View>
                         <View style={s.roleText}>
                           <Text style={s.roleName}>{role.label}</Text>
-                          <Text style={s.roleDesc}>{role.description.slice(0, 72)}…</Text>
+                          <Text style={s.roleDesc}>
+                            {role.description.slice(0, 72)}…
+                          </Text>
                         </View>
-                        <View style={[s.roleDot, { backgroundColor: cfg.color }]} />
+                        <View
+                          style={[s.roleDot, { backgroundColor: cfg.color }]}
+                        />
                       </View>
                       {i < ROLES.length - 1 && <View style={s.separator} />}
                     </View>
@@ -242,10 +295,19 @@ const s = StyleSheet.create({
   /* Hero */
   hero: {
     backgroundColor: ACCENT,
-    paddingHorizontal: SPACING * 2,
-    paddingTop: SPACING * 1.5,
+    paddingLeft: SPACING * 2.5,
+    paddingRight: SPACING * 2 + 150,
+    paddingTop: SPACING * 2.5,
     paddingBottom: SPACING * 6,
-    gap: SPACING * 0.6,
+    gap: SPACING * 1.2,
+    overflow: "hidden",
+  },
+  heroCharacter: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+    width: 185,
+    height: 320,
   },
   eyebrow: {
     fontSize: 11,
@@ -303,9 +365,14 @@ const s = StyleSheet.create({
     flexShrink: 0,
   },
   topBody: { flex: 1, gap: 3 },
-  topLabel: { fontSize: 11, color: MUTED, fontWeight: "600", textTransform: "uppercase" },
-  topName:  { fontSize: 18, fontWeight: "900", color: TEXT },
-  topPct:   { fontSize: 13, color: MUTED, fontWeight: "600" },
+  topLabel: {
+    fontSize: 11,
+    color: MUTED,
+    fontWeight: "600",
+    textTransform: "uppercase",
+  },
+  topName: { fontSize: 18, fontWeight: "900", color: TEXT },
+  topPct: { fontSize: 13, color: MUTED, fontWeight: "600" },
   topBadge: { borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6 },
   topBadgeText: { fontSize: 16, fontWeight: "900" },
 
@@ -367,7 +434,7 @@ const s = StyleSheet.create({
     justifyContent: "center",
   },
   descTitle: { fontSize: 17, fontWeight: "800", color: TEXT },
-  descText:  { fontSize: 13, color: MUTED, lineHeight: 20 },
+  descText: { fontSize: 13, color: MUTED, lineHeight: 20 },
   stackChip: {
     backgroundColor: BG,
     borderRadius: 12,
@@ -398,7 +465,7 @@ const s = StyleSheet.create({
     elevation: 2,
   },
   introTitle: { fontSize: 15, fontWeight: "800", color: TEXT, marginBottom: 2 },
-  introText:  { fontSize: 13, color: MUTED, lineHeight: 20 },
+  introText: { fontSize: 13, color: MUTED, lineHeight: 20 },
 
   /* Pre-test only */
   statsRow: {
@@ -414,10 +481,15 @@ const s = StyleSheet.create({
     shadowRadius: 6,
     elevation: 2,
   },
-  statItem:   { flex: 1, alignItems: "center", gap: 2 },
-  statValue:  { fontSize: 20, fontWeight: "800", color: TEXT, letterSpacing: -0.5 },
-  statLabel:  { fontSize: 11, color: MUTED, fontWeight: "500" },
-  statDivider:{ width: 1, height: 32, backgroundColor: "#F3F4F6" },
+  statItem: { flex: 1, alignItems: "center", gap: 2 },
+  statValue: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: TEXT,
+    letterSpacing: -0.5,
+  },
+  statLabel: { fontSize: 11, color: MUTED, fontWeight: "500" },
+  statDivider: { width: 1, height: 32, backgroundColor: "#F3F4F6" },
 
   cta: {
     backgroundColor: TEXT,
@@ -428,7 +500,7 @@ const s = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  ctaText:  { fontSize: 15, fontWeight: "700", color: "#fff" },
+  ctaText: { fontSize: 15, fontWeight: "700", color: "#fff" },
   ctaArrow: { fontSize: 18, color: ACCENT, fontWeight: "800" },
 
   listSection: {
@@ -468,7 +540,7 @@ const s = StyleSheet.create({
   roleText: { flex: 1, gap: 2 },
   roleName: { fontSize: 14, fontWeight: "700", color: TEXT },
   roleDesc: { fontSize: 11, color: MUTED, lineHeight: 15 },
-  roleDot:  { width: 6, height: 6, borderRadius: 3, flexShrink: 0 },
+  roleDot: { width: 6, height: 6, borderRadius: 3, flexShrink: 0 },
   separator: {
     height: 1,
     backgroundColor: "#F9FAFB",

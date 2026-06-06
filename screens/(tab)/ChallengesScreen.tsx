@@ -73,7 +73,7 @@ const ICON_MAP: Record<string, IconConfig> = {
     bg: P_SLATE.bg,
     color: P_SLATE.fg,
     cardImage: require("@/assets/abstracts/Group-1.png"),
-    character: require("@/assets/character/22.png"),
+    character: require("@/assets/character/2.png"),
   },
 };
 
@@ -166,8 +166,17 @@ export default function ChallengesScreen() {
                 <View key={c.id} style={s.timelineItem}>
                   {/* Izquierda: solo el dot */}
                   <View style={s.timelineLeft}>
-                    <View style={[s.timelineDot, { backgroundColor: cfg.bg, borderColor: cfg.color }]}>
-                      <Image source={cfg.cardImage} style={s.timelineDotIcon} contentFit="contain" />
+                    <View
+                      style={[
+                        s.timelineDot,
+                        { backgroundColor: cfg.bg, borderColor: cfg.color },
+                      ]}
+                    >
+                      <Image
+                        source={cfg.cardImage}
+                        style={s.timelineDotIcon}
+                        contentFit="contain"
+                      />
                     </View>
                   </View>
 
@@ -190,7 +199,9 @@ export default function ChallengesScreen() {
                       ]}
                       onPress={() => handleCardPress(c.id)}
                     >
-                      <Text style={[s.rowTitle, { color: cfg.color }]}>{c.title}</Text>
+                      <Text style={[s.rowTitle, { color: cfg.color }]}>
+                        {c.title}
+                      </Text>
                       <Text style={s.rowSub}>
                         {completed
                           ? "✓ Completado"
@@ -213,7 +224,6 @@ export default function ChallengesScreen() {
           onClose={() => setLangPickerOpen(false)}
         />
       )}
-      
     </SafeAreaView>
   );
 }

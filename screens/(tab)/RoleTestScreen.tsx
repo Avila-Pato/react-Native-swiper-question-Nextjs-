@@ -306,7 +306,7 @@ const s = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 0,
-    width: 185,
+    width: 225,
     height: 320,
   },
   eyebrow: {

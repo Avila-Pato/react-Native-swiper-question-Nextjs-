@@ -9,8 +9,10 @@ type Props = {
 };
 
 export function RadarChart({ labels, colors, values, color = "#8980B8", size = 220 }: Props) {
-  const cx = size / 2;
-  const cy = size / 2;
+  const PAD = 36;
+  const total = size + PAD * 2;
+  const cx = total / 2;
+  const cy = total / 2;
   const N = labels.length;
   const R = size * 0.33;
   const labelR = size * 0.44;
@@ -37,7 +39,7 @@ export function RadarChart({ labels, colors, values, color = "#8980B8", size = 2
       .join(" ");
 
   return (
-    <Svg width={size} height={size}>
+    <Svg width={total} height={total}>
       {/* Grid rings */}
       {GRID_LEVELS.map((level, i) => (
         <Polygon

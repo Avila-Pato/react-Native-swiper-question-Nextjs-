@@ -1,17 +1,24 @@
 import { SPACING } from "@/constants/constants";
 import { ROLES } from "@/data/roleTestData";
 import { RoleKey, RoleScores } from "@/types/roleTest";
-import { Compass, Eye, LucideIcon, Shield, Sun, Users } from "lucide-react-native";
+import {
+  Compass,
+  Eye,
+  LucideIcon,
+  Shield,
+  Sun,
+  Users,
+} from "lucide-react-native";
 import { StyleSheet, Text, View } from "react-native";
 
 type IconCfg = { Icon: LucideIcon; bg: string };
 
 const ICON_MAP: Record<RoleKey, IconCfg> = {
-  limites:          { Icon: Shield,  bg: "#EDE9FE" },
-  autoconocimiento: { Icon: Eye,     bg: "#E0F2FE" },
-  vinculos:         { Icon: Users,   bg: "#E8F0EE" },
-  felicidad:        { Icon: Sun,     bg: "#FEF3C7" },
-  proposito:        { Icon: Compass, bg: "#EDE9F8" },
+  limites: { Icon: Shield, bg: "#EDE9FE" },
+  autoconocimiento: { Icon: Eye, bg: "#E0F2FE" },
+  vinculos: { Icon: Users, bg: "#E8F0EE" },
+  felicidad: { Icon: Sun, bg: "#FEF3C7" },
+  proposito: { Icon: Compass, bg: "#EDE9F8" },
 };
 
 const MAX = 4 * 5;
@@ -19,7 +26,9 @@ const MAX = 4 * 5;
 type Props = { scores: RoleScores };
 
 export function RoleBarChart({ scores }: Props) {
-  const sorted = [...ROLES].sort((a, b) => (scores[b.key] ?? 0) - (scores[a.key] ?? 0));
+  const sorted = [...ROLES].sort(
+    (a, b) => (scores[b.key] ?? 0) - (scores[a.key] ?? 0),
+  );
 
   return (
     <View style={s.container}>
@@ -36,7 +45,12 @@ export function RoleBarChart({ scores }: Props) {
               <View style={[s.iconBox, { backgroundColor: bg }]}>
                 <Icon size={14} color={role.color} strokeWidth={1.8} />
               </View>
-              <Text style={[s.label, isTop && { color: "#111827", fontWeight: "700" }]}>
+              <Text
+                style={[
+                  s.label,
+                  isTop && { color: "#111827", fontWeight: "700" },
+                ]}
+              >
                 {role.label}
               </Text>
             </View>
@@ -56,7 +70,9 @@ export function RoleBarChart({ scores }: Props) {
             </View>
 
             {/* Percentage */}
-            <Text style={[s.pct, isTop && { color: "#374151", fontWeight: "700" }]}>
+            <Text
+              style={[s.pct, isTop && { color: "#374151", fontWeight: "700" }]}
+            >
               {pct}%
             </Text>
           </View>

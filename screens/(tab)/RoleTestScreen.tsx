@@ -91,6 +91,11 @@ export default function RoleTestScreen() {
       >
         {/* ── Hero ── */}
         <View style={s.hero}>
+          <Image
+            source={require("@/assets/background/1.jpg")}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+          />
           <Text style={s.eyebrow}>
             {completed ? "Tu resultado" : "Test de bienestar"}
           </Text>
@@ -205,7 +210,7 @@ export default function RoleTestScreen() {
                     colors={RADAR_COLORS}
                     values={simpleRadarValues}
                     color={ACCENT}
-                    size={220}
+                    size={260}
                   />
                 </View>
                 <Text style={s.radarHint}>
@@ -311,21 +316,21 @@ const s = StyleSheet.create({
   },
   eyebrow: {
     fontSize: 11,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.6)",
+    fontWeight: "700",
+    color: ACCENT,
     textTransform: "uppercase",
     letterSpacing: 1.2,
   },
   heroTitle: {
     fontSize: 34,
     fontWeight: "900",
-    color: "#fff",
+    color: TEXT,
     letterSpacing: -1.2,
     lineHeight: 40,
   },
   heroSub: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.7)",
+    color: MUTED,
     lineHeight: 20,
     maxWidth: 300,
   },
@@ -404,6 +409,8 @@ const s = StyleSheet.create({
     fontSize: 11,
     color: MUTED,
     fontStyle: "italic",
+    textAlign: "center",
+    alignSelf: "stretch", // para que el texto ocupe todo el ancho disponible
   },
 
   chartCard: {
@@ -492,7 +499,7 @@ const s = StyleSheet.create({
   statDivider: { width: 1, height: 32, backgroundColor: "#F3F4F6" },
 
   cta: {
-    backgroundColor: TEXT,
+    backgroundColor: ACCENT,
     borderRadius: 16,
     paddingVertical: SPACING * 1.6,
     paddingHorizontal: SPACING * 2,
@@ -501,7 +508,7 @@ const s = StyleSheet.create({
     justifyContent: "space-between",
   },
   ctaText: { fontSize: 15, fontWeight: "700", color: "#fff" },
-  ctaArrow: { fontSize: 18, color: ACCENT, fontWeight: "800" },
+  ctaArrow: { fontSize: 18, color: "#fff", fontWeight: "800" },
 
   listSection: {
     backgroundColor: "#fff",

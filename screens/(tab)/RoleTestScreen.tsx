@@ -8,14 +8,6 @@ import { useUserStore } from "@/store/useUserStore";
 import { RoleKey, RoleScores } from "@/types/roleTest";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import {
-  Compass,
-  Eye,
-  LucideIcon,
-  Shield,
-  Sun,
-  Users,
-} from "lucide-react-native";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import {
   SafeAreaView,
@@ -34,14 +26,14 @@ const DIM_BG: Record<string, number> = {
   proposito: require("@/assets/background/10.jpg"),
 };
 
-type IconConfig = { Icon: LucideIcon; bg: string; color: string };
+type IconConfig = { bg: string; color: string };
 
 const ROLE_ICON: Record<RoleKey, IconConfig> = {
-  limites: { Icon: Shield, bg: "#EDE9FE", color: "#7C3AED" },
-  autoconocimiento: { Icon: Eye, bg: "#E0F2FE", color: "#0284C7" },
-  vinculos: { Icon: Users, bg: "#E8F0EE", color: "#4D8B7A" },
-  felicidad: { Icon: Sun, bg: "#FEF3C7", color: "#D97706" },
-  proposito: { Icon: Compass, bg: "#EDE9F8", color: "#7B6BB5" },
+  limites: { bg: "#EDE9FE", color: "#7C3AED" },
+  autoconocimiento: { bg: "#E0F2FE", color: "#0284C7" },
+  vinculos: { bg: "#E8F0EE", color: "#4D8B7A" },
+  felicidad: { bg: "#FEF3C7", color: "#D97706" },
+  proposito: { bg: "#EDE9F8", color: "#7B6BB5" },
 };
 
 const ROLE_KEYS: RoleKey[] = [
@@ -75,7 +67,6 @@ export default function RoleTestScreen() {
   );
   const topRoleData = ranked[0];
   const topIconCfg = ROLE_ICON[topRoleData?.key ?? "proposito"];
-  const TopIcon = topIconCfg.Icon;
   const pct = (key: RoleKey) =>
     scores ? Math.round(((scores[key] ?? 0) / MAX_SCORE) * 100) : 0;
 
@@ -132,30 +123,39 @@ export default function RoleTestScreen() {
           {completed && scores ? (
             <>
               {/* Top role highlight */}
-              <View style={[s.topCard, { borderLeftColor: topRoleData.color }]}>
-                <View
-                  style={[s.topIconBox, { backgroundColor: topIconCfg.bg }]}
-                >
-                  <TopIcon
-                    size={28}
-                    color={topIconCfg.color}
-                    strokeWidth={1.6}
-                  />
-                </View>
-                <View style={s.topBody}>
-                  <Text style={s.topLabel}>Tu área principal</Text>
-                  <Text style={s.topName}>{topRoleData.label}</Text>
-                  <Text style={s.topPct}>{pct(topRoleData.key)}% afinidad</Text>
-                </View>
+              <View style={s.topCard}>
+                <Image
+                  source={DIM_BG[topRoleData.key]}
+                  style={StyleSheet.absoluteFill}
+                  contentFit="cover"
+                />
                 <View
                   style={[
-                    s.topBadge,
-                    { backgroundColor: topRoleData.color + "22" },
+                    StyleSheet.absoluteFill,
+                    { backgroundColor: topIconCfg.bg + "D0" },
                   ]}
-                >
-                  <Text style={[s.topBadgeText, { color: topRoleData.color }]}>
-                    #1
-                  </Text>
+                />
+                <View style={s.topInner}>
+                  <View style={s.topBody}>
+                    <Text style={[s.topName, { color: topIconCfg.color }]}>
+                      {topRoleData.label}
+                    </Text>
+                    <Text style={s.topPct}>
+                      {pct(topRoleData.key)}% afinidad
+                    </Text>
+                  </View>
+                  <View
+                    style={[
+                      s.topBadge,
+                      { backgroundColor: topIconCfg.color + "22" },
+                    ]}
+                  >
+                    <Text
+                      style={[s.topBadgeText, { color: topIconCfg.color }]}
+                    >
+                      #1
+                    </Text>
+                  </View>
                 </View>
               </View>
 
@@ -175,22 +175,29 @@ export default function RoleTestScreen() {
 
               {/* Top role description */}
               <View style={s.descCard}>
-                {/* Header colorido */}
-                <View
-                  style={[s.descHero, { backgroundColor: topRoleData.color }]}
-                >
-                  <Text style={s.descEmoji}>{topRoleData.emoji}</Text>
-                  <View style={s.descHeroText}>
-                    <Text style={s.descHeroLabel}>Tu área principal</Text>
-                    <Text style={s.descHeroTitle}>{topRoleData.label}</Text>
-                  </View>
+                {/* Photo header */}
+                <View style={s.descHeader}>
+                  <Image
+                    source={DIM_BG[topRoleData.key]}
+                    style={StyleSheet.absoluteFill}
+                    contentFit="cover"
+                  />
+                  <View
+                    style={[
+                      StyleSheet.absoluteFill,
+                      { backgroundColor: topRoleData.color + "B8" },
+                    ]}
+                  />
+                  <Text style={s.descAreaLabel}>Tu área principal</Text>
+                  <Text style={s.descTitle}>{topRoleData.label}</Text>
+                  <Text style={s.descPct}>
+                    {pct(topRoleData.key)}% afinidad
+                  </Text>
                 </View>
 
-                {/* Cuerpo */}
+                {/* Cuerpo blanco */}
                 <View style={s.descBody}>
                   <Text style={s.descText}>{topRoleData.description}</Text>
-
-                  {/* Pills de recursos */}
                   <View style={s.descExploreSection}>
                     <Text
                       style={[s.descExploreLabel, { color: topRoleData.color }]}
@@ -390,26 +397,19 @@ const s = StyleSheet.create({
 
   /* Top role card */
   topCard: {
-    backgroundColor: "#fff",
     borderRadius: 20,
-    borderLeftWidth: 5,
-    flexDirection: "row",
-    alignItems: "center",
+    overflow: "hidden",
     padding: SPACING * 1.8,
-    gap: SPACING * 1.4,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 8,
     elevation: 3,
   },
-  topIconBox: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
+  topInner: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
+    gap: SPACING * 1.4,
   },
   topBody: { flex: 1, gap: 3 },
   topLabel: {
@@ -477,28 +477,30 @@ const s = StyleSheet.create({
     shadowRadius: 10,
     elevation: 3,
   },
-  descHero: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: SPACING * 1.4,
+  descHeader: {
+    overflow: "hidden",
     paddingHorizontal: SPACING * 2,
-    paddingVertical: SPACING * 2,
+    paddingTop: SPACING * 2.5,
+    paddingBottom: SPACING * 2.5,
+    gap: SPACING * 0.4,
   },
-  descEmoji: { fontSize: 42 },
-  descHeroText: { flex: 1 },
-  descHeroLabel: {
+  descAreaLabel: {
     fontSize: 10,
     fontWeight: "700",
-    color: "rgba(255,255,255,0.7)",
+    color: "rgba(255,255,255,0.75)",
     textTransform: "uppercase",
-    letterSpacing: 0.8,
-    marginBottom: 2,
+    letterSpacing: 1,
   },
-  descHeroTitle: {
-    fontSize: 24,
+  descTitle: {
+    fontSize: 26,
     fontWeight: "900",
     color: "#fff",
     letterSpacing: -0.6,
+  },
+  descPct: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.8)",
   },
   descBody: {
     padding: SPACING * 2,

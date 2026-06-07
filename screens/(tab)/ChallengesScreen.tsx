@@ -37,6 +37,7 @@ type IconConfig = {
   color: string;
   cardImage: ImageSourcePropType;
   character: ImageSourcePropType;
+  photoBg: ImageSourcePropType;
 };
 
 const TAG_LABELS: Record<string, string> = {
@@ -53,6 +54,7 @@ const ICON_MAP: Record<string, IconConfig> = {
     color: P_TEAL.fg,
     cardImage: require("@/assets/abstracts/Group-11.png"),
     character: require("@/assets/character/3.png"),
+    photoBg: require("@/assets/background/7.jpg"),
   },
   identifica_patron: {
     image: require("@/assets/icons/Surveillance.svg"),
@@ -60,6 +62,7 @@ const ICON_MAP: Record<string, IconConfig> = {
     color: P_AMBER.fg,
     cardImage: require("@/assets/abstracts/Group-6.png"),
     character: require("@/assets/character/7.png"),
+    photoBg: require("@/assets/background/9.jpg"),
   },
   verdad_mito: {
     image: require("@/assets/icons/Approval.svg"),
@@ -67,6 +70,7 @@ const ICON_MAP: Record<string, IconConfig> = {
     color: P_GOLD.fg,
     cardImage: require("@/assets/abstracts/Group-8.png"),
     character: require("@/assets/character/14.png"),
+    photoBg: require("@/assets/background/11.jpg"),
   },
   completa_reflexion: {
     image: require("@/assets/icons/Documentation.svg"),
@@ -74,6 +78,7 @@ const ICON_MAP: Record<string, IconConfig> = {
     color: P_SLATE.fg,
     cardImage: require("@/assets/abstracts/Group-1.png"),
     character: require("@/assets/character/2.png"),
+    photoBg: require("@/assets/background/12.jpg"),
   },
 };
 
@@ -199,6 +204,12 @@ export default function ChallengesScreen() {
                       ]}
                       onPress={() => handleCardPress(c.id)}
                     >
+                      <Image
+                        source={cfg.photoBg}
+                        style={StyleSheet.absoluteFill}
+                        contentFit="cover"
+                      />
+                      <View style={[StyleSheet.absoluteFill, { backgroundColor: cfg.bg + "A0" }]} />
                       <Text style={[s.rowTitle, { color: cfg.color }]}>
                         {c.title}
                       </Text>

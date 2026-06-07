@@ -490,6 +490,12 @@ export default function HomeScreen() {
               onPress={() => router.push("/four")}
             >
               <Image
+                source={require("@/assets/background/3.jpg")}
+                style={StyleSheet.absoluteFill}
+                contentFit="cover"
+              />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "#EDE9F8A0" }]} />
+              <Image
                 source={require("@/assets/pincel/Group-5.svg")}
                 style={s.quickImg}
                 contentFit="contain"
@@ -505,6 +511,12 @@ export default function HomeScreen() {
               style={[s.quickCard, { backgroundColor: "#F5E8EF" }]}
               onPress={() => router.push("/two")}
             >
+              <Image
+                source={require("@/assets/background/5.jpg")}
+                style={StyleSheet.absoluteFill}
+                contentFit="cover"
+              />
+              <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F5E8EFA0" }]} />
               <Image
                 source={require("@/assets/pincel/Group-3.svg")}
                 style={s.quickImg}
@@ -847,6 +859,7 @@ const s = StyleSheet.create({
   quickCard: {
     flex: 1,
     borderRadius: 18,
+    overflow: "hidden",
     padding: SPACING * 1.2,
     gap: 5,
   },

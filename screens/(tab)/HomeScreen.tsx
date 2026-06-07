@@ -92,55 +92,69 @@ const QUOTES = [
     text: "El hombre es lo que piensa en lo más profundo de su corazón.",
     author: "James Allen",
     source: "Como el Hombre Piensa",
+    image: require("@/assets/background/1.jpg"),
   },
   {
     text: "Los límites son la distancia a la que puedo amarte sin perderte a ti o a mí mismo.",
     author: "Nedra Tawwab",
     source: "Set Boundaries, Find Peace",
+    image: require("@/assets/background/2.jpg"),
   },
   {
     text: "El bienestar no es una meta que se alcanza; es una práctica que se sostiene.",
     author: "Psicología positiva",
     source: "",
+    image: require("@/assets/background/3.jpg"),
   },
   {
     text: "Pedir lo que necesitas es un acto de valentía, no de debilidad.",
     author: "Nedra Tawwab",
     source: "Set Boundaries, Find Peace",
+    image: require("@/assets/background/4.jpg"),
   },
   {
     text: "Cada emoción es una señal, no una sentencia.",
     author: "Psicología emocional",
     source: "",
+    image: require("@/assets/background/5.jpg"),
   },
   {
     text: "La gratitud transforma lo que tenemos en suficiente.",
     author: "Anónimo",
     source: "",
+    image: require("@/assets/background/6.jpg"),
   },
   {
     text: "Conocerse a uno mismo es el comienzo de toda transformación.",
     author: "Carl Jung",
     source: "",
+    image: require("@/assets/background/7.jpg"),
   },
 ];
 
-const CHALLENGE_META: Record<string, { subtitle: string; image: ImageSourcePropType }> = {
+const CHALLENGE_META: Record<
+  string,
+  { subtitle: string; image: ImageSourcePropType; photoBg: ImageSourcePropType }
+> = {
   adivina_concepto: {
     subtitle: "Identifica el concepto desde la situación",
     image: require("@/assets/pincel/Group.svg"),
+    photoBg: require("@/assets/background/7.jpg"),
   },
   identifica_patron: {
     subtitle: "Detecta el patrón de comportamiento",
     image: require("@/assets/pincel/Group-2.svg"),
+    photoBg: require("@/assets/background/9.jpg"),
   },
   verdad_mito: {
     subtitle: "Límites, emociones, relaciones y más",
     image: require("@/assets/pincel/Group-4.svg"),
+    photoBg: require("@/assets/background/11.jpg"),
   },
   completa_reflexion: {
     subtitle: "Completa la reflexión de los grandes autores",
     image: require("@/assets/pincel/Group-6.svg"),
+    photoBg: require("@/assets/background/12.jpg"),
   },
 };
 
@@ -266,7 +280,11 @@ export default function HomeScreen() {
   const day = new Date().getDay();
   const quote = QUOTES[day % QUOTES.length];
   const featured = WEEKLY_CHALLENGES[day % WEEKLY_CHALLENGES.length];
-  const meta = CHALLENGE_META[featured.id] ?? { subtitle: "", emoji: "⚡" };
+  const meta = CHALLENGE_META[featured.id] ?? {
+    subtitle: "",
+    emoji: "⚡",
+    photoBg: require("@/assets/background/7.jpg"),
+  };
 
   return (
     <SafeAreaView edges={["top", "left", "right"]} style={s.root}>
@@ -432,6 +450,15 @@ export default function HomeScreen() {
           </ScrollView>
 
           <View style={s.quoteCard}>
+            <Image
+              source={quote.image}
+              style={[
+                StyleSheet.absoluteFill,
+                { borderRadius: 20, opacity: 0.3 },
+              ]}
+              contentFit="cover"
+            />
+
             <Text style={s.cardLabel}>{"FRASE DEL DÍA"}</Text>
             <Text style={s.quoteMark}>{"“"}</Text>
             <Text style={s.quoteText}>{quote.text}</Text>
@@ -446,7 +473,13 @@ export default function HomeScreen() {
           <Text style={s.sectionTitle}>{"Desafío del día"}</Text>
           {/* Desafio del dia */}
           <Pressable
-            style={[s.challengeCard, { borderLeftColor: featured.color, backgroundColor: featured.color + "14" }]}
+            style={[
+              s.challengeCard,
+              {
+                borderLeftColor: featured.color,
+                backgroundColor: featured.color + "14",
+              },
+            ]}
             onPress={() =>
               router.push({
                 pathname: "/challenge-detail",
@@ -494,7 +527,12 @@ export default function HomeScreen() {
                 style={StyleSheet.absoluteFill}
                 contentFit="cover"
               />
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "#EDE9F8A0" }]} />
+              <View
+                style={[
+                  StyleSheet.absoluteFill,
+                  { backgroundColor: "#EDE9F8A0" },
+                ]}
+              />
               <Image
                 source={require("@/assets/pincel/Group-5.svg")}
                 style={s.quickImg}
@@ -516,7 +554,12 @@ export default function HomeScreen() {
                 style={StyleSheet.absoluteFill}
                 contentFit="cover"
               />
-              <View style={[StyleSheet.absoluteFill, { backgroundColor: "#F5E8EFA0" }]} />
+              <View
+                style={[
+                  StyleSheet.absoluteFill,
+                  { backgroundColor: "#F5E8EFA0" },
+                ]}
+              />
               <Image
                 source={require("@/assets/pincel/Group-3.svg")}
                 style={s.quickImg}

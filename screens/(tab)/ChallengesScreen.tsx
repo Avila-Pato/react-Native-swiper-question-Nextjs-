@@ -190,12 +190,14 @@ export default function ChallengesScreen() {
                     <Text style={[s.timelineLabel, { color: cfg.color }]}>
                       {TAG_LABELS[c.id].replace("#", "")}
                     </Text>
-                    <Image
-                      source={cfg.character}
-                      style={s.rowCharacter}
-                      contentFit="contain"
-                      contentPosition="bottom"
-                    />
+                    <View style={s.rowCharacter} pointerEvents="none">
+                      <Image
+                        source={cfg.character}
+                        style={{ width: "100%", height: "100%" }}
+                        contentFit="contain"
+                        contentPosition="bottom"
+                      />
+                    </View>
                     <Pressable
                       style={({ pressed }) => [
                         s.row,

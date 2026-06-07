@@ -26,6 +26,14 @@ const BAR_HEIGHT = TAB_ITEM_SIZE + SPACING * 1.5;
 const ACCENT = "#8980B8";
 const MAX_SCORE = 4 * 5;
 
+const DIM_BG: Record<string, number> = {
+  limites: require("@/assets/background/2.jpg"),
+  autoconocimiento: require("@/assets/background/4.jpg"),
+  vinculos: require("@/assets/background/6.jpg"),
+  felicidad: require("@/assets/background/8.jpg"),
+  proposito: require("@/assets/background/10.jpg"),
+};
+
 type IconConfig = { Icon: LucideIcon; bg: string; color: string };
 
 const ROLE_ICON: Record<RoleKey, IconConfig> = {
@@ -166,25 +174,50 @@ export default function RoleTestScreen() {
               </View>
 
               {/* Top role description */}
-              <View
-                style={[s.descCard, { borderColor: topRoleData.color + "44" }]}
-              >
-                <View style={s.descHeader}>
-                  <View
-                    style={[s.descIconBox, { backgroundColor: topIconCfg.bg }]}
-                  >
-                    <TopIcon
-                      size={20}
-                      color={topIconCfg.color}
-                      strokeWidth={1.6}
-                    />
+              <View style={s.descCard}>
+                {/* Header colorido */}
+                <View
+                  style={[s.descHero, { backgroundColor: topRoleData.color }]}
+                >
+                  <Text style={s.descEmoji}>{topRoleData.emoji}</Text>
+                  <View style={s.descHeroText}>
+                    <Text style={s.descHeroLabel}>Tu área principal</Text>
+                    <Text style={s.descHeroTitle}>{topRoleData.label}</Text>
                   </View>
-                  <Text style={s.descTitle}>{topRoleData.label}</Text>
                 </View>
-                <Text style={s.descText}>{topRoleData.description}</Text>
-                <View style={s.stackChip}>
-                  <Text style={s.stackLabel}>Para explorar</Text>
-                  <Text style={s.stackText}>{topRoleData.stack}</Text>
+
+                {/* Cuerpo */}
+                <View style={s.descBody}>
+                  <Text style={s.descText}>{topRoleData.description}</Text>
+
+                  {/* Pills de recursos */}
+                  <View style={s.descExploreSection}>
+                    <Text
+                      style={[s.descExploreLabel, { color: topRoleData.color }]}
+                    >
+                      ✦ Para explorar
+                    </Text>
+                    <View style={s.descTagsRow}>
+                      {topRoleData.stack.split(" · ").map((item, i) => (
+                        <View
+                          key={i}
+                          style={[
+                            s.descTag,
+                            { backgroundColor: topRoleData.color + "18" },
+                          ]}
+                        >
+                          <Text
+                            style={[
+                              s.descTagText,
+                              { color: topRoleData.color },
+                            ]}
+                          >
+                            {item.trim()}
+                          </Text>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
                 </View>
               </View>
 
@@ -259,29 +292,38 @@ export default function RoleTestScreen() {
                 <Text style={s.ctaArrow}>→</Text>
               </Pressable>
 
-              {/* Roles list */}
-              <View style={s.listSection}>
-                <Text style={s.listLabel}>Las 5 dimensiones</Text>
-                {ROLES.map((role, i) => {
+              {/* Dimensiones grid */}
+              <Text style={s.listLabel}>Las 5 dimensiones</Text>
+              <View style={s.dimGrid}>
+                {ROLES.map((role, idx) => {
                   const cfg = ROLE_ICON[role.key];
-                  const Icon = cfg.Icon;
+                  const isLast = idx === ROLES.length - 1;
                   return (
-                    <View key={role.key}>
-                      <View style={s.roleRow}>
-                        <View style={[s.roleIcon, { backgroundColor: cfg.bg }]}>
-                          <Icon size={17} color={cfg.color} strokeWidth={1.6} />
-                        </View>
-                        <View style={s.roleText}>
-                          <Text style={s.roleName}>{role.label}</Text>
-                          <Text style={s.roleDesc}>
-                            {role.description.slice(0, 72)}…
-                          </Text>
-                        </View>
-                        <View
-                          style={[s.roleDot, { backgroundColor: cfg.color }]}
-                        />
-                      </View>
-                      {i < ROLES.length - 1 && <View style={s.separator} />}
+                    <View
+                      key={role.key}
+                      style={[s.dimCard, isLast && s.dimCardFull]}
+                    >
+                      {/* Fondo */}
+                      <Image
+                        source={DIM_BG[role.key]}
+                        style={StyleSheet.absoluteFill}
+                        contentFit="cover"
+                      />
+                      {/* Overlay con color de la dimensión */}
+                      <View
+                        style={[
+                          StyleSheet.absoluteFill,
+                          { backgroundColor: cfg.bg + "A0" }, // color de fondo con opacidad A0 63%
+                        ]}
+                      />
+
+                      {/* Nombre */}
+                      <Text style={[s.dimName, { color: cfg.color }]}>
+                        {role.label}
+                      </Text>
+
+                      {/* Descripción */}
+                      <Text style={s.dimDesc}>{role.description}</Text>
                     </View>
                   );
                 })}
@@ -428,34 +470,58 @@ const s = StyleSheet.create({
   descCard: {
     backgroundColor: "#fff",
     borderRadius: 20,
-    borderWidth: 1.5,
-    padding: SPACING * 2,
-    gap: SPACING,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.07,
+    shadowRadius: 10,
+    elevation: 3,
   },
-  descHeader: { flexDirection: "row", alignItems: "center", gap: SPACING },
-  descIconBox: {
-    width: 38,
-    height: 38,
-    borderRadius: 11,
+  descHero: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    gap: SPACING * 1.4,
+    paddingHorizontal: SPACING * 2,
+    paddingVertical: SPACING * 2,
   },
-  descTitle: { fontSize: 17, fontWeight: "800", color: TEXT },
-  descText: { fontSize: 13, color: MUTED, lineHeight: 20 },
-  stackChip: {
-    backgroundColor: BG,
-    borderRadius: 12,
-    padding: SPACING * 1.2,
-    gap: 4,
-  },
-  stackLabel: {
+  descEmoji: { fontSize: 42 },
+  descHeroText: { flex: 1 },
+  descHeroLabel: {
     fontSize: 10,
     fontWeight: "700",
-    color: MUTED,
+    color: "rgba(255,255,255,0.7)",
     textTransform: "uppercase",
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
+    marginBottom: 2,
   },
-  stackText: { fontSize: 12, fontWeight: "600", color: TEXT, lineHeight: 18 },
+  descHeroTitle: {
+    fontSize: 24,
+    fontWeight: "900",
+    color: "#fff",
+    letterSpacing: -0.6,
+  },
+  descBody: {
+    padding: SPACING * 2,
+    gap: SPACING * 1.8,
+  },
+  descText: { fontSize: 13.5, color: MUTED, lineHeight: 22 },
+  descExploreSection: { gap: SPACING * 0.8 },
+  descExploreLabel: {
+    fontSize: 11,
+    fontWeight: "800",
+    letterSpacing: 0.4,
+  },
+  descTagsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: SPACING * 0.7,
+  },
+  descTag: {
+    borderRadius: 20,
+    paddingHorizontal: SPACING * 1.2,
+    paddingVertical: SPACING * 0.5,
+  },
+  descTagText: { fontSize: 12, fontWeight: "600" },
 
   retakeBtn: { alignItems: "center", paddingVertical: SPACING },
   retakeText: { fontSize: 13, fontWeight: "600", color: MUTED },
@@ -510,47 +576,55 @@ const s = StyleSheet.create({
   ctaText: { fontSize: 15, fontWeight: "700", color: "#fff" },
   ctaArrow: { fontSize: 18, color: "#fff", fontWeight: "800" },
 
-  listSection: {
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    paddingHorizontal: SPACING * 1.8,
-    paddingTop: SPACING * 1.8,
-    paddingBottom: SPACING,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 2,
-  },
   listLabel: {
     fontSize: 11,
     fontWeight: "700",
     color: MUTED,
     textTransform: "uppercase",
     letterSpacing: 0.9,
-    marginBottom: SPACING * 0.6,
+    marginBottom: SPACING * 0.4,
   },
-  roleRow: {
+
+  /* Dimension grid */
+  dimGrid: {
     flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: SPACING * 1.1,
-    gap: SPACING * 1.2,
+    flexWrap: "wrap",
+    gap: SPACING,
   },
-  roleIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: 11,
+  dimCard: {
+    width: "47.5%",
+    borderRadius: 18,
+    overflow: "hidden",
+    padding: SPACING * 1.5,
+    gap: SPACING,
+  },
+  dimCardFull: {
+    width: "100%",
+  },
+  dimIconCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    flexShrink: 0,
+    alignSelf: "flex-start",
   },
-  roleText: { flex: 1, gap: 2 },
-  roleName: { fontSize: 14, fontWeight: "700", color: TEXT },
-  roleDesc: { fontSize: 11, color: MUTED, lineHeight: 15 },
-  roleDot: { width: 6, height: 6, borderRadius: 3, flexShrink: 0 },
-  separator: {
-    height: 1,
-    backgroundColor: "#F9FAFB",
-    marginLeft: 38 + SPACING * 1.2,
+  dimEmoji: { fontSize: 22 },
+  dimPills: { flexDirection: "row", flexWrap: "wrap", gap: 4 },
+  dimPill: {
+    borderRadius: 20,
+    paddingHorizontal: SPACING * 0.8,
+    paddingVertical: 3,
   },
+  dimPillText: { fontSize: 10, fontWeight: "600" },
+  dimName: { fontSize: 16, fontWeight: "900", letterSpacing: -0.3 },
+  dimDesc: { fontSize: 12, color: "#555", lineHeight: 18, flex: 1 },
+  dimBtn: {
+    borderRadius: 20,
+    paddingVertical: SPACING * 0.7,
+    paddingHorizontal: SPACING * 1.2,
+    alignSelf: "flex-start",
+    marginTop: SPACING * 0.5,
+  },
+  dimBtnText: { fontSize: 12, fontWeight: "700" },
 });

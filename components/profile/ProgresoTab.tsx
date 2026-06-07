@@ -22,7 +22,7 @@ export function ProgresoTab({ progress, topArea }: Props) {
   const archetype = ARCHETYPE[topArea] ?? ARCHETYPE.emociones;
   const areaMeta = AREA_META[topArea];
 
-  const scores = useUserStore((s) => s.diagnostic?.scores ?? {});
+  const scores = useUserStore((s) => s.diagnostic?.scores) ?? {};
   const sortedAreas = Object.entries(scores)
     .filter(([, v]) => v > 0)
     .sort(([, a], [, b]) => b - a)

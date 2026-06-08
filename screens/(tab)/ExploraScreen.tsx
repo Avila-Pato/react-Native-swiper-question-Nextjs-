@@ -1,14 +1,11 @@
 import { SPACING, TAB_ITEM_SIZE } from "@/constants/constants";
 import { BG, MUTED, TEXT } from "@/constants/theme";
+import { HABITS } from "@/data/habitsData";
+import { ABSTRACT_IMAGES, TIPS } from "@/data/tipsData";
+import { useUserStore } from "@/store/useUserStore";
 import { Image } from "expo-image";
 import { useState } from "react";
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -19,75 +16,33 @@ const DARK = "#1A1244";
 const CARD_H = 210;
 const PEEK = 14;
 
-const TIPS = [
-  {
-    title: "Practica la respiración consciente",
-    desc: "Detente 5 minutos al día para respirar con intención. Reduce el estrés y mejora tu enfoque.",
-    label: "Consejo destacado",
-    image: require("@/assets/abstracts/Group-11.png"),
-  },
-];
+const getDailyTip = () => {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
+  return TIPS[dayOfYear % TIPS.length];
+};
 
-const HABITS = [
-  {
-    id: "1",
-    title: "Deja el celular al despertar",
-    duration: "30 días",
-    desc: "Los primeros 30 minutos sin pantalla. Tu mente empieza el día desde la calma, no desde el ruido.",
-    color: "#FEF3C7",
-    accent: "#D97706",
-    image: require("@/assets/pincel/Group-5.svg"),
-  },
-  {
-    id: "2",
-    title: "Di lo que sientes, sin rodeos",
-    duration: "21 días",
-    desc: "Practicar la honestidad emocional fortalece tus vínculos y reduce la ansiedad acumulada.",
-    color: "#EDE9FE",
-    accent: "#7C3AED",
-    image: require("@/assets/pincel/Group.svg"),
-  },
-  {
-    id: "3",
-    title: "Mueve tu cuerpo 20 minutos",
-    duration: "60 días",
-    desc: "Es un gran paso para tu bienestar. Tu cuerpo libera endorfinas y tu mente se despeja con cada sesión.",
-    color: "#E8F4EE",
-    accent: "#4D8B7A",
-    image: require("@/assets/pincel/Group-3.svg"),
-  },
-  {
-    id: "4",
-    title: "Duerme 8 horas cada noche",
-    duration: "14 días",
-    desc: "El sueño repara tu cuerpo y consolida lo que aprendes. Sin él, todo lo demás cuesta el doble.",
-    color: "#E0F2FE",
-    accent: "#0284C7",
-    image: require("@/assets/pincel/Group-4.svg"),
-  },
-  {
-    id: "5",
-    title: "Un límite claro al día",
-    duration: "21 días",
-    desc: "Di no a una cosa que no quieres hacer. Cada límite que pones es un mensaje de respeto hacia ti mismo.",
-    color: "#FCE7F3",
-    accent: "#9D174D",
-    image: require("@/assets/pincel/Group-2.svg"),
-  },
-];
+const dailyTip = getDailyTip();
+// funciona el id con la imagen
+const dailyTipImage =
+  ABSTRACT_IMAGES[(parseInt(dailyTip.id) - 1) % ABSTRACT_IMAGES.length];
 
 export default function ExploraScreen() {
   const { bottom } = useSafeAreaInsets();
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [addedIds, setAddedIds] = useState<string[]>([]);
+  const addedIds = useUserStore((s) => s.habits);
+  const addHabit = useUserStore((s) => s.addHabit);
 
   const next = () => setCurrentIdx((i) => (i + 1) % HABITS.length);
 
-  const stack = [0, 1, 2].map((offset) => HABITS[(currentIdx + offset) % HABITS.length]);
+  const stack = [0, 1, 2].map(
+    (offset) => HABITS[(currentIdx + offset) % HABITS.length],
+  );
   const top = stack[0];
 
   const handleAdd = () => {
-    setAddedIds((prev) => prev.includes(top.id) ? prev : [...prev, top.id]);
+    addHabit(top.id);
     next();
   };
 
@@ -110,12 +65,12 @@ export default function ExploraScreen() {
         {/* ── Featured tip card ── */}
         <View style={s.tipCard}>
           <View style={s.tipLeft}>
-            <Text style={s.tipLabel}>{TIPS[0].label}</Text>
-            <Text style={s.tipTitle}>{TIPS[0].title}</Text>
-            <Text style={s.tipDesc}>{TIPS[0].desc}</Text>
+            <Text style={s.tipLabel}>{dailyTip.label}</Text>
+            <Text style={s.tipTitle}>{dailyTip.title}</Text>
+            <Text style={s.tipDesc}>{dailyTip.desc}</Text>
           </View>
           <Image
-            source={TIPS[0].image}
+            source={dailyTipImage}
             style={s.tipImage}
             contentFit="contain"
           />
@@ -133,7 +88,7 @@ export default function ExploraScreen() {
           <Text style={s.habitsTitle}>{"Nuevos hábitos para ti"}</Text>
           <Text style={s.habitsDesc}>
             {
-              "Agrega estos hábitos a tu rutina diaria. Cada hábito completado suma a tu mapa de bienestar."
+              "Agrega estos hábitos a tu rutina. Al presionar + se guardan en tu perfil para que puedas seguirlos."
             }
           </Text>
         </View>
@@ -202,9 +157,7 @@ export default function ExploraScreen() {
                   ]}
                   onPress={handleSkip}
                 >
-                  <Text
-                    style={[s.habitBtnOutlineTxt, { color: top.accent }]}
-                  >
+                  <Text style={[s.habitBtnOutlineTxt, { color: top.accent }]}>
                     {"›"}
                   </Text>
                 </Pressable>
@@ -222,11 +175,11 @@ export default function ExploraScreen() {
         )}
 
         {/* Contador */}
-        {(
+        {
           <Text style={s.deckCounter}>
             {`${addedIds.length} de ${HABITS.length} hábitos añadidos`}
           </Text>
-        )}
+        }
       </ScrollView>
     </SafeAreaView>
   );

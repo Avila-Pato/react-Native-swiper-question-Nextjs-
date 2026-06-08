@@ -24,12 +24,15 @@ interface UserState {
   onboarding: OnboardingData | null;
   assessment: AssessmentData | null;
   diagnostic: DiagnosticResult | null;
+  habits: string[];
 
   setUser: (user: GoogleUser | null) => void;
   saveOnboarding: (data: OnboardingData) => void;
   saveAssessment: (scores: RoleScores) => void;
   resetAssessment: () => void;
   saveDiagnostic: (result: Omit<DiagnosticResult, "completed" | "completedAt">) => void;
+  addHabit: (id: string) => void;
+  removeHabit: (id: string) => void;
   clearAll: () => void;
 
   // ── NUEVOS SELECTORES COMPUTADOS ──
@@ -44,6 +47,7 @@ export const useUserStore = create<UserState>()(
       onboarding: null,
       assessment: null,
       diagnostic: null,
+      habits: [],
 
       setUser: (user) => set({ user }),
       saveOnboarding: (data) => set({ onboarding: data }),
@@ -51,6 +55,8 @@ export const useUserStore = create<UserState>()(
         assessment: { completed: true, scores, completedAt: new Date().toISOString() }
       }),
       resetAssessment: () => set({ assessment: null }),
+      addHabit: (id) => set((s) => ({ habits: s.habits.includes(id) ? s.habits : [...s.habits, id] })),
+      removeHabit: (id) => set((s) => ({ habits: s.habits.filter((h) => h !== id) })),
       saveDiagnostic: (result) => set({
         diagnostic: { ...result, completed: true, completedAt: new Date().toISOString() }
       }),

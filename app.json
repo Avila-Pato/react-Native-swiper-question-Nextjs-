@@ -35,7 +35,10 @@
               "scheme": "com.googleusercontent.apps.628930804546-tpdfke5egrhrlfurvsbg2sq3l4obcfti"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -57,7 +60,8 @@
           }
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true,

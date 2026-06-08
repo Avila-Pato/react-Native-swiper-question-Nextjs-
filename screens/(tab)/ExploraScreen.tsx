@@ -16,11 +16,12 @@ const DARK = "#1A1244";
 const CARD_H = 210;
 const PEEK = 14;
 
+// funcion para obtener el tip del dia basado en el dia del año
 const getDailyTip = () => {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), 0, 0);
-  const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000);
-  return TIPS[dayOfYear % TIPS.length];
+  const now = new Date(); // Obtiene la fecha y hora actual
+  const start = new Date(now.getFullYear(), 0, 0); // Crea una fecha para el inicio del año (1 de enero)
+  const dayOfYear = Math.floor((now.getTime() - start.getTime()) / 86_400_000); // Calcula el día del año (0-365)
+  return TIPS[dayOfYear % TIPS.length]; // Devuelve el tip correspondiente
 };
 
 const dailyTip = getDailyTip();
@@ -30,14 +31,17 @@ const dailyTipImage =
 
 export default function ExploraScreen() {
   const { bottom } = useSafeAreaInsets();
+  const [shuffled] = useState(() =>
+    [...HABITS].sort(() => Math.random() - 0.5),
+  );
   const [currentIdx, setCurrentIdx] = useState(0);
   const addedIds = useUserStore((s) => s.habits);
   const addHabit = useUserStore((s) => s.addHabit);
 
-  const next = () => setCurrentIdx((i) => (i + 1) % HABITS.length);
+  const next = () => setCurrentIdx((i) => (i + 1) % shuffled.length);
 
   const stack = [0, 1, 2].map(
-    (offset) => HABITS[(currentIdx + offset) % HABITS.length],
+    (offset) => shuffled[(currentIdx + offset) % shuffled.length],
   );
   const top = stack[0];
 
@@ -139,7 +143,7 @@ export default function ExploraScreen() {
                   {top.title}
                 </Text>
                 <Text style={[s.habitDuration, { color: top.accent + "AA" }]}>
-                  {top.duration}
+                  {top.category}
                 </Text>
                 <Text style={s.habitDesc}>{top.desc}</Text>
               </View>

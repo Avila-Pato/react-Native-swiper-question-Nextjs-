@@ -1,26 +1,31 @@
+import { AjustesTab } from "@/components/profile/AjustesTab";
+import {
+  HabitosProfile
+} from "@/components/profile/HabitosProfile";
+import { HumorTab } from "@/components/profile/HumorTab";
+import { ProgresoTab } from "@/components/profile/ProgresoTab";
 import { SPACING, TAB_ITEM_SIZE } from "@/constants/constants";
 import { ARCHETYPE, AREA_META } from "@/constants/diagnosticData";
 import { ACCENT, BG, BORDER, CARD_BG, MUTED, TEXT } from "@/constants/theme";
 import { getAllProgress } from "@/store/challengeProgress";
 import { getMoodHistory, MoodHistory } from "@/store/moodHistory";
 import { useUserStore } from "@/store/useUserStore";
-import { AjustesTab } from "@/components/profile/AjustesTab";
-import { EjerciciosTab } from "@/components/profile/EjerciciosTab";
-import { HumorTab } from "@/components/profile/HumorTab";
-import { ProgresoTab } from "@/components/profile/ProgresoTab";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { SlidersHorizontal, UserPlus } from "lucide-react-native";
 import { useCallback, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 const BAR_HEIGHT = TAB_ITEM_SIZE + SPACING * 1.5;
 
-type Tab = "progreso" | "ejercicios" | "humor" | "ajustes";
+type Tab = "progreso" | "Mis Habitos" | "humor" | "ajustes";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "progreso", label: "PROGRESO" },
-  { id: "ejercicios", label: "EJERCICIOS" },
+  { id: "Mis Habitos", label: "MIS HABITOS" },
   { id: "humor", label: "HUMOR" },
   { id: "ajustes", label: "AJUSTES" },
 ];
@@ -72,35 +77,51 @@ export default function ProfileScreen() {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: BAR_HEIGHT + bottom + SPACING * 2 }}
+        contentContainerStyle={{
+          paddingBottom: BAR_HEIGHT + bottom + SPACING * 2,
+        }}
       >
         <View style={s.profileSection}>
           <View style={[s.avatarRing, { borderColor: archetype.color + "55" }]}>
             <View style={[s.avatar, { backgroundColor: archetype.color }]}>
-              <Text style={s.avatarInitial}>{userNombre.charAt(0).toUpperCase()}</Text>
+              <Text style={s.avatarInitial}>
+                {userNombre.charAt(0).toUpperCase()}
+              </Text>
             </View>
           </View>
           <Text style={s.name}>{userNombre}</Text>
-          <Text style={[s.archetypeType, { color: archetype.color }]}>{archetype.tipo}</Text>
+          <Text style={[s.archetypeType, { color: archetype.color }]}>
+            {archetype.tipo}
+          </Text>
           <Text style={s.archetypeTagline}>{archetype.tagline}</Text>
           {areaMeta && (
             <View style={[s.areaTag, { backgroundColor: areaMeta.bg }]}>
-              <Text style={[s.areaTagText, { color: areaMeta.color }]}>{areaMeta.label}</Text>
+              <Text style={[s.areaTagText, { color: areaMeta.color }]}>
+                {areaMeta.label}
+              </Text>
             </View>
           )}
         </View>
 
         <View style={s.tabBar}>
           {TABS.map((t) => (
-            <Pressable key={t.id} style={s.tabItem} onPress={() => setTab(t.id)}>
-              <Text style={[s.tabLabel, tab === t.id && s.tabLabelActive]}>{t.label}</Text>
+            <Pressable
+              key={t.id}
+              style={s.tabItem}
+              onPress={() => setTab(t.id)}
+            >
+              <Text style={[s.tabLabel, tab === t.id && s.tabLabelActive]}>
+                {t.label}
+              </Text>
               {tab === t.id && <View style={s.tabUnderline} />}
             </Pressable>
           ))}
         </View>
 
-        {tab === "progreso" && <ProgresoTab progress={progress} topArea={topArea} />}
-        {tab === "ejercicios" && <EjerciciosTab progress={progress} />}
+        {tab === "progreso" && (
+          <ProgresoTab progress={progress} topArea={topArea} />
+        )}
+        {tab === "Mis Habitos" && <HabitosProfile progress={progress} />}
         {tab === "humor" && <HumorTab moodHistory={moodHistory} />}
         {tab === "ajustes" && <AjustesTab />}
       </ScrollView>
@@ -126,7 +147,12 @@ const s = StyleSheet.create({
     borderBottomRightRadius: 3,
   },
   headerMutedLine: { flex: 1, backgroundColor: BORDER },
-  headerTitle: { fontSize: 22, fontWeight: "800", color: TEXT, letterSpacing: -0.4 },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: TEXT,
+    letterSpacing: -0.4,
+  },
   headerActions: { flexDirection: "row", gap: SPACING * 0.8 },
   iconBtn: {
     width: 38,
@@ -162,7 +188,12 @@ const s = StyleSheet.create({
   },
   avatarInitial: { fontSize: 32, fontWeight: "800", color: "#fff" },
   name: { fontSize: 22, fontWeight: "800", color: TEXT, letterSpacing: -0.5 },
-  archetypeType: { fontSize: 14, fontWeight: "700", letterSpacing: 0.2, marginTop: 2 },
+  archetypeType: {
+    fontSize: 14,
+    fontWeight: "700",
+    letterSpacing: 0.2,
+    marginTop: 2,
+  },
   archetypeTagline: {
     fontSize: 12,
     color: MUTED,
@@ -186,7 +217,12 @@ const s = StyleSheet.create({
     backgroundColor: "#fff",
   },
   tabItem: { flex: 1, alignItems: "center", paddingVertical: SPACING * 1.2 },
-  tabLabel: { fontSize: 11, fontWeight: "700", color: MUTED, letterSpacing: 0.5 },
+  tabLabel: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: MUTED,
+    letterSpacing: 0.5,
+  },
   tabLabelActive: { color: ACCENT },
   tabUnderline: {
     position: "absolute",

@@ -4,21 +4,24 @@ import HappinessGameAssistant from "@/components/home/ExploreSection/happiness";
 import PurposeCompassAssistant from "@/components/home/ExploreSection/purposecompass";
 import SelfEsteemMirrorAssistant from "@/components/home/ExploreSection/selfesteemmirror";
 import VinculosDelHilo from "@/components/home/ExploreSection/vinculos";
-import ReflectionModal from "@/components/home/reflection";
+import { RecorderModal } from "@/components/home/RecorderModal";
+import { RewardCard } from "@/components/home/RewardCard";
 import { SPACING } from "@/constants/constants";
 import { ACCENT, BG, BORDER, MUTED, TEXT } from "@/constants/theme";
 import { MOODS } from "@/data/moods";
 import { WEEKLY_CHALLENGES } from "@/data/weeklyData";
 import { getMoodHistory, saveMood, todayString } from "@/store/moodHistory";
+import { useJournalRecorder } from "@/hooks/useJournalRecorder";
 import { getUserName, saveUserName } from "@/store/userProfile";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import {
-  ArrowUpRight,
   Bell,
   Check,
   ChevronRight,
+  Mic,
+  Square,
   Zap,
 } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
@@ -169,8 +172,27 @@ export default function HomeScreen() {
       if (idx !== undefined) setSelectedMood(idx);
     });
   }, []);
-  const [reflection, setReflection] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
+  const { reset: resetRecorder, currentStep } = useJournalRecorder();
+  const [recorderVisible, setRecorderVisible] = useState(false);
+
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (currentStep === "recording") {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, { toValue: 1.18, duration: 700, useNativeDriver: true }),
+          Animated.timing(pulseAnim, { toValue: 1, duration: 700, useNativeDriver: true }),
+        ]),
+      ).start();
+    } else {
+      pulseAnim.stopAnimation();
+      pulseAnim.setValue(1);
+    }
+  // pulseAnim es un ref estable, no necesita ser dependencia
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep]);
+
   const [breathingVisible, setBreathingVisible] = useState(false);
   const [dearManVisible, setDearManVisible] = useState(false);
   const [happinessVisible, setHappinessVisible] = useState(false);
@@ -320,23 +342,22 @@ export default function HomeScreen() {
             {" hoy?"}
           </Text>
 
-          {/* Input de reflexión → abre modal */}
+          {/* Micrófono */}
           <Pressable
-            style={s.reflectionCard}
-            onPress={() => setModalVisible(true)}
+            style={s.micCard}
+            onPress={() => setRecorderVisible(true)}
+            disabled={currentStep === "analyzing"}
           >
-            <Text
-              style={[
-                s.reflectionInput,
-                !reflection && s.reflectionPlaceholder,
-              ]}
-              numberOfLines={1}
-            >
-              {reflection || "Tu reflexión de hoy..."}
+            <Text style={s.micLabel}>
+              {currentStep === "idle" && "Habla sobre tu día"}
+              {currentStep === "recording" && "Escuchando... toca para terminar"}
+              {currentStep === "analyzing" && "Analizando tu voz..."}
             </Text>
-            <View style={s.reflectionBtn}>
-              <ArrowUpRight size={18} color={"#fff"} strokeWidth={2.5} />
-            </View>
+            <Animated.View style={[s.micBtn, { transform: [{ scale: pulseAnim }] }]}>
+              {currentStep === "recording"
+                ? <Square size={16} color="#fff" fill="#fff" strokeWidth={0} />
+                : <Mic size={18} color="#fff" strokeWidth={2.5} />}
+            </Animated.View>
           </Pressable>
 
           {/* Registro de humor */}
@@ -578,14 +599,8 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
 
-      <ReflectionModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSave={(text) => {
-          setReflection(text);
-          setModalVisible(false);
-        }}
-      />
+      <RecorderModal visible={recorderVisible} onClose={() => setRecorderVisible(false)} />
+      <RewardCard visible={currentStep === "reward"} onClose={resetRecorder} />
       <BreathingScreen
         visible={breathingVisible}
         onClose={() => setBreathingVisible(false)}
@@ -672,8 +687,8 @@ const s = StyleSheet.create({
     color: "#1A1244",
   },
 
-  /* Reflection input */
-  reflectionCard: {
+  /* Micrófono */
+  micCard: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "rgba(255,255,255,0.55)",
@@ -685,17 +700,13 @@ const s = StyleSheet.create({
     marginBottom: SPACING * 2.5,
     gap: 8,
   },
-  reflectionInput: {
+  micLabel: {
     flex: 1,
     fontSize: 14,
     fontFamily: "Poppins-Regular",
-    color: "#2D1F60",
+    color: "rgba(45,31,96,0.55)",
   },
-  reflectionPlaceholder: {
-    color: "rgba(45,31,96,0.38)",
-    maxHeight: 72,
-  },
-  reflectionBtn: {
+  micBtn: {
     width: 36,
     height: 36,
     borderRadius: 18,

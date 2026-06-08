@@ -1,35 +1,47 @@
 import { SPACING } from "@/constants/constants";
-import { ACCENT, BORDER, MUTED, TEXT } from "@/constants/theme";
+import { BORDER, MUTED, TEXT } from "@/constants/theme";
 import { HABITS } from "@/data/habitsData";
-import { WEEKLY_CHALLENGES } from "@/data/weeklyData";
 import { useUserStore } from "@/store/useUserStore";
 import { Image } from "expo-image";
-import { router } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { CircleProgress } from "./CircleProgress";
 
 type Props = {
   progress: Record<string, number>;
 };
 
-export function EjerciciosTab({ progress }: Props) {
+export function HabitosProfile({ progress }: Props) {
   const habitIds = useUserStore((s) => s.habits);
   const removeHabit = useUserStore((s) => s.removeHabit);
+
+  // Agrupar habitos por categoría
   const myHabits = HABITS.filter((h) => habitIds.includes(h.id));
+  const byCategory = myHabits.reduce<Record<string, typeof myHabits>>(
+    (acc, h) => {
+      (acc[h.category] ??= []).push(h);
+      return acc;
+    },
+    {},
+  );
+  const categories = Object.keys(byCategory).sort();
 
   return (
     <View style={s.tabContent}>
-
-      {/* ── Mis hábitos ── */}
-      {myHabits.length > 0 && (
-        <View style={s.section}>
-          <Text style={s.sectionLabel}>{"Mis hábitos"}</Text>
-          {myHabits.map((h) => (
-            <View key={h.id} style={[s.habitRow, { borderLeftColor: h.accent }]}>
+      {categories.length === 0 && (
+        <Text style={s.empty}>{"Aún no has añadido hábitos."}</Text>
+      )}
+      {categories.map((cat) => (
+        <View key={cat} style={s.section}>
+          <Text style={s.sectionLabel}>{cat}</Text>
+          {byCategory[cat].map((h) => (
+            <View
+              key={h.id}
+              style={[s.habitRow, { borderLeftColor: h.accent }]}
+            >
               <Image source={h.image} style={s.habitImg} contentFit="contain" />
               <View style={s.habitInfo}>
-                <Text style={[s.habitTitle, { color: h.accent }]}>{h.title}</Text>
-                <Text style={s.habitDuration}>{h.duration}</Text>
+                <Text style={[s.habitTitle, { color: h.accent }]}>
+                  {h.title}
+                </Text>
               </View>
               <Pressable
                 style={s.removeBtn}
@@ -41,48 +53,7 @@ export function EjerciciosTab({ progress }: Props) {
             </View>
           ))}
         </View>
-      )}
-
-      {/* ── Retos semanales ── */}
-      <View style={s.section}>
-        <Text style={s.sectionLabel}>{"Retos semanales"}</Text>
-        {WEEKLY_CHALLENGES.map((c) => {
-          const done = progress[c.id] ?? 0;
-          const total = c.questions.length;
-          const pct = Math.round((done / total) * 100);
-          const isComplete = done >= total;
-
-          return (
-            <Pressable
-              key={c.id}
-              style={({ pressed }) => [s.exerciseRow, pressed && { opacity: 0.75 }]}
-              onPress={() =>
-                router.push({ pathname: "/challenge-detail", params: { id: c.id } })
-              }
-            >
-              <View style={s.exerciseLeft}>
-                <View style={s.exerciseInfo}>
-                  <Text style={s.exerciseTitle}>{c.title}</Text>
-                  <Text style={[s.exerciseDiff, { color: isComplete ? ACCENT : MUTED }]}>
-                    {isComplete ? "Completado ✓" : "En progreso"}
-                  </Text>
-                </View>
-              </View>
-              <View style={s.exerciseCircle}>
-                <CircleProgress
-                  pct={pct}
-                  color={isComplete ? ACCENT : c.color}
-                  size={46}
-                  strokeWidth={5}
-                />
-                <View style={s.exerciseCircleInner}>
-                  <Text style={s.exerciseCirclePct}>{pct}%</Text>
-                </View>
-              </View>
-            </Pressable>
-          );
-        })}
-      </View>
+      ))}
     </View>
   );
 }
@@ -116,6 +87,12 @@ const s = StyleSheet.create({
   habitInfo: { flex: 1, gap: 2 },
   habitTitle: { fontSize: 14, fontWeight: "700" },
   habitDuration: { fontSize: 12, color: MUTED, fontWeight: "500" },
+  empty: {
+    fontSize: 13,
+    color: MUTED,
+    textAlign: "center",
+    marginTop: SPACING * 3,
+  },
   removeBtn: {
     width: 28,
     height: 28,

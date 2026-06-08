@@ -43,9 +43,9 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="comunidad"
+        name="explora"
         options={{
-          title: "Comunidad",
+          title: "Explora",
           tabBarIcon: ({ color }) => <Users size={24} color={color} />,
         }}
       />

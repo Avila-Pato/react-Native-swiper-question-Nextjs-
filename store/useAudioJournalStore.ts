@@ -5,7 +5,7 @@ export type { CartaRecompensa, CategoriaDetectada, JournalResult, TagBienestar, 
 
 export type JournalStep = "idle" | "recording" | "analyzing" | "reward";
 
-export const BACKEND_URL = "http://0.0.0.0:8000"; // cambia por tu IP local
+export const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL ?? "http://localhost:8000";
 
 interface AudioJournalState {
   currentStep: JournalStep;
@@ -55,12 +55,10 @@ const TODAS_CATEGORIAS: CategoriaDetectada[] = [
 ];
 
 export function buildResultFromText(transcripcion: string): JournalResult {
-  // Si hay texto, clasifica por palabras clave
   if (transcripcion.trim().length > 0) {
     const categoria = classifyText(transcripcion);
     return { categoria_detectada: categoria, carta_recompensa: CARTAS[categoria] };
   }
-  // Sin texto (backend caído y sin transcripción), devuelve carta aleatoria
   const categoria = TODAS_CATEGORIAS[Math.floor(Math.random() * TODAS_CATEGORIAS.length)];
   return { categoria_detectada: categoria, carta_recompensa: CARTAS[categoria] };
 }

@@ -1,6 +1,6 @@
-import { RadarChart as RadarChartFull } from "@/components/roleTest/RadarChart";
+import { DiagnosticRadarChart as RadarChartSimple } from "@/components/charts/DiagnosticRadarChart";
+import { RoleRadarChart as RadarChartFull } from "@/components/charts/RoleRadarChart";
 import { RoleBarChart } from "@/components/roleTest/RoleBarChart";
-import { RadarChart as RadarChartSimple } from "@/components/ui/RadarChart";
 import { SPACING, TAB_ITEM_SIZE } from "@/constants/constants";
 import { BG, MUTED, TEXT } from "@/constants/theme";
 import { ROLES } from "@/data/roleTestData";
@@ -249,7 +249,6 @@ export default function RoleTestScreen() {
                     labels={ROLE_KEYS.map((k) => RADAR_LABELS_SHORT[k])}
                     colors={RADAR_COLORS}
                     values={simpleRadarValues}
-                    color={ACCENT}
                     size={260}
                   />
                 </View>

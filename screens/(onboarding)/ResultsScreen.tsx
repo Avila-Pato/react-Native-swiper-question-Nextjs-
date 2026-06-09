@@ -2,10 +2,8 @@ import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
 import { useUserStore } from "@/store/useUserStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import {
-  Animated,
-  Easing,
   ScrollView,
   StyleSheet,
   Text,
@@ -21,94 +19,8 @@ import Animated2, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-// ── Imports Centralizados ────────────────────────────────────
+import { AreaBarChart } from "@/components/charts/AreaBarChart";
 import { ARCHETYPE, AREA_META } from "@/constants/diagnosticData";
-
-// ── Bar column ───────────────────────────────────────────────
-
-const BAR_MAX_H = 100;
-const GRID_FRACS = [0, 0.33, 0.66, 1];
-
-function BarColumn({
-  area,
-  score,
-  maxScore,
-  delay,
-  isTop,
-}: {
-  area: string;
-  score: number;
-  maxScore: number;
-  delay: number;
-  isTop: boolean;
-}) {
-  const meta = AREA_META[area];
-  const targetH = maxScore > 0 ? (score / maxScore) * BAR_MAX_H : 0;
-  const heightAnim = useRef(new Animated.Value(0)).current;
-  const scoreOp = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.sequence([
-      Animated.delay(delay),
-      Animated.parallel([
-        Animated.timing(heightAnim, {
-          toValue: targetH,
-          duration: 650,
-          easing: Easing.out(Easing.back(1.3)),
-          useNativeDriver: false,
-        }),
-        Animated.timing(scoreOp, {
-          toValue: 1,
-          duration: 350,
-          delay: 280,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: false,
-        }),
-      ]),
-    ]).start();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (!meta) return null;
-
-  return (
-    <View style={bc.col}>
-      <Animated.Text
-        style={[bc.scoreVal, { color: meta.color, opacity: scoreOp }]}
-      >
-        {score}
-      </Animated.Text>
-      <View style={bc.track}>
-        <Animated.View
-          style={[
-            bc.fill,
-            {
-              height: heightAnim,
-              backgroundColor: meta.color,
-              shadowColor: meta.color,
-              shadowOpacity: isTop ? 0.4 : 0.15,
-              shadowOffset: { width: 0, height: -2 },
-              shadowRadius: isTop ? 8 : 3,
-              elevation: isTop ? 5 : 2,
-            },
-          ]}
-        />
-      </View>
-      <Text
-        style={[
-          bc.label,
-          {
-            color: isTop ? meta.color : "rgba(28,27,41,0.38)",
-            fontWeight: isTop ? "700" : "500",
-          },
-        ]}
-        numberOfLines={1}
-      >
-        {meta.short}
-      </Text>
-    </View>
-  );
-}
 
 // ── Screen ───────────────────────────────────────────────────
 
@@ -127,7 +39,6 @@ export default function ResultsScreen() {
     .filter(([, v]) => v > 0)
     .sort(([, a], [, b]) => b - a);
 
-  const maxScore = sortedAreas[0]?.[1] ?? 1;
   const topArea = sortedAreas[0]?.[0] ?? "emociones";
   const archetype = ARCHETYPE[topArea] ?? ARCHETYPE.emociones;
 
@@ -316,30 +227,7 @@ export default function ResultsScreen() {
         {sortedAreas.length > 0 && (
           <Animated2.View style={[s.chartCard, chartStyle]}>
             <Text style={s.chartTitle}>Intensidad por área</Text>
-            <View style={s.chartArea}>
-              {/* Grid lines */}
-              <View style={s.gridLines} pointerEvents="none">
-                {GRID_FRACS.map((frac) => (
-                  <View
-                    key={frac}
-                    style={[s.gridLine, { bottom: frac * BAR_MAX_H }]}
-                  />
-                ))}
-              </View>
-              {/* Bars */}
-              <View style={s.barsRow}>
-                {sortedAreas.map(([area, score], i) => (
-                  <BarColumn
-                    key={area}
-                    area={area}
-                    score={score}
-                    maxScore={maxScore}
-                    delay={i * 80}
-                    isTop={i === 0}
-                  />
-                ))}
-              </View>
-            </View>
+            <AreaBarChart areas={sortedAreas} />
           </Animated2.View>
         )}
       </ScrollView>
@@ -361,21 +249,6 @@ export default function ResultsScreen() {
 }
 
 // ── Styles ───────────────────────────────────────────────────
-
-const bc = StyleSheet.create({
-  col: { flex: 1, alignItems: "center", gap: 5 },
-  scoreVal: { fontSize: 12, fontWeight: "800", letterSpacing: -0.3 },
-  track: {
-    width: "58%",
-    height: BAR_MAX_H,
-    borderRadius: 8,
-    backgroundColor: "rgba(137,128,184,0.09)",
-    justifyContent: "flex-end",
-    overflow: "visible",
-  },
-  fill: { borderRadius: 8, width: "100%" },
-  label: { fontSize: 9.5, textAlign: "center" },
-});
 
 const s = StyleSheet.create({
   root: { flex: 1, backgroundColor: "#FAF8F5" },
@@ -520,30 +393,6 @@ const s = StyleSheet.create({
     color: "rgba(28,27,41,0.35)",
     letterSpacing: 0.8,
     textTransform: "uppercase",
-  },
-  chartArea: {
-    height: BAR_MAX_H + 30,
-    position: "relative",
-    justifyContent: "flex-end",
-  },
-  gridLines: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 24,
-    height: BAR_MAX_H,
-  },
-  gridLine: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    height: 1,
-    backgroundColor: "rgba(137,128,184,0.09)",
-  },
-  barsRow: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    height: BAR_MAX_H + 30,
   },
 
   // Button

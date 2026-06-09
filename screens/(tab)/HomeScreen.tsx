@@ -4,6 +4,7 @@ import HappinessGameAssistant from "@/components/home/ExploreSection/happiness";
 import PurposeCompassAssistant from "@/components/home/ExploreSection/purposecompass";
 import SelfEsteemMirrorAssistant from "@/components/home/ExploreSection/selfesteemmirror";
 import VinculosDelHilo from "@/components/home/ExploreSection/vinculos";
+import { AnalyzingCard } from "@/components/home/AnalyzingCard";
 import { RecorderModal } from "@/components/home/RecorderModal";
 import { RewardCard } from "@/components/home/RewardCard";
 import { SPACING } from "@/constants/constants";
@@ -166,13 +167,25 @@ export default function HomeScreen() {
   const [userName, setUserName] = useState("...");
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
 
+  const { reset: resetRecorder, currentStep } = useJournalRecorder();
+
+  // Carga inicial
   useEffect(() => {
     getMoodHistory().then((h) => {
       const idx = h[todayString()];
       if (idx !== undefined) setSelectedMood(idx);
     });
   }, []);
-  const { reset: resetRecorder, currentStep } = useJournalRecorder();
+
+  // Recarga solo cuando el flujo termina (idle) — saveMood ya escribió en AsyncStorage
+  useEffect(() => {
+    if (currentStep === "idle") {
+      getMoodHistory().then((h) => {
+        const idx = h[todayString()];
+        if (idx !== undefined) setSelectedMood(idx);
+      });
+    }
+  }, [currentStep]);
   const [recorderVisible, setRecorderVisible] = useState(false);
 
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -600,6 +613,7 @@ export default function HomeScreen() {
       </ScrollView>
 
       <RecorderModal visible={recorderVisible} onClose={() => setRecorderVisible(false)} />
+      <AnalyzingCard visible={currentStep === "analyzing"} />
       <RewardCard visible={currentStep === "reward"} onClose={resetRecorder} />
       <BreathingScreen
         visible={breathingVisible}

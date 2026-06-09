@@ -31,19 +31,32 @@ export const useAudioJournalStore = create<AudioJournalState>()((set) => ({
   reset: () => set({ currentStep: "idle", result: null, error: null }),
 }));
 
-// ── Clasificación por palabras clave (fallback si no hay backend) ──────────
+// ── Clasificación por palabras clave ──────────────────────────────────────
 
-export function classifyText(text: string): CategoriaDetectada {
+export function classifyText(text: string): CategoriaDetectada | null {
   const t = text.toLowerCase();
-  if (/cansad|agotad|sin energ|desmotiv|floj|no tengo ganas|sueño|dormir/.test(t))
-    return "CANSANCIO_APATIA";
-  if (/ansiedad|estr[eé]s|presi[oó]n|agobiad|nervios|agitad|abrumad|mil cosas|no alcanzo/.test(t))
+
+  // Enojado / Estresado — \b evita coincidencias dentro de otras palabras
+  if (/\bansiedad\b|\bansiosa|\bansiosos|\bestres|\bestresad|\bpresionad|\bfurioso|\bfuriosa|\benojad|\benfadad|\brabiosa|\brabioso|\bcolapso|\bdesesperado|\bme ahogo|\bno aguanto|\bno puedo mas\b/.test(t))
     return "ESTRES_ANSIEDAD";
-  if (/triste|tristeza|llor|sol[oa]|perdid|nostalgia|extra[ñn]|duelo|vac[ií]o/.test(t))
+
+  // Triste
+  if (/\btriste|\btristeza|\blloro\b|\bllorando|\bsolo\b|\bsola\b|\bsoledad|\bvac[ií]o|\bvac[ií]a|\bdeprimid|\bnostalgia|\bduelo|\bextra[ñn]o|\bextra[ñn]a|\bme siento mal\b|\bp[eé]simo|\bhorrible|\bme duele|\bme siento perdido/.test(t))
     return "TRISTEZA_MELANCOLIA";
-  if (/confundid|no s[eé]|dud|incertidumbre|qu[eé] hago|indecis|no entiendo/.test(t))
-    return "CONFUSION_INCERTIDUMBRE";
-  return "ALEGRIA_MOTIVACION";
+
+  // Cansado / Sin energía
+  if (/\bcansado|\bcansada|\bagotado|\bagotada|\bsin energ|\bdesmotivad|\bno tengo ganas|\bno me dan ganas|\bpereza|\bme da pereza|\bsin fuerzas|\bsin ganas|\bapagado|\bapagada|\bme cuesta|\bmucho sue[ñn]o|\bno me levanto/.test(t))
+    return "CANSANCIO_APATIA";
+
+  // Genial / Muy bien — va ANTES que CALMA para capturar "muy bien"
+  if (/\bgenial\b|\bfeliz\b|\balegre\b|\balegr[íi]a\b|\bcontento|\bcontenta|\bmotivado|\bmotivada|\bemocionado|\bemocionada|\bexcelente\b|\bmaravilloso|\bmaravillosa|\bfant[aá]stico|\bincre[íi]ble|\bmuy bien\b|\bsuper bien\b|\bde maravilla|\bcon ganas|\banimado|\banimada|\bfelicidad|\bde buen humor/.test(t))
+    return "ALEGRIA_MOTIVACION";
+
+  // Bien / Tranquilo (mood 3)
+  if (/\bbien\b|\bestoy bien|\bme siento bien|\bnormal\b|\bregular\b|\btranquilo|\btranquila|\bestable\b|\bcalmado|\bcalmada|\bsereno|\bserena|\brelajado|\brelajada|\bm[aá]s o menos|\bequilibrado|\bpaz\b|\btodo bien|\bok\b|\bokay\b|\bnada mal/.test(t))
+    return "CALMA_BIENESTAR";
+
+  return null;
 }
 
 const TODAS_CATEGORIAS: CategoriaDetectada[] = [
@@ -51,18 +64,16 @@ const TODAS_CATEGORIAS: CategoriaDetectada[] = [
   "CANSANCIO_APATIA",
   "ALEGRIA_MOTIVACION",
   "TRISTEZA_MELANCOLIA",
-  "CONFUSION_INCERTIDUMBRE",
+  "CALMA_BIENESTAR",
 ];
 
 export function buildResultFromText(transcripcion: string): JournalResult {
-  if (transcripcion.trim().length > 0) {
-    const categoria = classifyText(transcripcion);
-    return { categoria_detectada: categoria, carta_recompensa: CARTAS[categoria] };
-  }
-  const categoria = TODAS_CATEGORIAS[Math.floor(Math.random() * TODAS_CATEGORIAS.length)];
-  return { categoria_detectada: categoria, carta_recompensa: CARTAS[categoria] };
+  const categoria: CategoriaDetectada =
+    classifyText(transcripcion) ??
+    TODAS_CATEGORIAS[Math.floor(Math.random() * TODAS_CATEGORIAS.length)];
+  return { categoria_detectada: categoria, carta_recompensa: CARTAS[categoria], texto_hablado: transcripcion || undefined };
 }
 
-export function buildResultFromCategoria(categoria: CategoriaDetectada): JournalResult {
-  return { categoria_detectada: categoria, carta_recompensa: CARTAS[categoria] };
+export function buildResultFromCategoria(categoria: CategoriaDetectada, texto?: string): JournalResult {
+  return { categoria_detectada: categoria, carta_recompensa: CARTAS[categoria], texto_hablado: texto || undefined };
 }

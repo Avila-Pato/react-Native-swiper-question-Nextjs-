@@ -31,10 +31,10 @@ const { width: W } = Dimensions.get("window");
 
 // Mapeo de categoría detectada → índice en MOODS (Difícil→0 … Genial→4)
 const CATEGORIA_MOOD: Record<CategoriaDetectada, number> = {
-  ESTRES_ANSIEDAD:         0, // Difícil
-  TRISTEZA_MELANCOLIA:     1, // Bajo
+  ESTRES_ANSIEDAD:         0, // Enojado
+  TRISTEZA_MELANCOLIA:     1, // Triste
   CANSANCIO_APATIA:        2, // Neutro
-  CONFUSION_INCERTIDUMBRE: 2, // Neutro
+  CALMA_BIENESTAR: 3, // Bien
   ALEGRIA_MOTIVACION:      4, // Genial
 };
 
@@ -84,7 +84,7 @@ function createSpeechRec(): SpeechRec | null {
 
 // ── Backend ────────────────────────────────────────────────────────────────
 
-async function sendAudio(uri: string): Promise<string> {
+async function sendAudio(uri: string): Promise<{ categoria: string; transcripcion: string }> {
   const fd = new FormData();
   if (Platform.OS === "web") {
     const blob = await (await fetch(uri)).blob();
@@ -94,7 +94,8 @@ async function sendAudio(uri: string): Promise<string> {
   }
   const res = await fetch(`${BACKEND_URL}/audio/analyze`, { method: "POST", body: fd });
   if (!res.ok) throw new Error(`${res.status}`);
-  return (await res.json()).categoria as string;
+  const json = await res.json();
+  return { categoria: json.categoria as string, transcripcion: (json.transcripcion as string) ?? "" };
 }
 
 // ── Component ──────────────────────────────────────────────────────────────
@@ -109,10 +110,13 @@ export function RecorderModal({ visible, onClose }: Props) {
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [detectedMood, setDetectedMood] = useState<CategoriaDetectada | null>(null);
+  // Ref para capturar el transcript sin depender del closure (se limpia antes del catch)
+  const transcriptRef = useRef("");
 
   useEffect(() => {
+    transcriptRef.current = transcript;
     if (transcript.trim().length > 3) {
-      setDetectedMood(classifyText(transcript));
+      setDetectedMood(classifyText(transcript) ?? null);
     } else {
       setDetectedMood(null);
     }
@@ -126,11 +130,14 @@ export function RecorderModal({ visible, onClose }: Props) {
 
   const startRecording = async () => {
     try {
+      console.log("[Recorder] startRecording — platform:", Platform.OS);
       if (Platform.OS !== "web") {
         const { granted } = await AudioModule.requestRecordingPermissionsAsync();
+        console.log("[Recorder] permiso micrófono:", granted);
         if (!granted) { setError("Permiso denegado"); onClose(); return; }
         await recorder.prepareToRecordAsync();
         recorder.record();
+        console.log("[Recorder] grabando...");
       } else {
         const rec = createSpeechRec();
         if (rec) {
@@ -153,24 +160,38 @@ export function RecorderModal({ visible, onClose }: Props) {
   };
 
   const stopRecording = async () => {
+    // Capturar antes de cualquier setState que pueda limpiar el transcript
+    const savedTranscript = transcriptRef.current;
+
     setIsRecording(false);
     recRef.current?.stop();
     recRef.current = null;
+
+    if (Platform.OS === "web") {
+      onClose();
+      setResult(buildResultFromText(savedTranscript));
+      return;
+    }
+
+    try { await recorder.stop(); } catch { /* ya estaba detenido */ }
+    const uri = recorder.uri;
     onClose();
     setAnalyzing();
 
     try {
-      if (Platform.OS === "web") {
-        setResult(buildResultFromText(transcript));
-        return;
-      }
-      await recorder.stop();
-      const uri = recorder.uri;
       if (!uri) throw new Error("Sin URI");
-      const cat = await sendAudio(uri);
-      setResult(buildResultFromCategoria(cat as any));
+      const timeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("timeout")), 20000)
+      );
+      const { categoria, transcripcion: tx } = await Promise.race([sendAudio(uri), timeout]);
+      setResult(buildResultFromCategoria(categoria as any, tx));
     } catch {
-      setResult(buildResultFromText(transcript));
+      // savedTranscript vacío en native → Neutro es más seguro que mood aleatorio
+      if (savedTranscript.trim().length > 2) {
+        setResult(buildResultFromText(savedTranscript));
+      } else {
+        setResult(buildResultFromCategoria("CANSANCIO_APATIA"));
+      }
     }
   };
 

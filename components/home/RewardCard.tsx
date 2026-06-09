@@ -8,7 +8,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { Activity, Feather, Headphones, Sparkles, X } from "lucide-react-native";
 import { useEffect } from "react";
-import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Modal, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -20,10 +20,10 @@ import Animated, {
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 const CATEGORIA_MOOD: Record<CategoriaDetectada, number> = {
-  ESTRES_ANSIEDAD:         0, // Difícil
-  TRISTEZA_MELANCOLIA:     1, // Bajo
+  ESTRES_ANSIEDAD:         0, // Enojado
+  TRISTEZA_MELANCOLIA:     1, // Triste
   CANSANCIO_APATIA:        2, // Neutro
-  CONFUSION_INCERTIDUMBRE: 2, // Neutro
+  CALMA_BIENESTAR: 3, // Bien
   ALEGRIA_MOTIVACION:      4, // Genial
 };
 
@@ -32,7 +32,7 @@ const CONSEJO: Record<CategoriaDetectada, string> = {
   CANSANCIO_APATIA:        "Date permiso de ir despacio — tu energía no es una deuda pendiente.",
   ALEGRIA_MOTIVACION:      "Este es tu momento. Úsalo para lo que más te importa hoy.",
   TRISTEZA_MELANCOLIA:     "Sentir es válido. No necesitas arreglarlo ni apresurarlo.",
-  CONFUSION_INCERTIDUMBRE: "Un paso pequeño en cualquier dirección ya es claridad.",
+  CALMA_BIENESTAR: "Un paso pequeño en cualquier dirección ya es claridad.",
 };
 
 const CATEGORIA_LABEL: Record<CategoriaDetectada, string> = {
@@ -40,7 +40,7 @@ const CATEGORIA_LABEL: Record<CategoriaDetectada, string> = {
   CANSANCIO_APATIA:        "Recarga",
   ALEGRIA_MOTIVACION:      "Enfoque",
   TRISTEZA_MELANCOLIA:     "Calma",
-  CONFUSION_INCERTIDUMBRE: "Claridad",
+  CALMA_BIENESTAR: "Claridad",
 };
 
 function ContentIcon({ tipo, color }: { tipo: CartaRecompensa["tipo_contenido"]; color: string }) {
@@ -67,8 +67,13 @@ export function RewardCard({ visible, onClose }: Props) {
 
   useEffect(() => {
     if (visible && result) {
-      overlayOpacity.value = withTiming(1, { duration: 300 });
-      flipProgress.value = withDelay(200, withTiming(1, { duration: 550 }));
+      if (Platform.OS === "web") {
+        overlayOpacity.value = 1;
+        flipProgress.value = 1;
+      } else {
+        overlayOpacity.value = withTiming(1, { duration: 300 });
+        flipProgress.value = withDelay(200, withTiming(1, { duration: 550 }));
+      }
       saveMood(todayString(), CATEGORIA_MOOD[result.categoria_detectada] ?? 2);
     } else {
       overlayOpacity.value = 0;
@@ -89,7 +94,7 @@ export function RewardCard({ visible, onClose }: Props) {
 
   if (!result) return null;
 
-  const { carta_recompensa, categoria_detectada } = result;
+  const { carta_recompensa, categoria_detectada, texto_hablado } = result;
   const { tag_bienestar, titulo, subtitulo, tipo_contenido, duracion_estimada, color_sugerido_hex } = carta_recompensa;
 
   const categoryLabel = CATEGORIA_LABEL[categoria_detectada] ?? "Bienestar";
@@ -151,6 +156,13 @@ export function RewardCard({ visible, onClose }: Props) {
             </View>
             <Text style={s.tipoText}>{tipoLabel}</Text>
           </View>
+
+          {/* Lo que dijiste */}
+          {!!texto_hablado && (
+            <View style={s.transcriptSection}>
+              <Text style={s.transcriptQuote}>{"“"}{texto_hablado}{"”"}</Text>
+            </View>
+          )}
 
           {/* Consejo */}
           <View style={s.consejoSection}>
@@ -263,6 +275,21 @@ const s = StyleSheet.create({
   },
   durationText: { fontSize: 11, fontWeight: "700", color: "#fff" },
   tipoText: { fontSize: 12, color: "rgba(255,255,255,0.65)", fontWeight: "500" },
+
+  transcriptSection: {
+    backgroundColor: "rgba(0,0,0,0.12)",
+    borderRadius: 12,
+    paddingHorizontal: SPACING * 1.2,
+    paddingVertical: SPACING * 0.8,
+    borderLeftWidth: 2,
+    borderLeftColor: "rgba(255,255,255,0.4)",
+  },
+  transcriptQuote: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.75)",
+    lineHeight: 18,
+    fontStyle: "italic",
+  },
 
   consejoSection: {
     flexDirection: "row",

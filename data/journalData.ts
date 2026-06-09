@@ -5,7 +5,7 @@ export type CategoriaDetectada =
   | "CANSANCIO_APATIA"
   | "ALEGRIA_MOTIVACION"
   | "TRISTEZA_MELANCOLIA"
-  | "CONFUSION_INCERTIDUMBRE";
+  | "CALMA_BIENESTAR";
 
 export type CartaRecompensa = {
   tag_bienestar: TagBienestar;
@@ -19,6 +19,7 @@ export type CartaRecompensa = {
 export type JournalResult = {
   categoria_detectada: CategoriaDetectada;
   carta_recompensa: CartaRecompensa;
+  texto_hablado?: string;
 };
 
 export const CARTAS: Record<CategoriaDetectada, CartaRecompensa> = {
@@ -54,12 +55,12 @@ export const CARTAS: Record<CategoriaDetectada, CartaRecompensa> = {
     duracion_estimada: "6 min",
     color_sugerido_hex: "#5C5C8A",
   },
-  CONFUSION_INCERTIDUMBRE: {
+  CALMA_BIENESTAR: {
     tag_bienestar: "Mente",
-    titulo: "Ancla al Presente",
-    subtitulo: "Una técnica simple para encontrar claridad desde adentro.",
-    tipo_contenido: "micro_ejercicio",
+    titulo: "Momento de Equilibrio",
+    subtitulo: "Estás bien. Aprovecha esta calma para conectar con lo que te importa.",
+    tipo_contenido: "audio_guia",
     duracion_estimada: "4 min",
-    color_sugerido_hex: "#6B6560",
+    color_sugerido_hex: "#4A7A6B",
   },
 };

@@ -2,12 +2,9 @@ import { ROLES } from "@/data/roleTestData";
 import { RoleScores } from "@/types/roleTest";
 import {
   Circle,
-  Defs,
   G,
   Line,
-  LinearGradient,
   Polygon,
-  Stop,
   Svg,
   Text as SvgText,
 } from "react-native-svg";
@@ -18,9 +15,9 @@ interface Props {
 }
 
 const N = ROLES.length;
-const LEVELS = 4;
 const MAX = 4 * 5;
-const PAD = 80;
+const PAD = 72;
+const GRID_LEVELS = [0.25, 0.5, 0.75];
 
 const ROLE_COLORS: Record<string, string> = {
   limites:          "#7C3AED",
@@ -35,10 +32,7 @@ function angle(i: number) {
 }
 
 function pt(cx: number, cy: number, r: number, i: number) {
-  return {
-    x: cx + r * Math.cos(angle(i)),
-    y: cy + r * Math.sin(angle(i)),
-  };
+  return { x: cx + r * Math.cos(angle(i)), y: cy + r * Math.sin(angle(i)) };
 }
 
 function polyStr(cx: number, cy: number, r: number): string {
@@ -52,50 +46,41 @@ export function RoleRadarChart({ scores, size = 280 }: Props) {
   const vbSize = size + PAD * 2;
   const cx = vbSize / 2;
   const cy = vbSize / 2;
-  const R = (size / 2) * 0.64;
-  const labelR = R + 22;
+  const R = (size / 2) * 0.60;
+  const labelR = R + 26;
 
-  const gridRadii = Array.from(
-    { length: LEVELS },
-    (_, i) => ((i + 1) / LEVELS) * R,
-  );
   const outerPts = Array.from({ length: N }, (_, i) => pt(cx, cy, R, i));
 
   const scorePoints = ROLES.map((role, i) => {
     const pct = Math.min((scores[role.key] ?? 0) / MAX, 1);
     return pt(cx, cy, Math.max(pct * R, 4), i);
   });
-  const scorePolygon = scorePoints
-    .map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`)
-    .join(" ");
+  const scorePolygon = scorePoints.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+
+  // Reference polygon at 80% — representa el potencial máximo
+  const refPolygon = polyStr(cx, cy, R * 0.8);
 
   return (
     <Svg width={size + PAD} height={size + PAD} viewBox={`0 0 ${vbSize} ${vbSize}`}>
-      <Defs>
-        <LinearGradient id="roleFill" x1="0%" y1="0%" x2="100%" y2="100%">
-          <Stop offset="0%" stopColor="#8980B8" stopOpacity="0.38" />
-          <Stop offset="100%" stopColor="#C45E7A" stopOpacity="0.20" />
-        </LinearGradient>
-      </Defs>
 
       {/* Axis lines */}
       {outerPts.map((p, i) => (
         <Line
           key={`ax-${i}`}
-          x1={cx.toFixed(1)} y1={cy.toFixed(1)}
-          x2={p.x.toFixed(1)} y2={p.y.toFixed(1)}
-          stroke="rgba(100,100,120,0.18)"
+          x1={cx} y1={cy}
+          x2={p.x} y2={p.y}
+          stroke="rgba(120,120,140,0.20)"
           strokeWidth={0.8}
         />
       ))}
 
-      {/* Inner grid rings */}
-      {gridRadii.slice(0, -1).map((r, li) => (
+      {/* Dashed grid rings */}
+      {GRID_LEVELS.map((level, i) => (
         <Polygon
-          key={`g-${li}`}
-          points={polyStr(cx, cy, r)}
+          key={`g-${i}`}
+          points={polyStr(cx, cy, level * R)}
           fill="none"
-          stroke="rgba(100,100,120,0.15)"
+          stroke="rgba(120,120,140,0.18)"
           strokeWidth={0.7}
           strokeDasharray="3,4"
         />
@@ -105,31 +90,35 @@ export function RoleRadarChart({ scores, size = 280 }: Props) {
       <Polygon
         points={polyStr(cx, cy, R)}
         fill="none"
-        stroke="rgba(100,100,120,0.22)"
-        strokeWidth={1}
+        stroke="rgba(120,120,140,0.25)"
+        strokeWidth={0.9}
       />
 
-      {/* Score fill */}
-      <Polygon points={scorePolygon} fill="url(#roleFill)" />
-
-      {/* Score border */}
+      {/* Reference polygon — verde */}
       <Polygon
-        points={scorePolygon}
-        fill="none"
-        stroke="#8980B8"
-        strokeWidth={2}
+        points={refPolygon}
+        fill="rgba(34,197,94,0.14)"
+        stroke="#22C55E"
+        strokeWidth={1.8}
         strokeLinejoin="round"
       />
 
-      {/* Nodes */}
+      {/* Score polygon — azul/índigo */}
+      <Polygon
+        points={scorePolygon}
+        fill="rgba(99,102,241,0.22)"
+        stroke="#6366F1"
+        strokeWidth={2.2}
+        strokeLinejoin="round"
+      />
+
+      {/* Dots */}
       {scorePoints.map((p, i) => {
-        const role = ROLES[i];
-        const c = ROLE_COLORS[role.key] ?? "#8980B8";
+        const c = ROLE_COLORS[ROLES[i].key] ?? "#8980B8";
         return (
           <G key={`nd-${i}`}>
-            <Circle cx={p.x} cy={p.y} r={6} fill={c} opacity={0.22} />
-            <Circle cx={p.x} cy={p.y} r={3.5} fill="#fff" />
-            <Circle cx={p.x} cy={p.y} r={2} fill={c} />
+            <Circle cx={p.x} cy={p.y} r={5} fill="#fff" />
+            <Circle cx={p.x} cy={p.y} r={3} fill={c} />
           </G>
         );
       })}
@@ -139,22 +128,14 @@ export function RoleRadarChart({ scores, size = 280 }: Props) {
         const a = angle(i);
         const lp = pt(cx, cy, labelR, i);
         const c = ROLE_COLORS[role.key] ?? "#8980B8";
-
         const anchor =
-          Math.abs(Math.cos(a)) < 0.2
-            ? "middle"
-            : Math.cos(a) > 0
-              ? "start"
-              : "end";
-
+          Math.abs(Math.cos(a)) < 0.2 ? "middle" : Math.cos(a) > 0 ? "start" : "end";
         const isTop = Math.sin(a) < -0.3;
-        const nameY = isTop ? lp.y - 6 : lp.y + 6;
-
         return (
           <SvgText
             key={`lb-${i}`}
             x={lp.x.toFixed(1)}
-            y={nameY.toFixed(1)}
+            y={(isTop ? lp.y - 4 : lp.y + 8).toFixed(1)}
             textAnchor={anchor}
             fontSize={12}
             fontWeight="700"

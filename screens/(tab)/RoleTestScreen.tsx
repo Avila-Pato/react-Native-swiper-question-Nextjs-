@@ -8,11 +8,20 @@ import { useUserStore } from "@/store/useUserStore";
 import { RoleKey, RoleScores } from "@/types/roleTest";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Dimensions,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+
+const CARD_W = Math.round(Dimensions.get("window").width * 0.78);
 
 const BAR_HEIGHT = TAB_ITEM_SIZE + SPACING * 1.5;
 const ACCENT = "#8980B8";
@@ -150,9 +159,7 @@ export default function RoleTestScreen() {
                       { backgroundColor: topIconCfg.color + "22" },
                     ]}
                   >
-                    <Text
-                      style={[s.topBadgeText, { color: topIconCfg.color }]}
-                    >
+                    <Text style={[s.topBadgeText, { color: topIconCfg.color }]}>
                       #1
                     </Text>
                   </View>
@@ -298,42 +305,66 @@ export default function RoleTestScreen() {
                 <Text style={s.ctaArrow}>→</Text>
               </Pressable>
 
-              {/* Dimensiones grid */}
+              {/* Dimensiones carrusel */}
               <Text style={s.listLabel}>Las 5 dimensiones</Text>
-              <View style={s.dimGrid}>
-                {ROLES.map((role, idx) => {
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                snapToInterval={CARD_W + SPACING}
+                decelerationRate="fast"
+                snapToAlignment="start"
+                style={s.carouselScroll}
+                contentContainerStyle={s.carousel}
+              >
+                {ROLES.map((role) => {
                   const cfg = ROLE_ICON[role.key];
-                  const isLast = idx === ROLES.length - 1;
                   return (
-                    <View
-                      key={role.key}
-                      style={[s.dimCard, isLast && s.dimCardFull]}
-                    >
-                      {/* Fondo */}
-                      <Image
-                        source={DIM_BG[role.key]}
-                        style={StyleSheet.absoluteFill}
-                        contentFit="cover"
-                      />
-                      {/* Overlay con color de la dimensión */}
-                      <View
-                        style={[
-                          StyleSheet.absoluteFill,
-                          { backgroundColor: cfg.bg + "A0" }, // color de fondo con opacidad A0 63%
-                        ]}
-                      />
-
-                      {/* Nombre */}
-                      <Text style={[s.dimName, { color: cfg.color }]}>
-                        {role.label}
-                      </Text>
-
-                      {/* Descripción */}
-                      <Text style={s.dimDesc}>{role.description}</Text>
+                    <View key={role.key} style={s.dimCard}>
+                      {/* Sección superior coloreada */}
+                      <View style={[s.dimCardTop, { backgroundColor: cfg.bg }]}>
+                        {/* Círculos decorativos */}
+                        <View
+                          style={[
+                            s.dimCircleOuter,
+                            { backgroundColor: cfg.color + "22" },
+                          ]}
+                        >
+                          <View
+                            style={[
+                              s.dimCircleInner,
+                              { backgroundColor: cfg.color + "3A" },
+                            ]}
+                          />
+                        </View>
+                        {/* Tag */}
+                        <View
+                          style={[
+                            s.dimTag,
+                            { backgroundColor: cfg.color + "18" },
+                          ]}
+                        >
+                          <Text style={[s.dimTagText, { color: cfg.color }]}>
+                            Dimensión
+                          </Text>
+                        </View>
+                        <Text style={[s.dimName, { color: cfg.color }]}>
+                          {role.label}
+                        </Text>
+                      </View>
+                      {/* Cuerpo blanco */}
+                      <View style={s.dimCardBody}>
+                        <Text style={s.dimDesc}>{role.description}</Text>
+                        <View
+                          style={[
+                            s.dimFooterDot,
+                            { backgroundColor: cfg.color },
+                          ]}
+                        />
+                      </View>
                     </View>
                   );
                 })}
-              </View>
+              </ScrollView>
             </>
           )}
         </View>
@@ -586,21 +617,62 @@ const s = StyleSheet.create({
     marginBottom: SPACING * 0.4,
   },
 
-  /* Dimension grid */
-  dimGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+  /* Dimension carousel */
+  carouselScroll: {
+    marginHorizontal: -SPACING * 2,
+  },
+  carousel: {
+    paddingLeft: SPACING * 2,
+    paddingRight: SPACING * 2,
     gap: SPACING,
   },
   dimCard: {
-    width: "47.5%",
-    borderRadius: 18,
+    width: CARD_W,
+    borderRadius: 24,
+    backgroundColor: "#fff",
     overflow: "hidden",
-    padding: SPACING * 1.5,
-    gap: SPACING,
   },
-  dimCardFull: {
-    width: "100%",
+  dimCardTop: {
+    padding: SPACING * 2,
+    paddingTop: SPACING * 2.5,
+    paddingBottom: SPACING * 2,
+    height: 140,
+    justifyContent: "flex-end",
+    gap: SPACING * 0.8,
+  },
+  dimCircleOuter: {
+    position: "absolute",
+    top: -30,
+    right: -30,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dimCircleInner: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+  },
+  dimTag: {
+    alignSelf: "flex-start",
+    borderRadius: 20,
+    paddingHorizontal: SPACING,
+    paddingVertical: 3,
+  },
+  dimTagText: { fontSize: 10, fontWeight: "700", letterSpacing: 0.5 },
+  dimCardBody: {
+    backgroundColor: "#fff",
+    padding: SPACING * 2,
+    paddingTop: SPACING * 1.5,
+    gap: SPACING * 1.2,
+  },
+  dimFooterDot: {
+    width: 28,
+    height: 4,
+    borderRadius: 2,
+    opacity: 0.35,
   },
   dimIconCircle: {
     width: 44,
@@ -618,8 +690,13 @@ const s = StyleSheet.create({
     paddingVertical: 3,
   },
   dimPillText: { fontSize: 10, fontWeight: "600" },
-  dimName: { fontSize: 16, fontWeight: "900", letterSpacing: -0.3 },
-  dimDesc: { fontSize: 12, color: "#555", lineHeight: 18, flex: 1 },
+  dimName: {
+    fontSize: 22,
+    fontWeight: "900",
+    letterSpacing: -0.6,
+    lineHeight: 26,
+  },
+  dimDesc: { fontSize: 13, color: "rgba(28,27,41,0.52)", lineHeight: 20 },
   dimBtn: {
     borderRadius: 20,
     paddingVertical: SPACING * 0.7,
